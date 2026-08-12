@@ -35,25 +35,13 @@ jobs:
 
       - name: Deploy Worker
         run: |
-          export debug_mode=${{ secrets.DEBUG_MODE }}
-
           cd worker/
           # ✅ 修复核心：使用环境变量写入，避免 Shell 解析特殊字符
           printf '%s\n' "$WRANGLER_TOML_CONTENT" > wrangler.toml
 
           pnpm install --no-frozen-lockfile
 
-          if [ "$debug_mode" = "true" ]; then
-            pnpm run deploy
-          else
-            if pnpm run deploy >/dev/null 2>&1; then
-              echo "Deploy succeeded"
-            else
-              code=$?
-              echo "Command failed with exit code $code"
-              exit "$code"
-            fi
-          fi
+          pnpm run deploy
 
           node -e 'require("node:fs").writeFileSync(".worker-secrets.json", JSON.stringify({ JWT_SECRET: process.env.JWT_SECRET, ADMIN_PASSWORD: process.env.ADMIN_PASSWORD, CF_TURNSTILE_SECRET_KEY: process.env.CF_TURNSTILE_SECRET_KEY }))'
           pnpm wrangler secret bulk .worker-secrets.json --name mail
