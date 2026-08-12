@@ -9,7 +9,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Mail parser**: `mail-parser-wasm/` — Rust WASM email parser.
 - **SMTP/IMAP proxy**: `smtp_proxy_server/` — Python proxy server.
 - **DB schema/migrations**: `db/` — SQLite via Cloudflare D1, dated migration patches.
-- **E2E tests**: `e2e/` — Playwright tests in Docker Compose (API, browser, SMTP proxy).
 - **Changelogs**: `CHANGELOG.md` (English).
 
 ## Build & Dev Commands
@@ -25,24 +24,6 @@ Run inside each subfolder with `pnpm`:
 The frontend is built to `frontend/dist/` and deployed together with the Worker as static assets. The Worker build (`pnpm build`) requires `frontend/dist/` to exist first.
 
 SMTP proxy: `pip install -r smtp_proxy_server/requirements.txt` then `python smtp_proxy_server/main.py`.
-
-## E2E Tests
-
-Tests run in Docker Compose with Playwright. From `e2e/`:
-
-```bash
-npm test              # Build, run all tests, exit
-npm run test:down     # Clean up containers
-```
-
-Test categories: `tests/api/` (API tests), `tests/browser/` (UI tests with Chromium), `tests/smtp-proxy/` (SMTP/IMAP proxy tests).
-
-The Docker frontend serves over **HTTPS** (self-signed cert) with Vite proxy to worker — required for WebAuthn (`navigator.credentials`) and `crypto.subtle` which need a secure context. Browser tests use `ignoreHTTPSErrors: true`.
-
-Key patterns for browser tests:
-- Frontend hashes passwords with SHA-256 (`crypto.subtle`) before sending — API test registration must use pre-hashed passwords if UI login is needed.
-- VueUse `useStorage('key', '')` with string default uses **raw string** serialization — set localStorage with raw value, not `JSON.stringify()`.
-- WebAuthn browser tests use CDP virtual authenticator (`WebAuthn.enable` + `WebAuthn.addVirtualAuthenticator`).
 
 ## Architecture
 

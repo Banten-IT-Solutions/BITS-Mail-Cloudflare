@@ -5,6 +5,4 @@ mail-parser-wasm/
 db/
 **/.wrangler/
 **/dist/
-**/test-results/
-**/playwright-report/
 .DS_Store

@@ -18,6 +18,8 @@
 - docs: |Docs| Remove the entire VitePress documentation site (`vitepress-docs/`) and the `docs_deploy.yml` workflow, and clean up documentation references in README / CLAUDE.md / skills
 - docs: |Docs| Consolidate documentation and README to a single English version: delete `README_EN.md` and the Chinese `CHANGELOG.md`, rename `CHANGELOG_EN.md` to `CHANGELOG.md`
 - refactor: |Skill| Remove all bundled agent skills (`.agents/`, `.claude/`, `skills/`) and the `AGENTS.md` symlink; the repository no longer ships skills
+- refactor: |Test| Remove the `e2e/` Playwright test suite and the `e2e.yml` workflow, plus the e2e-only admin endpoints `/admin/test/seed_mail` and `/admin/test/receive_mail` (`worker/src/admin_api/e2e_test_api.ts`). Drop the `E2E_TEST_MODE` env var and its special-case branch in the auto-reply email flow
+- refactor: |Chore| Remove the `scripts/` folder (`update-dependencies.sh`), which was only referenced by the deleted upgrade-dependencies skill; clean up e2e leftovers in `.dockerignore` and `CLAUDE.md`
 
 ## v1.7.0(main)
 
