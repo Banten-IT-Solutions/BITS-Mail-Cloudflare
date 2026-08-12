@@ -1,0 +1,85 @@
+name: Deploy Frontend
+
+on:
+  workflow_run:
+    workflows: [Upstream Sync]
+    types: [completed]
+  push:
+    tags:
+      - "*"
+  workflow_dispatch:
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - uses: pnpm/action-setup@v5
+        name: Install pnpm
+        with:
+          version: 10
+          run_install: false
+
+      - name: Deploy Frontend for ${{ github.ref_name }}
+        if: ${{ env.FRONTEND_NAME != '' }}
+        run: |
+          cd frontend/
+          echo "${{ secrets.FRONTEND_ENV }}" > .env.prod
+          pnpm install --no-frozen-lockfile
+          export frontend_branch="${{ secrets.FRONTEND_BRANCH }}"
+          if [ -n "$frontend_branch" ]; then
+            echo "Deploying branch $frontend_branch"
+            pnpm run deploy:actions --project-name=$FRONTEND_NAME --branch $frontend_branch
+          else
+            echo "Deploying branch production"
+            pnpm run deploy --project-name=$FRONTEND_NAME
+          fi
+          echo "Deployed for tag ${{ github.ref_name }}"
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          FRONTEND_NAME: ${{ secrets.FRONTEND_NAME }}
+
+  deploy-telegram-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - uses: pnpm/action-setup@v5
+        name: Install pnpm
+        with:
+          version: 10
+          run_install: false
+
+      - name: Deploy Telegram Frontend for ${{ github.ref_name }}
+        if: ${{ env.TG_FRONTEND_NAME != '' }}
+        run: |
+          cd frontend/
+          echo "${{ secrets.FRONTEND_ENV }}" > .env.prod
+          pnpm install --no-frozen-lockfile
+          export frontend_branch="${{ secrets.FRONTEND_BRANCH }}"
+          if [ -n "$frontend_branch" ]; then
+            echo "Deploying telegram mini app branch $frontend_branch"
+            pnpm run deploy:actions:telegram --project-name=$TG_FRONTEND_NAME --branch $frontend_branch
+          else
+            echo "Deploying telegram mini app branch production"
+            pnpm run deploy:telegram --project-name=$TG_FRONTEND_NAME
+          fi
+          echo "Deployed telegram mini app for ${{ github.ref_name }}"
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TG_FRONTEND_NAME: ${{ secrets.TG_FRONTEND_NAME }}

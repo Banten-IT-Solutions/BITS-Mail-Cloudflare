@@ -1,0 +1,83 @@
+name: Deploy Backend
+
+on:
+  workflow_run:
+    workflows: [Upstream Sync]
+    types: [completed]
+  push:
+    tags:
+      - "*"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - uses: pnpm/action-setup@v5
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 10
+          run_install: false
+
+      - name: Deploy Backend for ${{ github.ref_name }}
+        run: |
+          export use_worker_assets=${{ secrets.USE_WORKER_ASSETS }}
+          export use_worker_assets_with_telegram=${{ secrets.USE_WORKER_ASSETS_WITH_TELEGRAM }}
+          
+          if [ -n "$use_worker_assets" ]; then
+            cd frontend/
+            pnpm install --no-frozen-lockfile
+            if [ -n "$use_worker_assets_with_telegram" ]; then
+              echo "Building with telegram pages"
+              pnpm build:telegram:pages
+            else
+              echo "Building with normal pages"
+              pnpm build:pages
+            fi
+            cd ..
+          fi
+
+          export debug_mode=${{ secrets.DEBUG_MODE }}
+          export use_mail_wasm_parser=${{ secrets.BACKEND_USE_MAIL_WASM_PARSER }}
+          
+          cd worker/
+          # ✅ 修复核心：使用环境变量写入，避免 Shell 解析特殊字符
+          printf '%s\n' "$WRANGLER_TOML_CONTENT" > wrangler.toml
+          
+          pnpm install --no-frozen-lockfile
+
+          if [ -n "$use_mail_wasm_parser" ]; then
+            echo "Using mail-parser-wasm-worker"
+            pnpm add mail-parser-wasm-worker
+            git apply ../.github/config/mail-parser-wasm-worker.patch
+            echo "Applied mail-parser-wasm-worker patch"
+          fi
+
+          if [ "$debug_mode" = "true" ]; then
+            pnpm run deploy
+          else
+            if pnpm run deploy >/dev/null 2>&1; then
+              echo "Deploy succeeded"
+            else
+              code=$?
+              echo "Command failed with exit code $code"
+              exit "$code"
+            fi
+          fi
+          echo "Deployed for tag ${{ github.ref_name }}"
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # ✅ 将 secret 映射到环境变量中
+          WRANGLER_TOML_CONTENT: ${{ secrets.BACKEND_TOML }}

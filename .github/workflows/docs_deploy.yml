@@ -1,0 +1,50 @@
+name: Deploy Docs
+
+on:
+  workflow_run:
+    workflows: ["Tag Build CI"]
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       startsWith(github.event.workflow_run.head_branch, 'v'))
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.workflow_run.head_sha || github.ref }}
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - uses: pnpm/action-setup@v5
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 10
+          run_install: false
+
+      - name: Deploy Docs
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd vitepress-docs/
+          wget https://github.com/dreamhunter2333/cloudflare_temp_email/releases/latest/download/frontend.zip -O docs/public/ui_install/frontend.zip
+          pnpm install --no-frozen-lockfile
+          TAG_NAME=$(gh release view --json tagName --jq '.tagName')
+          echo "Deploying docs for tag $TAG_NAME"
+          export TAG_NAME
+          pnpm run deploy

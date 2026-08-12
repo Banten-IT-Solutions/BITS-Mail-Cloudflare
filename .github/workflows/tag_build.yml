@@ -1,0 +1,138 @@
+name: Tag Build CI
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - uses: pnpm/action-setup@v5
+        name: Install pnpm
+        with:
+          version: 10
+          run_install: false
+
+      - name: Build Frontend
+        run: cd frontend && pnpm install --no-frozen-lockfile && pnpm build:release
+
+      - name: Zip Frontend dist
+        run: cd frontend/dist/ && zip -r frontend.zip * && mv frontend.zip ../
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend
+          path: frontend/frontend.zip
+
+  build-telegram-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - uses: pnpm/action-setup@v5
+        name: Install pnpm
+        with:
+          version: 10
+          run_install: false
+
+      - name: Build Telegram Frontend
+        run: cd frontend && pnpm install --no-frozen-lockfile && pnpm build:telegram:release
+
+      - name: Zip Telegram Frontend dist
+        run: cd frontend/dist/ && zip -r telegram-frontend.zip * && mv telegram-frontend.zip ../
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: telegram-frontend
+          path: frontend/telegram-frontend.zip
+
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - uses: pnpm/action-setup@v5
+        name: Install pnpm
+        with:
+          version: 10
+          run_install: false
+
+      - name: cp wrangler.toml
+        run: cd worker && cp wrangler.toml.template wrangler.toml
+
+      - name: Build Backend
+        run: cd worker && pnpm install --no-frozen-lockfile && pnpm build
+
+      - name: Move worker.js
+        run: cd worker/dist && mv worker.js ../
+
+      - name: Build Worker with wasm mail parser
+        run: |
+          cd worker
+          echo "Using mail-parser-wasm-worker"
+          pnpm add mail-parser-wasm-worker
+          git apply ../.github/config/mail-parser-wasm-worker.patch
+          echo "Applied mail-parser-wasm-worker patch"
+          pnpm build
+          zip -r worker-with-wasm-mail-parser.zip dist/worker.js dist/*.wasm
+
+      - name: Upload worker.js
+        uses: actions/upload-artifact@v7
+        with:
+          name: worker-js
+          path: worker/worker.js
+
+      - name: Upload wasm worker
+        uses: actions/upload-artifact@v7
+        with:
+          name: worker-wasm
+          path: worker/worker-with-wasm-mail-parser.zip
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [build-frontend, build-telegram-frontend, build-backend]
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: artifacts
+
+      - name: Upload Assets to Release
+        run: |
+          gh release upload "${{ github.ref_name }}" \
+            artifacts/frontend/frontend.zip \
+            artifacts/telegram-frontend/telegram-frontend.zip \
+            artifacts/worker-js/worker.js \
+            artifacts/worker-wasm/worker-with-wasm-mail-parser.zip \
+            --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
