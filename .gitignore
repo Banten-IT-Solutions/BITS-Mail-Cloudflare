@@ -136,7 +136,6 @@ dist
 .wrangler
 wrangler.toml
 .dev.vars
-pnpm-lock.yaml
 
 # E2E test artifacts
 e2e/test-results/
