@@ -12,10 +12,8 @@ Upgrade the version number of the cloudflare_temp_email project.
 1. `frontend/package.json` — `version` field
 2. `worker/package.json` — `version` field
 3. `worker/src/constants.ts` — `VERSION` constant (format: `VERSION: 'v' + '1.4.0'`)
-4. `pages/package.json` — `version` field
-5. `vitepress-docs/package.json` — `version` field
-6. `CHANGELOG.md` — add new version placeholder
-7. `CHANGELOG_EN.md` — add new version placeholder (English)
+4. `CHANGELOG.md` — add new version placeholder
+5. `CHANGELOG_EN.md` — add new version placeholder (English)
 
 ## Upgrade workflow
 

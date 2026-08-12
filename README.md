@@ -1,7 +1,7 @@
 <!-- markdownlint-disable-file MD033 MD045 -->
 # Cloudflare Temp Email
 
-A fully-featured temporary email service built on Cloudflare Workers and Pages.
+A fully-featured temporary email service built on Cloudflare Workers — a single Worker serves both the API and the frontend as static assets.
 
 ## Features
 
@@ -31,8 +31,8 @@ A fully-featured temporary email service built on Cloudflare Workers and Pages.
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/bits-co-id/cloudflare-temp-email.git
-cd cloudflare-temp-email
+git clone https://github.com/bitscoid/BITS-Mail-Cloudflare.git
+cd BITS-Mail-Cloudflare
 ```
 
 ### 2. Create Cloudflare Resources
@@ -57,14 +57,16 @@ cp worker/wrangler.toml.template worker/wrangler.toml
 # Edit wrangler.toml with your database_id and settings
 ```
 
-### 4. Deploy
+### 4. Build Frontend & Deploy (Single Worker)
+
+The frontend is built to `frontend/dist/` and deployed together with the Worker as static assets via the `ASSETS` binding.
 
 ```bash
-# Worker
-cd worker && pnpm install && pnpm deploy
+# Build frontend assets (outputs to frontend/dist/)
+cd frontend && pnpm install && pnpm build:pages
 
-# Frontend
-cd frontend && pnpm install && pnpm deploy
+# Deploy the single Worker (serves both the API and the frontend)
+cd ../worker && pnpm install && pnpm deploy
 ```
 
 ## Configuration
@@ -80,12 +82,6 @@ Key environment variables (set in `wrangler.toml` or Cloudflare Dashboard):
 | `CF_TURNSTILE_SITE_KEY` | Turnstile site key |
 | `TG_BOT_INFO` | Telegram bot info |
 | `ENABLE_AI_EMAIL_EXTRACT` | Enable AI extraction |
-
-Full configuration options available in [Documentation](https://vitepress-docs.vercel.app).
-
-## Documentation
-
-See [VitePress Docs](https://vitepress-docs.vercel.app) for detailed guides.
 
 ## License
 

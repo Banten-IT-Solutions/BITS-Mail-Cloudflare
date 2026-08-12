@@ -37,8 +37,16 @@ app.onError((err, c) => {
 // global middlewares
 app.use('/*', async (c, next) => {
 
-	// check if the request is for static files
-	if (c.env.ASSETS && !API_PATHS.some(path => c.req.path.startsWith(path))) {
+	// serve static files (frontend SPA) from the ASSETS binding.
+	// keep `/health_check` on the worker so monitoring works, and only
+	// intercept GET/HEAD requests (everything else falls through to the API routes).
+	const method = c.req.method;
+	if (
+		c.env.ASSETS
+		&& (method === "GET" || method === "HEAD")
+		&& !API_PATHS.some(path => c.req.path.startsWith(path))
+		&& c.req.path !== "/health_check"
+	) {
 		const url = new URL(c.req.raw.url);
 		if (!url.pathname.includes('.')) {
 			url.pathname = ""

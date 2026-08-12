@@ -13,12 +13,16 @@
 - feat: |API| Add server-side parsed-mail endpoints `/api/parsed_mails` and `/api/parsed_mail/:id` that return `sender` / `subject` / `text` / `html` / `attachments` metadata directly (reuses `commonParseMail`), so AI agents no longer need a client-side MIME parser
 - feat: |Skill| Bundle a read-only skill `cf-temp-mail-agent-mail` (`skills/cf-temp-mail-agent-mail/`) so AI agents like OpenClaw / Codex / Cursor can consume a mailbox with a user-supplied Address JWT + API base URL — list mails, poll verification codes, etc. — sidestepping the Turnstile challenge required to create a mailbox. Install via `npx degit dreamhunter2333/cloudflare_temp_email/skills/cf-temp-mail-agent-mail`
 - docs: |Docs| Add "AI Agent Mailbox Usage" doc (`guide/feature/agent-email`) covering the `parsed_mail` API and a local-parse fallback using `mail-parser-wasm` + `postal-mime` (mirrors the frontend) when parsed endpoints are unavailable
+- feat: |Deployment| Switch to a single-worker deployment: `wrangler.toml.template` now enables `[assets]` by default (`../frontend/dist/` → `ASSETS` binding), so one Worker serves both the backend API and the frontend SPA. The `Deploy Backend` workflow builds the frontend and deploys it together with the Worker; the web frontend is no longer deployed to Cloudflare Pages (the Telegram Mini App still has its own optional Pages deployment)
 
 ### Bug Fixes
 
 ### Improvements
 
 - refactor: |Worker| Split `mails_api/index.ts` and `admin_api/index.ts` so the index files only wire routes. Business logic moved into dedicated `*_api.ts` files (`mails_crud.ts` / `new_address.ts` / `parsed_mail_api.ts` / `address_api.ts` / `address_sender_api.ts` / `sendbox_api.ts` / `statistics_api.ts` / `account_settings_api.ts`). Paths and behavior unchanged
+- refactor: |Deployment| Remove the `pages/` Page Functions reverse-proxy layer, the `frontend_pagefunction_deploy.yaml` workflow and the web `Deploy Frontend` workflow. In single-worker mode frontend requests and the API are same-origin, so no proxy or cross-origin forwarding is needed
+- fix: |Worker| With `ASSETS` enabled, `/health_check` is no longer swallowed by the static-asset middleware (assets are only served for GET/HEAD on non-API paths, with `/health_check` excluded), so health checks keep working
+- docs: |Docs| Remove the entire VitePress documentation site (`vitepress-docs/`) and the `docs_deploy.yml` workflow, and clean up documentation references in README / CLAUDE.md / skills
 
 ## v1.7.0(main)
 

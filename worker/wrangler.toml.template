@@ -8,11 +8,12 @@ keep_vars = true
 # 	{ pattern = "temp-email-api.xxxxx.xyz", custom_domain = true },
 # ]
 
-# if you want deploy worker with frontend assets, you need to add assets
-# [assets]
-# directory = "../frontend/dist/"
-# binding = "ASSETS"
-# run_worker_first = true
+# Serve frontend assets from the same Worker (single-worker deployment).
+# Build the frontend first: `cd frontend && pnpm install && pnpm build:pages`
+[assets]
+directory = "../frontend/dist/"
+binding = "ASSETS"
+run_worker_first = true
 
 # enable cron if you want set auto clean up
 # [triggers]

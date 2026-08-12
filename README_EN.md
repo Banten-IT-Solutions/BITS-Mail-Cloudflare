@@ -2,11 +2,8 @@
 # Cloudflare Temp Email - Free Temporary Email Service
 
 <p align="center">
-  <a href="https://temp-mail-docs.awsl.uk" target="_blank">
-    <img alt="docs" src="https://img.shields.io/badge/docs-grey?logo=vitepress">
-  </a>
-  <a href="https://github.com/dreamhunter2333/cloudflare_temp_email/releases/latest" target="_blank">
-    <img src="https://img.shields.io/github/v/release/dreamhunter2333/cloudflare_temp_email">
+  <a href="https://github.com/bitscoid/BITS-Mail-Cloudflare/releases/latest" target="_blank">
+    <img src="https://img.shields.io/github/v/release/bitscoid/BITS-Mail-Cloudflare">
   </a>
   <a href="https://github.com/dreamhunter2333/cloudflare_temp_email/blob/main/LICENSE" target="_blank">
     <img alt="MIT License" src="https://img.shields.io/github/license/dreamhunter2333/cloudflare_temp_email">
@@ -44,11 +41,10 @@
 
 ## Deployment Documentation - Quick Start
 
-[Documentation](https://temp-mail-docs.awsl.uk) | [Github Action Deployment Guide](https://temp-mail-docs.awsl.uk/en/guide/actions/github-action.html)
+A single Cloudflare Worker serves both the frontend and the backend. Build the frontend to `frontend/dist/`, then deploy the Worker with `wrangler deploy` (the `[assets]` config in `wrangler.toml.template` attaches the frontend as static assets).
 
-<a href="https://temp-mail-docs.awsl.uk/en/guide/actions/github-action.html">
-  <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare Workers" height="32">
-</a>
+- GitHub Actions: [Deploy Backend](.github/workflows/backend_deploy.yaml) builds the frontend and deploys the Worker with assets in one step.
+- CLI: see `README.md` → Quick Deploy.
 
 ## Changelog
 
@@ -150,7 +146,7 @@ Try it now → [https://mail.awsl.uk/](https://mail.awsl.uk/)
 - [x] Webhook support and message push integration
 - [x] Support `CF Turnstile` CAPTCHA verification
 - [x] Rate limiting configuration to prevent abuse
-- [x] **Agent-friendly**: bundled [`cf-temp-mail-agent-mail`](skills/cf-temp-mail-agent-mail/SKILL.md) skill lets AI agents consume a mailbox directly, see [docs](vitepress-docs/docs/en/guide/feature/agent-email.md)
+- [x] **Agent-friendly**: bundled [`cf-temp-mail-agent-mail`](skills/cf-temp-mail-agent-mail/SKILL.md) skill lets AI agents consume a mailbox directly
 
 </details>
 
@@ -162,8 +158,7 @@ Try it now → [https://mail.awsl.uk/](https://mail.awsl.uk/)
 ### System Architecture
 
 - **Database**: Cloudflare D1 as the main database
-- **Frontend Deployment**: Deploy frontend using Cloudflare Pages
-- **Backend Deployment**: Deploy backend using Cloudflare Workers
+- **Single Worker Deployment**: One Worker serves both the API and the frontend (Vue 3 SPA served as static assets via the `ASSETS` binding)
 - **Email Routing**: Use Cloudflare Email Routing
 
 ### Tech Stack
@@ -177,12 +172,10 @@ Try it now → [https://mail.awsl.uk/](https://mail.awsl.uk/)
 
 ### Main Components
 
-- **Worker**: Core backend service
-- **Frontend**: Vue 3 user interface
+- **Worker**: Core service — API + frontend static assets + email handling
+- **Frontend**: Vue 3 user interface (built into `frontend/dist/`)
 - **Mail Parser WASM**: Rust email parsing module
 - **SMTP Proxy Server**: Python email proxy service
-- **Pages Functions**: Cloudflare Pages middleware
-- **Documentation**: VitePress documentation site
 
 </details>
 
