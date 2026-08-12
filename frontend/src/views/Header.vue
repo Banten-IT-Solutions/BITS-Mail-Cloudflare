@@ -63,7 +63,7 @@ const changeLocale = async (lang) => {
 const { locale, t } = useI18n({
     messages: {
         en: {
-            title: 'Cloudflare Temp Email',
+            title: 'BITS Mail Cloudflare',
             dark: 'Dark',
             light: 'Light',
             accessHeader: 'Access Password',
@@ -221,7 +221,7 @@ const menuOptions = computed(() => [
                 style: "width: 100%",
                 tag: "a",
                 target: "_blank",
-                href: "https://github.com/dreamhunter2333/cloudflare_temp_email",
+                href: "https://github.com/Banten-IT-Solutions/bits-mail-cloudflare",
             },
             {
                 default: () => version || "Github",

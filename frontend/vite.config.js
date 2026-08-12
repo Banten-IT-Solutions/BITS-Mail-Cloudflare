@@ -46,9 +46,9 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
       },
       manifest: {
-        name: 'Temp Email',
-        short_name: 'Temp Email',
-        description: 'Temp Email - Temporary Email',
+        name: 'BITS Mail Cloudflare',
+        short_name: 'BITS Mail Cloudflare',
+        description: 'BITS Mail Cloudflare - Temporary Email',
         theme_color: '#ffffff',
         icons: [
           {

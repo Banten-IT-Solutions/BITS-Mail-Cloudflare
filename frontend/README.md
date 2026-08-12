@@ -1,6 +1,6 @@
 # Frontend
 
-Vue 3 frontend for Cloudflare Temp Email.
+Vue 3 frontend for BITS Mail Cloudflare.
 
 ## Setup
 

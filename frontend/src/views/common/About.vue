@@ -8,7 +8,7 @@ const { announcement } = useGlobalState()
     <div class="center">
         <n-card :bordered="false" embedded>
             <div v-html="announcement"></div>
-            <n-button tag="a" target="_blank" href="https://github.com/dreamhunter2333/cloudflare_temp_email">
+            <n-button tag="a" target="_blank" href="https://github.com/Banten-IT-Solutions/bits-mail-cloudflare">
                 <template #icon>
                     <n-icon :component="GithubAlt" />
                 </template>
@@ -20,7 +20,7 @@ const { announcement } = useGlobalState()
                 </template>
                 Discord
             </n-button>
-            <n-button tag="a" target="_blank" href="https://t.me/cloudflare_temp_email">
+            <n-button tag="a" target="_blank" href="https://t.me/bitsmail_bot">
                 <template #icon>
                     <n-icon :component="Telegram" />
                 </template>
