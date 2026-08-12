@@ -165,31 +165,6 @@ const { t } = useI18n({
       keywordQueryTip: 'Filter current page',
       query: 'Query',
     },
-    zh: {
-      success: '成功',
-      autoRefresh: '自动刷新',
-      refreshAfter: '{msg}秒后刷新',
-      refresh: '刷新',
-      downloadMail: '下载邮件',
-      attachments: '查看附件',
-      pleaseSelectMail: "请选择邮件",
-      emptyInbox: "收件箱为空",
-      delete: '删除',
-      deleteMailTip: '确定要删除邮件吗?',
-      reply: '回复',
-      forwardMail: '转发',
-      showTextMail: '显示纯文本邮件',
-      showHtmlMail: '显示HTML邮件',
-      saveToS3: '保存到S3',
-      multiAction: '多选',
-      cancelMultiAction: '取消多选',
-      selectAll: '全选本页',
-      unselectAll: '取消全选',
-      prevMail: '上一封',
-      nextMail: '下一封',
-      keywordQueryTip: '过滤当前页',
-      query: '查询',
-    }
   }
 });
 

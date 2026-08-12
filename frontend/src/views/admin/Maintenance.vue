@@ -53,31 +53,6 @@ const { t } = useI18n({
             sqlPlaceholder: "e.g. DELETE FROM raw_mails WHERE source GLOB '*{'@'}example.com' AND created_at < datetime('now', '-3 day')",
             deleteCustomSql: "Delete",
         },
-        zh: {
-            tip: '请输入天数',
-            mailBoxLabel: '清理 n 天前的收件箱',
-            mailUnknowLabel: "清理 n 天前的无收件人邮件",
-            sendBoxLabel: "清理 n 天前的发件箱",
-            addressCreateLabel: "清理 n 天前创建的地址",
-            inactiveAddressLabel: "清理 n 天前的未活跃地址",
-            unboundAddressLabel: "清理 n 天前的未绑定用户地址",
-            emptyAddressLabel: "清理 n 天前空邮件的邮箱地址",
-            autoCleanup: "自动清理",
-            cleanupSuccess: "清理成功",
-            saveSuccess: "保存成功",
-            cleanupNow: "立即清理",
-            save: "保存",
-            cronTip: "启用定时清理, 需在 worker 配置 [crons] 参数, 请参考文档, 配置为 0 天表示全部清空",
-            basicCleanup: "基础清理",
-            customSqlCleanup: "自定义 SQL 清理",
-            customSqlTip: "添加自定义 DELETE SQL 语句进行定时清理。每条记录仅允许单条 DELETE 语句。",
-            addCustomSql: "添加自定义 SQL",
-            sqlName: "名称",
-            sqlStatement: "SQL 语句 (仅限 DELETE)",
-            sqlNamePlaceholder: "例如: 清理旧日志",
-            sqlPlaceholder: "例如: DELETE FROM raw_mails WHERE source GLOB '*{'@'}example.com' AND created_at < datetime('now', '-3 day')",
-            deleteCustomSql: "删除",
-        }
     }
 });
 

@@ -53,11 +53,8 @@ const authFunc = async () => {
 }
 
 const changeLocale = async (lang) => {
-    if (lang == 'zh') {
-        await router.push(route.fullPath.replace('/en', ''));
-    } else {
-        await router.push(`/${lang}${route.fullPath}`);
-    }
+    const path = route.fullPath.replace(/^\/(?:en|id)(?=\/|$)/, '') || '/';
+    await router.push(lang === 'en' ? path : `/id${path}`);
 }
 
 const { locale, t } = useI18n({
@@ -74,17 +71,17 @@ const { locale, t } = useI18n({
             status: 'Status',
             ok: 'OK',
         },
-        zh: {
-            title: 'Cloudflare 临时邮件',
-            dark: '暗色',
-            light: '亮色',
-            accessHeader: '访问密码',
-            accessTip: '请输入站点访问密码',
-            home: '主页',
-            menu: '菜单',
-            user: '用户',
-            status: '状态',
-            ok: '确定',
+        id: {
+            title: 'BITS Mail Cloudflare',
+            dark: 'Gelap',
+            light: 'Terang',
+            accessHeader: 'Password Akses',
+            accessTip: 'Masukkan password akses yang benar',
+            home: 'Beranda',
+            menu: 'Menu',
+            user: 'Pengguna',
+            status: 'Status',
+            ok: 'OK',
         }
     }
 });
@@ -180,12 +177,12 @@ const menuOptions = computed(() => [
                 size: "small",
                 style: "width: 100%",
                 onClick: async () => {
-                    locale.value == 'zh' ? await changeLocale('en') : await changeLocale('zh');
+                    locale.value == 'id' ? await changeLocale('en') : await changeLocale('id');
                     showMobileMenu.value = false;
                 }
             },
             {
-                default: () => locale.value == 'zh' ? "English" : "中文",
+                default: () => locale.value == 'id' ? "English" : "Indonesia",
                 icon: () => h(
                     NIcon, { component: Language }
                 )

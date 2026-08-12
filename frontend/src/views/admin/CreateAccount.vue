@@ -25,19 +25,6 @@ const { t } = useI18n({
             enableRandomSubdomain: 'Use Random Subdomain',
             randomSubdomainTip: 'When enabled, the created address will use a random subdomain. Subdomain addresses are recommended for receiving only.',
         },
-        zh: {
-            address: '地址',
-            enablePrefix: '是否启用前缀',
-            creatNewEmail: '创建新邮箱',
-            fillInAllFields: '请填写完整信息',
-            successTip: '创建成功',
-            addressCredential: '邮箱地址凭证',
-            addressCredentialTip: '请复制邮箱地址凭证，你可以使用它登录你的邮箱。',
-            addressPassword: '地址密码',
-            linkWithAddressCredential: '打开即可自动登录邮箱的链接',
-            enableRandomSubdomain: '启用随机子域名',
-            randomSubdomainTip: '启用后，创建出来的地址会自动挂在随机子域名下。子域名地址更建议仅用于收件。',
-        }
     }
 });
 

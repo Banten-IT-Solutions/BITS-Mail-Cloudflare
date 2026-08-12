@@ -21,11 +21,6 @@ const { t } = useI18n({
             stateNotMatch: 'state not match',
             codeNotFound: 'code not found',
         },
-        zh: {
-            logging: '登录中...',
-            stateNotMatch: 'state 不匹配',
-            codeNotFound: '未找到授权码',
-        }
     }
 });
 

@@ -32,20 +32,6 @@ const { t } = useI18n({
             useUTCDate: 'Use UTC Date',
             autoRefreshInterval: 'Auto Refresh Interval(Sec)',
         },
-        zh: {
-            useSimpleIndex: '使用极简主页',
-            mailboxSplitSize: '邮箱界面分栏大小',
-            preferShowTextMail: '默认以文本显示邮件',
-            useIframeShowMail: '使用iframe显示HTML邮件',
-            globalTabplacement: '全局选项卡位置',
-            useSideMargin: '开启页面左右两侧侧边距',
-            left: '左侧',
-            top: '顶部',
-            right: '右侧',
-            bottom: '底部',
-            useUTCDate: '使用 UTC 时间',
-            autoRefreshInterval: '自动刷新间隔(秒)',
-        }
     }
 });
 </script>

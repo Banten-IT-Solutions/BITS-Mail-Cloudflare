@@ -19,14 +19,6 @@ const { t } = useI18n({
             save: 'Save',
             notEnabled: 'Webhook is not enabled',
         },
-        zh: {
-            successTip: '成功',
-            enableAllowList: '启用白名单 (限制 webhook 访问权限，只有白名单中的用户可以使用)',
-            webhookAllowList: 'Webhook 白名单(请输入允许使用webhook 的邮箱地址, 回车增加)',
-            manualInputPrompt: '输入后按回车键添加',
-            save: '保存',
-            notEnabled: 'Webhook 未开启',
-        }
     }
 });
 

@@ -37,23 +37,6 @@ const { t } = useI18n({
             renamePasskey: 'Rename Passkey',
             renamePasskeyNamePlaceholder: 'Please enter the new passkey name',
         },
-        zh: {
-            logout: '退出登录',
-            logoutConfirm: '确定要退出登录吗？',
-            passordTip: '服务器只会接收到密码的哈希值，不会接收到明文密码，因此无法查看或者找回您的密码, 如果管理员启用了邮件验证您可以在无痕模式重置密码',
-            createPasskey: '创建 Passkey',
-            showPasskeyList: '查看 Passkey 列表',
-            passkeyCreated: 'Passkey 创建成功',
-            passkeyNamePlaceholder: '请输入 Passkey 名称或者留空自动生成',
-            renamePasskey: '重命名 Passkey',
-            deletePasskey: '删除 Passkey',
-            passkey_name: 'Passkey 名称',
-            created_at: '创建时间',
-            updated_at: '更新时间',
-            actions: '操作',
-            renamePasskey: '重命名 Passkey',
-            renamePasskeyNamePlaceholder: '请输入新的 Passkey 名称',
-        }
     }
 });
 

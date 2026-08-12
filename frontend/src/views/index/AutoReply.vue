@@ -16,7 +16,7 @@ const { settings } = useGlobalState()
 
 
 const { t } = useI18n({
-    locale: 'zh',
+    locale: 'id',
     messages: {
         en: {
             success: 'Success',
@@ -29,17 +29,6 @@ const { t } = useI18n({
             autoReply: 'Auto Reply',
             save: 'Save',
         },
-        zh: {
-            success: '成功',
-            settings: '设置',
-            sourcePrefix: '发件人过滤',
-            sourcePrefixPlaceholder: '留空=全部匹配，前缀匹配，或 /正则/',
-            name: '名称',
-            enableAutoReply: '启用自动回复',
-            subject: '主题',
-            autoReply: '自动回复',
-            save: '保存',
-        }
     }
 });
 

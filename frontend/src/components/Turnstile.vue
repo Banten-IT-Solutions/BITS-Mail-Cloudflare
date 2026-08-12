@@ -11,9 +11,6 @@ const { locale, t } = useI18n({
         en: {
             refresh: 'Refresh'
         },
-        zh: {
-            refresh: '刷新'
-        }
     }
 });
 
@@ -45,7 +42,7 @@ const checkCfTurnstile = async (remove) => {
             `#${containerId}`,
             {
                 sitekey: openSettings.value.cfTurnstileSiteKey,
-                language: locale.value == 'zh' ? 'zh-CN' : 'en-US',
+                language: locale.value == 'id' ? 'id-ID' : 'en-US',
                 theme: isDark.value ? 'dark' : 'light',
                 callback: function (token) {
                     cfToken.value = token;

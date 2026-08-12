@@ -28,7 +28,7 @@ const apiFetch = async (path, options = {}) => {
             method: options.method || 'GET',
             data: options.body || null,
             headers: {
-                'x-lang': i18n.global.locale.value,
+                'x-lang': i18n.global.locale.value === 'id' ? 'en' : i18n.global.locale.value,
                 'x-user-token': options.userJwt || userJwt.value,
                 'x-user-access-token': userSettings.value.access_token,
                 'x-custom-auth': auth.value,

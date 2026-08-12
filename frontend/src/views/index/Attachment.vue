@@ -16,13 +16,6 @@ const { t } = useI18n({
             deleteConfirm: 'Are you sure to delete this attachment?',
             deleteSuccess: 'Deleted successfully',
         },
-        zh: {
-            download: '下载',
-            action: '操作',
-            delete: '删除',
-            deleteConfirm: '确定要删除此附件吗？',
-            deleteSuccess: '删除成功',
-        }
     }
 });
 const data = ref([])

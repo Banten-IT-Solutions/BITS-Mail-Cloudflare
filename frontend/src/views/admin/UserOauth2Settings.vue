@@ -34,25 +34,6 @@ const { t } = useI18n({
             userEmailFormatTip: 'Use regex to transform email. Example: ^(.+)@old\\.com$ with $1@new.com',
             tip: 'Third-party login will automatically use the user\'s email to register an account (the same email will be regarded as the same account), this account is the same as the registered account, and you can also set the password through the forget password',
         },
-        zh: {
-            save: '保存',
-            delete: '删除',
-            successTip: '保存成功',
-            enable: '启用',
-            enableMailAllowList: '启用邮件地址白名单(可手动输入, 回车增加)',
-            manualInputPrompt: '输入后按回车键添加',
-            mailAllowList: '邮件地址白名单',
-            addOauth2: '添加 Oauth2',
-            name: '名称',
-            icon: '图标 (SVG, 请确保来源可信)',
-            iconPreview: '预览',
-            oauth2Type: 'Oauth2 类型',
-            enableEmailFormat: '启用邮箱格式转换',
-            userEmailFormat: '邮箱正则表达式',
-            userEmailReplace: '替换模板',
-            userEmailFormatTip: '使用正则转换邮箱。示例: ^(.+)@old\\.com$ 配合 $1@new.com',
-            tip: '第三方登录会自动使用用户邮箱注册账号(邮箱相同将视为同一账号), 此账号和注册的账号相同, 也可以通过忘记密码设置密码',
-        }
     }
 });
 

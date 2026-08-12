@@ -9,8 +9,8 @@ const { t } = useI18n({
         en: {
             copyright: "Copyright"
         },
-        zh: {
-            copyright: "版权所有"
+        id: {
+            copyright: "Hak Cipta"
         }
     }
 });

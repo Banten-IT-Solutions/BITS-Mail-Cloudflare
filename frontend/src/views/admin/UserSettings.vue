@@ -24,20 +24,6 @@ const { t } = useI18n({
             emailCheckRegex: "Email Check Regex (e.g. ^[^.]+{'@'}.+$ to disallow dots before {'@'})",
             enableEmailCheckRegex: 'Enable Email Check Regex',
         },
-        zh: {
-            save: '保存',
-            successTip: '保存成功',
-            enable: '启用',
-            enableUserRegister: "允许用户注册",
-            enableMailVerify: '启用邮件验证(发送地址必须是系统中能有余额且能正常发送邮件的地址)',
-            verifyMailSender: '验证邮件发送地址',
-            enableMailAllowList: '启用邮件地址白名单(可手动输入, 回车增加)',
-            manualInputPrompt: '输入后按回车键添加',
-            mailAllowList: '邮件地址白名单',
-            maxAddressCount: '可绑定最大邮箱地址数量（0 为不限制）',
-            emailCheckRegex: "邮箱正则校验 (例如 ^[^.]+{'@'}.+$ 禁止{'@'}前面有.)",
-            enableEmailCheckRegex: '启用邮箱正则校验',
-        }
     }
 });
 

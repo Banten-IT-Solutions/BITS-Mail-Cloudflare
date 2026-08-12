@@ -46,20 +46,6 @@ const { t } = useI18n({
       query: 'Query',
       enterSimpleMode: 'Simple Mode',
     },
-    zh: {
-      mailbox: '收件箱',
-      sendbox: '发件箱',
-      sendmail: '发送邮件',
-      auto_reply: '自动回复',
-      accountSettings: '账户',
-      appearance: '外观',
-      about: '关于',
-      s3Attachment: 'S3附件',
-      saveToS3Success: '保存到s3成功',
-      webhookSettings: 'Webhook 设置',
-      query: '查询',
-      enterSimpleMode: '极简模式',
-    }
   }
 });
 

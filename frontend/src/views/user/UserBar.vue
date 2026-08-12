@@ -20,11 +20,6 @@ const { t } = useI18n({
             currentUser: 'Current Login User',
             fetchUserSettingsError: 'Login password is invalid or account not exist, it may be network connection issue, please try again later.',
         },
-        zh: {
-            currentUser: '当前登录用户',
-            fetchUserSettingsError: '登录信息已过期或账号不存在，也可能是网络连接异常，请稍后再尝试。',
-
-        }
     }
 });
 

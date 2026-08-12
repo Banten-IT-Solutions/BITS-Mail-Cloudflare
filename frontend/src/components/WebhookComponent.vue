@@ -36,16 +36,6 @@ const { t } = useI18n({
             presets: 'Presets',
             fillInDemoTip: 'Please modify the URL and other settings to your own',
         },
-        zh: {
-            successTip: '成功',
-            test: '测试',
-            save: '保存',
-            notEnabled: 'Webhook 未开启，请联系管理员开启',
-            urlMissing: 'URL 不能为空',
-            enable: '启用',
-            presets: '示例模板',
-            fillInDemoTip: '请修改URL和其他设置为您自己的配置',
-        }
     }
 });
 

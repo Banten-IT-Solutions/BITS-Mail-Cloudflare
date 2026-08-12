@@ -20,17 +20,6 @@ const { t } = useI18n({
             manualInputPrompt: 'Type and press Enter to add',
             disabledTip: 'When disabled, AI extraction will process all email addresses',
         },
-        zh: {
-            title: 'AI 邮件提取设置',
-            successTip: '成功',
-            save: '保存',
-            enableAllowList: '启用地址白名单',
-            enableAllowListTip: '启用后，AI 提取功能仅对白名单中的邮箱地址生效',
-            allowList: '地址白名单 (请输入地址并回车，支持通配符)',
-            allowListTip: "通配符 * 可匹配任意字符，如 *{'@'}example.com 可匹配 example.com 域名下的所有地址",
-            manualInputPrompt: '输入后按回车键添加',
-            disabledTip: '未启用时，所有邮箱地址都可使用 AI 提取功能',
-        }
     }
 });
 

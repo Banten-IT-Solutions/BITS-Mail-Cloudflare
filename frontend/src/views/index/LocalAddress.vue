@@ -25,16 +25,6 @@ const { t } = useI18n({
             create_or_bind: 'Create or Bind',
             bindAddressSuccess: 'Bind Address Success',
         },
-        zh: {
-            tip: '这些地址存储在您的浏览器中，如果您清除浏览器缓存，可能会丢失。',
-            success: '成功',
-            address: '地址',
-            actions: '操作',
-            changeMailAddress: '切换邮箱地址',
-            unbindMailAddress: '解绑邮箱地址',
-            create_or_bind: '创建或绑定',
-            bindAddressSuccess: '绑定地址成功',
-        }
     }
 });
 

@@ -48,22 +48,6 @@ const { t } = useI18n({
             deleteSuccess: 'Mail deleted successfully',
             refreshAfter: 'Refresh After {msg} Seconds',
         },
-        zh: {
-            exitSimpleIndex: '退出极简',
-            copyAddress: '复制',
-            addressCopied: '地址复制成功',
-            refreshMails: '刷新',
-            noMails: '暂无邮件',
-            prevPage: '上一页',
-            nextPage: '下一页',
-            refreshSuccess: '邮件刷新成功',
-            mailCount: '{current} / {total} 封邮件',
-            accountSettings: "账户设置",
-            addressCredential: '邮箱地址凭证',
-            addressCredentialTip: '请复制邮箱地址凭证，你可以使用它登录你的邮箱。',
-            deleteSuccess: '邮件删除成功',
-            refreshAfter: '{msg}秒后刷新',
-        }
     }
 })
 

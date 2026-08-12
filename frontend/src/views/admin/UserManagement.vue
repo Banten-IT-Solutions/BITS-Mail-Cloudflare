@@ -38,29 +38,6 @@ const { t } = useI18n({
             roleDonotExist: 'Current Role does not exist',
             userAddressManagement: 'Address Management',
         },
-        zh: {
-            success: '成功',
-            user_email: '用户邮箱',
-            role: '角色',
-            address_count: '地址数量',
-            created_at: '创建时间',
-            actions: '操作',
-            query: '查询',
-            itemCount: '总数',
-            deleteUser: '删除用户',
-            delete: '删除',
-            deleteUserTip: '确定要删除此用户吗？',
-            resetPassword: '重置密码',
-            pleaseInput: '请输入完整信息',
-            createUser: '创建用户',
-            email: '邮箱',
-            password: '密码',
-            changeRole: '更改角色',
-            prefix: '前缀',
-            domains: '域名',
-            roleDonotExist: '当前角色不存在',
-            userAddressManagement: '地址管理',
-        }
     }
 });
 const data = ref([])

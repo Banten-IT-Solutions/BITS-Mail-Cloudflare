@@ -6,7 +6,7 @@ export const hashPassword = async (password: string) => {
 }
 
 export const getRouterPathWithLang = (path: string, lang: string) => {
-    if (!lang || lang === 'zh') {
+    if (!lang || lang === 'en') {
         return path;
     }
     return `/${lang}${path}`;

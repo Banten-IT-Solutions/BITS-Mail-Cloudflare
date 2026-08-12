@@ -44,16 +44,6 @@ const { t } = useI18n({
       copyFailed: 'Copy failed',
       open: 'Open',
     },
-    zh: {
-      authCode: '验证码',
-      authLink: '认证链接',
-      serviceLink: '服务链接',
-      subscriptionLink: '订阅链接',
-      otherLink: '其他链接',
-      copySuccess: '复制成功',
-      copyFailed: '复制失败',
-      open: '打开',
-    }
   }
 });
 

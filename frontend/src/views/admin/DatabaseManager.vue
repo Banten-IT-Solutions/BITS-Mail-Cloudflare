@@ -26,16 +26,6 @@ const { t } = useI18n({
             initializationSuccess: 'Database initialized successfully',
             migrationSuccess: 'Database migrated successfully',
         },
-        zh: {
-            need_initialization_tip: '需要初始化数据库，请初始化数据库',
-            need_migration_tip: '需要迁移数据库，请迁移数据库',
-            current_db_version: '当前数据库版本',
-            code_db_version: '需要的数据库版本',
-            init: '初始化数据库',
-            migration: '升级数据库 Schema',
-            initializationSuccess: '数据库初始化成功',
-            migrationSuccess: '数据库升级成功',
-        }
     }
 });
 

@@ -36,13 +36,6 @@ const { t } = useI18n({
             copy: 'Copy',
             copied: 'Copied',
         },
-        zh: {
-            userAddresses: '用户地址',
-            localAddresses: '本地地址',
-            address: '地址',
-            copy: '复制',
-            copied: '已复制',
-        }
     }
 });
 

@@ -32,16 +32,6 @@ const { locale, t } = useI18n({
             userLogin: 'User Login',
             addressManage: 'Manage',
         },
-        zh: {
-            ok: '确定',
-            fetchAddressError: '邮箱地址凭证无效或邮箱地址不存在，也可能是网络连接异常，请稍后再尝试。',
-            addressCredential: '邮箱地址凭证',
-            linkWithAddressCredential: '打开即可自动登录邮箱的链接',
-            addressCredentialTip: '请复制邮箱地址凭证，你可以使用它登录你的邮箱。',
-            addressPassword: '地址密码',
-            userLogin: '用户登录',
-            addressManage: '地址管理',
-        }
     }
 });
 

@@ -1,5 +1,5 @@
 <script setup>
-import { darkTheme, NGlobalStyle, zhCN } from 'naive-ui'
+import { darkTheme, NGlobalStyle, enUS, idID } from 'naive-ui'
 import { computed, onMounted } from 'vue'
 import { useScript } from '@unhead/vue'
 import { useI18n } from 'vue-i18n'
@@ -16,7 +16,7 @@ const adClient = import.meta.env.VITE_GOOGLE_AD_CLIENT;
 const adSlot = import.meta.env.VITE_GOOGLE_AD_SLOT;
 const { locale } = useI18n({});
 const theme = computed(() => isDark.value ? darkTheme : null)
-const localeConfig = computed(() => locale.value == 'zh' ? zhCN : null)
+const localeConfig = computed(() => locale.value === 'id' ? idID : enUS)
 const isMobile = useIsMobile()
 const showSideMargin = computed(() => !isMobile.value && useSideMargin.value);
 const showAd = computed(() => !isMobile.value && adClient && adSlot);
