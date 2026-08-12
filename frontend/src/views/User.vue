@@ -21,6 +21,12 @@ const { t } = useI18n({
             user_settings: 'User Settings',
             bind_address: 'Bind Mail Address',
         },
+        id: {
+            address_management: 'Manajemen Alamat',
+            user_mail_box_tab: 'Kotak Surat',
+            user_settings: 'Pengaturan Pengguna',
+            bind_address: 'Ikat Alamat Email',
+        },
     }
 });
 

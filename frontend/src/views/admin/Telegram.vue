@@ -25,6 +25,20 @@ const { t } = useI18n({
             globalMailPushList: 'Global Mail Push Chat ID List',
             globalMailPushListTip: 'Support chat_id of private chat/group/channel. You can send a message to your bot, then visit this link to see chat_id, https://api.telegram.org/bot<Replace with your BOT TOKEN>/getUpdates',
         },
+        id: {
+            init: 'Inisialisasi',
+            successTip: 'Berhasil',
+            status: 'Periksa Status',
+            enableTelegramAllowList: 'Aktifkan Daftar Putih Telegram (Masukkan Chat ID secara manual)',
+            enable: 'Aktifkan',
+            telegramAllowList: 'Daftar Putih Telegram (Masukkan Chat ID telegram secara manual)',
+            manualInputPrompt: 'Ketik dan tekan Enter untuk menambahkan',
+            save: 'Simpan',
+            miniAppUrl: 'URL Aplikasi Mini Telegram',
+            enableGlobalMailPush: 'Aktifkan Dorongan Email Global (Masukkan Chat ID telegram secara manual)',
+            globalMailPushList: 'Daftar Chat ID Dorongan Email Global',
+            globalMailPushListTip: 'Mendukung chat_id obrolan pribadi/grup/kanal. Anda dapat mengirim pesan ke bot Anda, lalu kunjungi tautan ini untuk melihat chat_id, https://api.telegram.org/bot<Ganti dengan TOKEN BOT Anda>/getUpdates',
+        },
     }
 });
 

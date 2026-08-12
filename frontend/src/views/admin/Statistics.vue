@@ -18,6 +18,14 @@ const { t } = useI18n({
             mailCount: 'Mail Count',
             sendMailCount: 'Send Mail Count'
         },
+        id: {
+            userCount: 'Jumlah Pengguna',
+            addressCount: 'Jumlah Alamat',
+            activeAddressCount7days: 'Jumlah Alamat Aktif 7 Hari',
+            activeAddressCount30days: 'Jumlah Alamat Aktif 30 Hari',
+            mailCount: 'Jumlah Email',
+            sendMailCount: 'Jumlah Email Terkirim',
+        },
     }
 });
 

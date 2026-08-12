@@ -48,6 +48,22 @@ const { t } = useI18n({
             deleteSuccess: 'Mail deleted successfully',
             refreshAfter: 'Refresh After {msg} Seconds',
         },
+        id: {
+            exitSimpleIndex: 'Keluar dari Simple',
+            copyAddress: 'Salin',
+            addressCopied: 'Alamat berhasil disalin',
+            refreshMails: 'Refresh',
+            noMails: 'Tidak ada email ditemukan',
+            prevPage: 'Sebelumnya',
+            nextPage: 'Berikutnya',
+            refreshSuccess: 'Email berhasil diperbarui',
+            mailCount: '{current} / {total} email',
+            accountSettings: "Pengaturan Akun",
+            addressCredential: 'Kredensial Alamat Email',
+            addressCredentialTip: 'Salin Kredensial Alamat Email dan gunakan untuk masuk',
+            deleteSuccess: 'Email berhasil dihapus',
+            refreshAfter: 'Refresh setelah {msg} detik',
+        },
     }
 })
 

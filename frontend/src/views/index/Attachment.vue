@@ -16,6 +16,13 @@ const { t } = useI18n({
             deleteConfirm: 'Are you sure to delete this attachment?',
             deleteSuccess: 'Deleted successfully',
         },
+        id: {
+            download: 'Unduh',
+            action: 'Aksi',
+            delete: 'Hapus',
+            deleteConfirm: 'Apakah Anda yakin ingin menghapus lampiran ini?',
+            deleteSuccess: 'Berhasil dihapus',
+        },
     }
 });
 const data = ref([])

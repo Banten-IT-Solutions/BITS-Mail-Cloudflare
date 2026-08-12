@@ -68,8 +68,11 @@ const { locale, t } = useI18n({
             home: 'Home',
             menu: 'Menu',
             user: 'User',
+            admin: 'Admin',
             status: 'Status',
             ok: 'OK',
+            changeToAdminPage: 'Change to admin Page',
+            clickTimesToAdmin: 'Click {count} times to enter the admin page',
         },
         id: {
             title: 'BITS Mail Cloudflare',
@@ -80,8 +83,11 @@ const { locale, t } = useI18n({
             home: 'Beranda',
             menu: 'Menu',
             user: 'Pengguna',
+            admin: 'Admin',
             status: 'Status',
             ok: 'OK',
+            changeToAdminPage: 'Pindah ke halaman admin',
+            clickTimesToAdmin: 'Klik {count} kali untuk masuk ke halaman admin',
         }
     }
 });
@@ -144,7 +150,7 @@ const menuOptions = computed(() => [
                 }
             },
             {
-                default: () => "Admin",
+                default: () => t('admin'),
                 icon: () => h(NIcon, { component: AdminPanelSettingsFilled }),
             }
         ),
@@ -245,7 +251,7 @@ const logoClick = async () => {
     }
     if (logoClickCount.value >= 5) {
         logoClickCount.value = 0;
-        message.info("Change to admin Page");
+        message.info(t('changeToAdminPage'));
         loading.value = true;
         await router.push(getRouterPathWithLang('/admin', locale.value));
         loading.value = false;
@@ -253,7 +259,7 @@ const logoClick = async () => {
         logoClickCount.value++;
     }
     if (logoClickCount.value > 0) {
-        message.info(`Click ${5 - logoClickCount.value + 1} times to enter the admin page`);
+        message.info(t('clickTimesToAdmin', { count: 5 - logoClickCount.value + 1 }));
     }
 }
 

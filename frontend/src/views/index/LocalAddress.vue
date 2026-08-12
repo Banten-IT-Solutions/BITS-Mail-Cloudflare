@@ -25,6 +25,16 @@ const { t } = useI18n({
             create_or_bind: 'Create or Bind',
             bindAddressSuccess: 'Bind Address Success',
         },
+        id: {
+            tip: 'Alamat ini disimpan di peramban Anda, mungkin hilang jika menghapus cache peramban.',
+            success: 'berhasil',
+            address: 'Alamat',
+            actions: 'Aksi',
+            changeMailAddress: 'Ubah Alamat Email',
+            unbindMailAddress: 'Lepas Katokan Kredensial Alamat Email',
+            create_or_bind: 'Buat atau Ikat',
+            bindAddressSuccess: 'Pengikatan Alamat Berhasil',
+        },
     }
 });
 

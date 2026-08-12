@@ -13,6 +13,10 @@ const { t } = useI18n({
             query: 'Query',
             queryTip: 'Please input address to query, leave blank to query all',
         },
+        id: {
+            query: 'Kueri',
+            queryTip: 'Silakan masukkan alamat untuk mengkueri, biarkan kosong untuk mengkueri semua',
+        },
     }
 });
 

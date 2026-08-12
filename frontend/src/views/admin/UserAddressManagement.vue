@@ -22,6 +22,12 @@ const { locale, t } = useI18n({
             mail_count: 'Mail Count',
             send_count: 'Send Count',
         },
+        id: {
+            success: 'berhasil',
+            name: 'Nama',
+            mail_count: 'Jumlah Email',
+            send_count: 'Jumlah Terkirim',
+        },
     }
 });
 

@@ -46,6 +46,20 @@ const { t } = useI18n({
       query: 'Query',
       enterSimpleMode: 'Simple Mode',
     },
+    id: {
+      mailbox: 'Kotak Surat',
+      sendbox: 'Kotak Kiriman',
+      sendmail: 'Kirim Surat',
+      auto_reply: 'Balasan Otomatis',
+      accountSettings: 'Pengaturan Akun',
+      appearance: 'Tampilan',
+      about: 'Tentang',
+      s3Attachment: 'Lampiran S3',
+      saveToS3Success: 'berhasil menyimpan ke s3',
+      webhookSettings: 'Pengaturan Webhook',
+      query: 'Cari',
+      enterSimpleMode: 'Mode Sederhana',
+    },
   }
 });
 

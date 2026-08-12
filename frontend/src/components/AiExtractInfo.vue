@@ -44,6 +44,16 @@ const { t } = useI18n({
       copyFailed: 'Copy failed',
       open: 'Open',
     },
+    id: {
+      authCode: 'Kode Verifikasi',
+      authLink: 'Tautan Otentikasi',
+      serviceLink: 'Tautan Layanan',
+      subscriptionLink: 'Tautan Langganan',
+      otherLink: 'Tautan Lain',
+      copySuccess: 'Berhasil menyalin',
+      copyFailed: 'Penyalinan gagal',
+      open: 'Buka',
+    },
   }
 });
 

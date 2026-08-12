@@ -25,6 +25,15 @@ const { t } = useI18n({
             bind: 'Bind',
             bindAddressSuccess: 'Bind Address Success',
         },
+        id: {
+            success: 'berhasil',
+            address: 'Alamat',
+            actions: 'Aksi',
+            changeMailAddress: 'Ubah Alamat Email',
+            unbindMailAddress: 'Lepas Katokan Alamat Email',
+            bind: 'Ikat',
+            bindAddressSuccess: 'Pengikatan Alamat Berhasil',
+        },
     }
 });
 

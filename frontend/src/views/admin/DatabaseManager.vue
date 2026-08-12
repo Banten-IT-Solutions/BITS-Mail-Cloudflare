@@ -26,6 +26,16 @@ const { t } = useI18n({
             initializationSuccess: 'Database initialized successfully',
             migrationSuccess: 'Database migrated successfully',
         },
+        id: {
+            need_initialization_tip: 'Inisialisasi database diperlukan. Silakan inisialisasi database.',
+            need_migration_tip: 'Migrasi database diperlukan. Silakan migrasikan database.',
+            current_db_version: 'Versi DB Saat Ini',
+            code_db_version: 'Versi DB yang Diperlukan',
+            init: 'Inisialisasi Database',
+            migration: 'Migrasikan Database',
+            initializationSuccess: 'Database berhasil diinisialisasi',
+            migrationSuccess: 'Database berhasil dimigrasikan',
+        },
     }
 });
 

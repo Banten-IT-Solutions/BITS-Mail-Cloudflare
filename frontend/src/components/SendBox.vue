@@ -61,6 +61,19 @@ const { t } = useI18n({
       selectAll: 'Select All of This Page',
       unselectAll: 'Unselect All',
     },
+    id: {
+      success: 'Berhasil',
+      refresh: 'Refresh',
+      showCode: 'Ubah Lihat Kode Asli',
+      pleaseSelectMail: "Silakan pilih mail untuk dilihat.",
+      emptySent: "Tidak ada email terkirim",
+      delete: 'Hapus',
+      deleteMailTip: 'Apakah Anda yakin ingin menghapus mail?',
+      multiAction: 'Aksi Ganda',
+      cancelMultiAction: 'Batal Aksi Ganda',
+      selectAll: 'Pilih Semua di Halaman Ini',
+      unselectAll: 'Batalkan Pemilihan Semua',
+    },
   }
 });
 

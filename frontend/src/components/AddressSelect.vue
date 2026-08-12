@@ -29,12 +29,19 @@ const {
 
 const { t } = useI18n({
     messages: {
-        en: {
+         en: {
             userAddresses: 'User Addresses',
             localAddresses: 'Local Addresses',
             address: 'Address',
             copy: 'Copy',
             copied: 'Copied',
+        },
+        id: {
+            userAddresses: 'Alamat Pengguna',
+            localAddresses: 'Alamat Lokal',
+            address: 'Alamat',
+            copy: 'Salin',
+            copied: 'Tersalin',
         },
     }
 });

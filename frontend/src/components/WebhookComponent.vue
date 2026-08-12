@@ -36,6 +36,16 @@ const { t } = useI18n({
             presets: 'Presets',
             fillInDemoTip: 'Please modify the URL and other settings to your own',
         },
+        id: {
+            successTip: 'Berhasil',
+            test: 'Uji',
+            save: 'Simpan',
+            notEnabled: 'Webhook belum diaktifkan untuk Anda',
+            urlMissing: 'URL wajib diisi',
+            enable: 'Aktifkan',
+            presets: 'Preset',
+            fillInDemoTip: 'Silakan ubah URL dan pengaturan lain ke milik Anda',
+        },
     }
 });
 

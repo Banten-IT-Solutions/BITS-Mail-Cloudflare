@@ -20,6 +20,15 @@ const { t } = useI18n({
             roleConfigDesc: 'Configure maximum address count for each user role. Role-based limits take priority over global settings. Set 0 for unlimited.',
             notConfigured: 'Not Configured (Use Global Settings)',
         },
+        id: {
+            role: 'Peran',
+            maxAddressCount: 'Jumlah Alamat Maksimum (0 = Tak Terbatas)',
+            save: 'Simpan',
+            successTip: 'Berhasil',
+            noRolesAvailable: 'Tidak ada peran yang tersedia dalam konfigurasi sistem',
+            roleConfigDesc: 'Konfigurasi jumlah alamat maksimum untuk setiap peran pengguna. Batas berbasis peran mengambil prioritas di atas pengaturan global. Atur 0 untuk tak terbatas.',
+            notConfigured: 'Tidak Dikonfigurasi (Gunakan Pengaturan Global)',
+        },
     }
 });
 

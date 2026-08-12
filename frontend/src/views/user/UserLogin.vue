@@ -39,6 +39,26 @@ const { t } = useI18n({
             loginWithPasskey: 'Login with Passkey',
             loginWith: 'Login with {provider}',
         },
+        id: {
+            login: 'Masuk',
+            register: 'Daftar',
+            email: 'Email',
+            password: 'Kata Sandi',
+            verifyCode: 'Kode Verifikasi',
+            verifyCodeSent: 'Kode verifikasi telah dikirim, kadaluarsa dalam {timeout} detik',
+            waitforVerifyCode: 'Tunggu {timeout} detik',
+            sendVerificationCode: 'Kirim Kode Verifikasi',
+            forgotPassword: 'Lupa Kata Sandi',
+            cannotForgotPassword: 'Verifikasi email tidak diaktifkan atau pendaftaran tidak diaktifkan, tidak dapat mengatur ulang kata sandi, silakan hubungi administrator',
+            resetPassword: 'Atur Ulang Kata Sandi',
+            pleaseInput: 'Silakan masukkan email dan kata sandi',
+            pleaseInputEmail: 'Silakan masukkan email',
+            pleaseInputCode: 'Silakan masukkan kode',
+            pleaseCompleteTurnstile: 'Silakan selesaikan turnstile',
+            pleaseLogin: 'Silakan masuk',
+            loginWithPasskey: 'Masuk dengan Passkey',
+            loginWith: 'Masuk dengan {provider}',
+        },
     }
 });
 

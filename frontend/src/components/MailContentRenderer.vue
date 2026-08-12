@@ -25,6 +25,19 @@ const { t } = useI18n({
       size: 'Size',
       fullscreen: 'Fullscreen',
     },
+    id: {
+      delete: 'Hapus',
+      deleteMailTip: 'Anda yakin ingin menghapus email ini?',
+      attachments: 'Lihat Lampiran',
+      downloadMail: 'Unduh Email',
+      reply: 'Balas',
+      forward: 'Teruskan',
+      showTextMail: 'Tampilkan Email Teks',
+      showHtmlMail: 'Tampilkan Email HTML',
+      saveToS3: 'Simpan ke S3',
+      size: 'Ukuran',
+      fullscreen: 'Layar Penuh',
+    },
   }
 });
 

@@ -25,6 +25,19 @@ const { t } = useI18n({
             enableRandomSubdomain: 'Use Random Subdomain',
             randomSubdomainTip: 'When enabled, the created address will use a random subdomain. Subdomain addresses are recommended for receiving only.',
         },
+        id: {
+            address: 'Alamat',
+            enablePrefix: 'Jika Aktifkan Prefiks',
+            creatNewEmail: 'Buat Email Baru',
+            fillInAllFields: 'Harap isi semua bidang',
+            successTip: 'Berhasil Dibuat',
+            addressCredential: 'Kredensial Alamat Email',
+            addressCredentialTip: 'Silakan salin Kredensial Alamat Email dan Anda dapat menggunakannya untuk masuk ke akun email Anda.',
+            addressPassword: 'Kata Sandi Alamat',
+            linkWithAddressCredential: 'Buka untuk tautan masuk otomatis email',
+            enableRandomSubdomain: 'Gunakan Subdomain Acak',
+            randomSubdomainTip: 'Saat diaktifkan, alamat yang dibuat akan menggunakan subdomain acak. Alamat subdomain disarankan hanya untuk menerima.',
+        },
     }
 });
 

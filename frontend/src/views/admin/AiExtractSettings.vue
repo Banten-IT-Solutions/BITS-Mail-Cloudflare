@@ -20,6 +20,17 @@ const { t } = useI18n({
             manualInputPrompt: 'Type and press Enter to add',
             disabledTip: 'When disabled, AI extraction will process all email addresses',
         },
+        id: {
+            title: 'Pengaturan Ekstraksi Email AI',
+            successTip: 'Berhasil',
+            save: 'Simpan',
+            enableAllowList: 'Aktifkan Daftar Izinkan Alamat',
+            enableAllowListTip: 'Saat diaktifkan, ekstraksi AI hanya akan memproses email yang dikirim ke alamat dalam daftar izinkan',
+            allowList: 'Daftar Izinkan Alamat (masukkan alamat lalu tekan Enter, wildcard didukung)',
+            allowListTip: "Wildcard * cocok untuk semua karakter, misalnya *{'@'}example.com cocok untuk semua alamat di domain example.com",
+            manualInputPrompt: 'Ketik lalu tekan Enter untuk menambahkan',
+            disabledTip: 'Saat dimatikan, ekstraksi AI akan memproses semua alamat email',
+        },
     }
 });
 

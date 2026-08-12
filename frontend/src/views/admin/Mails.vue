@@ -14,6 +14,10 @@ const { t } = useI18n({
             addressQueryTip: 'Leave blank to query all addresses',
             query: 'Query',
         },
+        id: {
+            addressQueryTip: 'Biarkan kosong untuk mengkueri semua alamat',
+            query: 'Kueri',
+        },
     }
 });
 

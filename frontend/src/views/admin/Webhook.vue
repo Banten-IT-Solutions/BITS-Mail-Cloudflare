@@ -19,6 +19,14 @@ const { t } = useI18n({
             save: 'Save',
             notEnabled: 'Webhook is not enabled',
         },
+        id: {
+            successTip: 'Berhasil',
+            enableAllowList: 'Aktifkan Daftar Putih (Batasi akses webhook ke pengguna tertentu)',
+            webhookAllowList: 'Daftar Putih Webhook (Masukkan alamat email yang diizinkan menggunakan webhook dan tekan Enter)',
+            manualInputPrompt: 'Ketik dan tekan Enter untuk menambahkan',
+            save: 'Simpan',
+            notEnabled: 'Webhook tidak diaktifkan',
+        },
     }
 });
 

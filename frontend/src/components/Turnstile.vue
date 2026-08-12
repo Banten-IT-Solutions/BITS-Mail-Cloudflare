@@ -8,8 +8,11 @@ const cfToken = defineModel('value')
 
 const { locale, t } = useI18n({
     messages: {
-        en: {
+         en: {
             refresh: 'Refresh'
+        },
+        id: {
+            refresh: 'Muat Ulang'
         },
     }
 });

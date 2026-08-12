@@ -32,6 +32,16 @@ const { locale, t } = useI18n({
             userLogin: 'User Login',
             addressManage: 'Manage',
         },
+        id: {
+            ok: 'OK',
+            fetchAddressError: 'Kredensial alamat email tidak valid atau akun tidak ada, mungkin ada masalah koneksi jaringan, silakan coba lagi nanti.',
+            addressCredential: 'Kredensial Alamat Email',
+            linkWithAddressCredential: 'Buka untuk tautan masuk otomatis email',
+            addressCredentialTip: 'Salin Kredensial Alamat Email dan gunakan untuk masuk ke akun email Anda.',
+            addressPassword: 'Kata Sandi Alamat',
+            userLogin: 'Masuk Pengguna',
+            addressManage: 'Kelola',
+        },
     }
 });
 

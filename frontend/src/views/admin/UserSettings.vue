@@ -24,6 +24,20 @@ const { t } = useI18n({
             emailCheckRegex: "Email Check Regex (e.g. ^[^.]+{'@'}.+$ to disallow dots before {'@'})",
             enableEmailCheckRegex: 'Enable Email Check Regex',
         },
+        id: {
+            save: 'Simpan',
+            successTip: 'Berhasil Disimpan',
+            enable: 'Aktifkan',
+            enableUserRegister: 'Izinkan Pendaftaran Pengguna',
+            enableMailVerify: 'Aktifkan Verifikasi Email (Alamat pengirim harus berupa alamat di sistem dengan saldo dan dapat mengirim email dengan normal)',
+            verifyMailSender: 'Pengirim Email Verifikasi',
+            enableMailAllowList: 'Aktifkan Daftar Putih Alamat Email (Dapat dimasukkan manual)',
+            manualInputPrompt: 'Ketik dan tekan Enter untuk menambahkan',
+            mailAllowList: 'Daftar Putih Alamat Email',
+            maxAddressCount: 'Jumlah maksimum alamat email yang dapat diikat (0 = Tak Terbatas)',
+            emailCheckRegex: "Regex Pemeriksa Email (mis. ^[^.]+{'@'}.+$ untuk melarang titik sebelum {'@'})",
+            enableEmailCheckRegex: 'Aktifkan Regex Pemeriksa Email',
+        },
     }
 });
 

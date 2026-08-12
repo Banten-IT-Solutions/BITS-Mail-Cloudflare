@@ -31,6 +31,21 @@ const { locale, t } = useI18n({
             address: 'Address',
             create_or_bind: 'Create or Bind',
         },
+        id: {
+            success: 'berhasil',
+            name: 'Nama',
+            mail_count: 'Jumlah Email',
+            send_count: 'Jumlah Terkirim',
+            actions: 'Aksi',
+            changeMailAddress: 'Ubah Alamat',
+            unbindAddress: 'Lepas Ikatan Alamat',
+            unbindAddressTip: 'Sebelum melepas ikatan, silakan beralih ke alamat email ini dan simpan kredensial alamat email.',
+            transferAddress: 'Transfer Alamat',
+            targetUserEmail: 'Email Pengguna Tujuan',
+            transferAddressTip: 'Transfer alamat ke pengguna lain akan menghapus alamat dari akun Anda dan mentransfernya ke pengguna lain. Anda yakin ingin transfer alamat?',
+            address: 'Alamat',
+            create_or_bind: 'Buat atau Ikat',
+        },
     }
 });
 

@@ -22,7 +22,6 @@ const sendMailModel = useSessionStorage('sendMailByAdminModel', {
 });
 
 const { t } = useI18n({
-    locale: 'id',
     messages: {
         en: {
             successSend: 'Please check your sendbox. If failed, please try again later.',
@@ -42,6 +41,25 @@ const { t } = useI18n({
             html: 'HTML',
             'rich text': 'Rich Text',
             tooLarge: 'Too large file, please upload file less than 1MB.',
+        },
+        id: {
+            successSend: 'Periksa kotak kiriman Anda. Jika gagal, silakan coba lagi nanti.',
+            fromName: 'Nama dan Alamat Anda, biarkan Nama kosong untuk menggunakan alamat email',
+            toName: 'Nama dan Alamat Penerima, biarkan Nama kosong untuk menggunakan alamat email',
+            subject: 'Subjek',
+            options: 'Opsi',
+            edit: 'Sunting',
+            preview: 'Pratinjau',
+            content: 'Konten',
+            send: 'Kirim',
+            fromMailEmpty: 'Alamat pengirim kosong',
+            subjectEmpty: 'Subjek kosong',
+            toMailEmpty: 'Alamat penerima kosong',
+            contentEmpty: 'Konten kosong',
+            text: 'Teks',
+            html: 'HTML',
+            'rich text': 'Teks Kaya',
+            tooLarge: 'Berkas terlalu besar, silakan unggah berkas kurang dari 1MB.',
         },
     }
 });

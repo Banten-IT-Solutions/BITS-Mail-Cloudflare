@@ -40,6 +40,27 @@ const { t } = useI18n({
             'rich text': 'Rich Text',
             tooLarge: 'Too large file, please upload file less than 1MB.',
         },
+        id: {
+            successSend: 'Silakan cek kotak terkirim. Jika gagal, periksa saldo Anda atau coba lagi nanti.',
+            fromName: 'Nama dan alamat Anda, kosongkan Nama untuk memakai alamat email',
+            toName: 'Nama dan alamat penerima, kosongkan Nama untuk memakai alamat email',
+            subject: 'Subjek',
+            options: 'Opsi',
+            edit: 'Edit',
+            preview: 'Pratinjau',
+            content: 'Konten',
+            send: 'Kirim',
+            subjectEmpty: 'Subjek kosong',
+            toMailEmpty: 'Alamat penerima kosong',
+            contentEmpty: 'Konten kosong',
+            requestAccess: 'Minta Akses',
+            requestAccessTip: 'Belum ada saldo kirim. Jika admin mengaktifkan saldo default, saldo akan ditambahkan otomatis; jika tidak, minta akses atau hubungi admin.',
+            send_balance: 'Sisa Saldo Kirim Email',
+            text: 'Teks',
+            html: 'HTML',
+            'rich text': 'Teks Kaya',
+            tooLarge: 'File terlalu besar, unggah file kurang dari 1MB.',
+        },
     }
 });
 

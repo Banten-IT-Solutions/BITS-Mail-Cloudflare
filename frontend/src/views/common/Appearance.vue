@@ -18,7 +18,7 @@ const isMobile = useIsMobile()
 
 const { t } = useI18n({
     messages: {
-        en: {
+         en: {
             useSimpleIndex: 'Use Simple Index',
             mailboxSplitSize: 'Mailbox Split Size',
             useIframeShowMail: 'Use iframe Show HTML Mail',
@@ -31,6 +31,20 @@ const { t } = useI18n({
             bottom: 'bottom',
             useUTCDate: 'Use UTC Date',
             autoRefreshInterval: 'Auto Refresh Interval(Sec)',
+        },
+        id: {
+            useSimpleIndex: 'Gunakan Indeks Sederhana',
+            mailboxSplitSize: 'Ukuran Pembagian Kotak Surat',
+            useIframeShowMail: 'Gunakan iframe untuk Menampilkan Mail HTML',
+            preferShowTextMail: 'Tampilkan Mail teks secara default',
+            useSideMargin: 'Aktifkan margin samping di sisi kiri dan kanan halaman',
+            globalTabplacement: 'Penempatan Tab Global',
+            left: 'kiri',
+            top: 'atas',
+            right: 'kanan',
+            bottom: 'bawah',
+            useUTCDate: 'Gunakan Tanggal UTC',
+            autoRefreshInterval: 'Interval Refresh Otomatis(detik)',
         },
     }
 });

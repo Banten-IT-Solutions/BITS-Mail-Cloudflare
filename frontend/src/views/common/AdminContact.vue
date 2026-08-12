@@ -5,8 +5,11 @@ const { openSettings } = useGlobalState()
 
 const { t } = useI18n({
     messages: {
-        en: {
+         en: {
             adminContact: 'If you need help, please contact the administrator ({msg})',
+        },
+        id: {
+            adminContact: 'Jika Anda membutuhkan bantuan, silakan hubungi administrator ({msg})',
         },
     }
 });

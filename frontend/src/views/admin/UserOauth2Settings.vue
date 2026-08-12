@@ -34,6 +34,25 @@ const { t } = useI18n({
             userEmailFormatTip: 'Use regex to transform email. Example: ^(.+)@old\\.com$ with $1@new.com',
             tip: 'Third-party login will automatically use the user\'s email to register an account (the same email will be regarded as the same account), this account is the same as the registered account, and you can also set the password through the forget password',
         },
+        id: {
+            save: 'Simpan',
+            delete: 'Hapus',
+            successTip: 'Berhasil Disimpan',
+            enable: 'Aktifkan',
+            enableMailAllowList: 'Aktifkan Daftar Putih Alamat Email (Dapat dimasukkan manual)',
+            manualInputPrompt: 'Ketik dan tekan Enter untuk menambahkan',
+            mailAllowList: 'Daftar Putih Alamat Email',
+            addOauth2: 'Tambahkan Oauth2',
+            name: 'Nama',
+            icon: 'Ikon (SVG, pastikan sumber tepercaya)',
+            iconPreview: 'Pratinjau',
+            oauth2Type: 'Tipe Oauth2',
+            enableEmailFormat: 'Aktifkan Format Email',
+            userEmailFormat: 'Pola Regex Email',
+            userEmailReplace: 'Templat Pengganti',
+            userEmailFormatTip: 'Gunakan regex untuk mengubah email. Contoh: ^(.+)@old\\.com$ dengan $1@new.com',
+            tip: 'Login pihak ketiga akan otomatis menggunakan email pengguna untuk mendaftarkan akun (email yang sama akan dianggap sebagai akun yang sama), akun ini sama dengan akun terdaftar, dan Anda juga dapat mengatur kata sandi melalui lupa kata sandi',
+        },
     }
 });
 

@@ -20,6 +20,10 @@ const { t } = useI18n({
             currentUser: 'Current Login User',
             fetchUserSettingsError: 'Login password is invalid or account not exist, it may be network connection issue, please try again later.',
         },
+        id: {
+            currentUser: 'Pengguna Login Saat Ini',
+            fetchUserSettingsError: 'Kata sandi login tidak valid atau akun tidak ada, mungkin ada masalah koneksi jaringan, silakan coba lagi nanti.',
+        },
     }
 });
 

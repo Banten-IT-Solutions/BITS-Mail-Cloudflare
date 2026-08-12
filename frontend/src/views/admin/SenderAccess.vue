@@ -27,6 +27,23 @@ const { t } = useI18n({
       query: 'Query',
       ok: 'OK'
     },
+    id: {
+      address: 'Alamat',
+      success: 'Berhasil',
+      is_enabled: 'Diaktifkan',
+      enable: 'Aktifkan',
+      disable: 'Nonaktifkan',
+      modify: 'Ubah',
+      delete: 'Hapus',
+      deleteTip: 'Anda yakin ingin menghapus ini?',
+      created_at: 'Dibuat Pada',
+      action: 'Aksi',
+      itemCount: 'itemCount',
+      modalTip: 'Silakan masukkan saldo pengirim',
+      balance: 'Saldo',
+      query: 'Kueri',
+      ok: 'OK'
+    },
   }
 });
 const data = ref([])

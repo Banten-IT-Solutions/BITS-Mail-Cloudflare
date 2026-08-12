@@ -29,6 +29,17 @@ const { t } = useI18n({
             autoReply: 'Auto Reply',
             save: 'Save',
         },
+        id: {
+            success: 'Berhasil',
+            settings: 'Pengaturan',
+            sourcePrefix: 'Filter Pengirim',
+            sourcePrefixPlaceholder: 'Kosong=semua, cocokkan awalan, atau /regex/',
+            name: 'Nama',
+            enableAutoReply: 'Aktifkan Balasan Otomatis',
+            subject: 'Subjek',
+            autoReply: 'Balasan Otomatis',
+            save: 'Simpan',
+        },
     }
 });
 

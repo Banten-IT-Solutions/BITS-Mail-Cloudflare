@@ -13,6 +13,9 @@ const { t } = useI18n({
         en: {
             logout: 'Logout',
         },
+        id: {
+            logout: 'Keluar',
+        },
     }
 });
 

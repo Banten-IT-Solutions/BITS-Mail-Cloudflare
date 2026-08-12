@@ -21,6 +21,11 @@ const { t } = useI18n({
             stateNotMatch: 'state not match',
             codeNotFound: 'code not found',
         },
+        id: {
+            logging: 'Sedang masuk...',
+            stateNotMatch: 'state tidak cocok',
+            codeNotFound: 'kode tidak ditemukan',
+        },
     }
 });
 
