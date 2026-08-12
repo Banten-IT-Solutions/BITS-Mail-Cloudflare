@@ -1,6 +1,5 @@
 **/node_modules/
 .git/
-db/
 **/.wrangler/
 **/dist/
 .DS_Store
