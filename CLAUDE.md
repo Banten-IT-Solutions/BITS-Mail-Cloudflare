@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **SMTP/IMAP proxy**: `smtp_proxy_server/` — Python proxy server.
 - **DB schema/migrations**: `db/` — SQLite via Cloudflare D1, dated migration patches.
 - **E2E tests**: `e2e/` — Playwright tests in Docker Compose (API, browser, SMTP proxy).
-- **Changelogs**: `CHANGELOG.md` (中文) + `CHANGELOG_EN.md` (English).
+- **Changelogs**: `CHANGELOG.md` (English).
 
 ## Build & Dev Commands
 
@@ -88,8 +88,7 @@ Global state via VueUse `useStorage` for persistence. The `api` module wraps axi
 
 After completing any feature, bug fix, or improvement, **always check**:
 
-1. **CHANGELOG.md** (中文) and **CHANGELOG_EN.md** (English) — both must be updated under the current `(main)` version section with the change entry. Follow the existing format: `- feat/fix/docs: |模块| 描述`.
-2. **Both languages** — changelogs exist in Chinese and English; always update both.
+1. **CHANGELOG.md** (English) — must be updated under the current `(main)` version section with the change entry. Follow the existing format: `- feat/fix/docs: |模块| 描述`.
 
 ## Config
 
