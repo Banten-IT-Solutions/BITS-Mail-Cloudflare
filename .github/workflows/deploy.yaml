@@ -54,9 +54,15 @@ jobs:
               exit "$code"
             fi
           fi
+
+          node -e 'require("node:fs").writeFileSync(".worker-secrets.json", JSON.stringify({ JWT_SECRET: process.env.JWT_SECRET, ADMIN_PASSWORD: process.env.ADMIN_PASSWORD, CF_TURNSTILE_SECRET_KEY: process.env.CF_TURNSTILE_SECRET_KEY }))'
+          pnpm wrangler secret bulk .worker-secrets.json --name mail
+          rm -f .worker-secrets.json
           echo "Deployed for ${{ github.ref_name }}"
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          # ✅ 将 secret 映射到环境变量中
           WRANGLER_TOML_CONTENT: ${{ secrets.BACKEND_TOML }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          CF_TURNSTILE_SECRET_KEY: ${{ secrets.CF_TURNSTILE_SECRET_KEY }}
