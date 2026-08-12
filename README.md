@@ -214,5 +214,5 @@ MIT License. See `LICENSE`.
 ---
 
 <div align="center">
-  <strong>BITS Mail Cloudflare</strong> · Built by <a href="https://banten-it-solutions.github.io"><strong>Banten IT Solutions</strong></a>
+  <strong>BITS Mail Cloudflare</strong> · Developed with ❤️ by <a href="https://banten-it-solutions.github.io"><strong>Banten IT Solutions</strong></a>
 </div>
