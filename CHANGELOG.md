@@ -20,6 +20,7 @@
 - refactor: |Skill| Remove all bundled agent skills (`.agents/`, `.claude/`, `skills/`) and the `AGENTS.md` symlink; the repository no longer ships skills
 - refactor: |Test| Remove the `e2e/` Playwright test suite and the `e2e.yml` workflow, plus the e2e-only admin endpoints `/admin/test/seed_mail` and `/admin/test/receive_mail` (`worker/src/admin_api/e2e_test_api.ts`). Drop the `E2E_TEST_MODE` env var and its special-case branch in the auto-reply email flow
 - refactor: |Chore| Remove the `scripts/` folder (`update-dependencies.sh`), which was only referenced by the deleted upgrade-dependencies skill; clean up e2e leftovers in `.dockerignore` and `CLAUDE.md`
+- refactor: |Deployment| Remove the self-hosted `smtp_proxy_server/` (Python SMTP/IMAP proxy) and its `smtp_proxy_server.yml` Docker image CI workflow. Mailboxes are accessed only through the Worker HTTP API / web UI (Worker-only deployment); outbound SMTP_CONFIG sending is unaffected
 
 ## v1.7.0(main)
 

@@ -1,6 +1,5 @@
 **/node_modules/
 .git/
-smtp_proxy_server/
 mail-parser-wasm/
 db/
 **/.wrangler/

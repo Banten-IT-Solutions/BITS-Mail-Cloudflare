@@ -7,7 +7,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Worker (single-worker deployment)**: `worker/` — Cloudflare Workers app using Hono framework. Entry: `worker/src/worker.ts`, APIs under `worker/src/*_api/`. Serves the frontend SPA as static assets via the `ASSETS` binding.
 - **Frontend**: `frontend/` — Vue 3 + Naive UI app built with Vite. Routes in `frontend/src/router/`. Build output `frontend/dist/` is served by the Worker as static assets.
 - **Mail parser**: `mail-parser-wasm/` — Rust WASM email parser.
-- **SMTP/IMAP proxy**: `smtp_proxy_server/` — Python proxy server.
 - **DB schema/migrations**: `db/` — SQLite via Cloudflare D1, dated migration patches.
 - **Changelogs**: `CHANGELOG.md` (English).
 
@@ -22,8 +21,6 @@ Run inside each subfolder with `pnpm`:
 | `mail-parser-wasm/` | — | `wasm-pack build --release` | — | — |
 
 The frontend is built to `frontend/dist/` and deployed together with the Worker as static assets. The Worker build (`pnpm build`) requires `frontend/dist/` to exist first.
-
-SMTP proxy: `pip install -r smtp_proxy_server/requirements.txt` then `python smtp_proxy_server/main.py`.
 
 ## Architecture
 
