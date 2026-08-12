@@ -5,52 +5,57 @@ on:
     branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
+    env:
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Install Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-
-      - uses: pnpm/action-setup@v5
-        name: Install pnpm
-        id: pnpm-install
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
         with:
           version: 10
           run_install: false
 
-      - name: Build Frontend Assets
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: |
+            frontend/pnpm-lock.yaml
+            worker/pnpm-lock.yaml
+
+      - name: Build frontend
+        working-directory: frontend
         run: |
-          cd frontend/
-          pnpm install --no-frozen-lockfile
+          pnpm install --frozen-lockfile
           pnpm build:pages
-          cd ..
 
-      - name: Deploy Worker
-        run: |
-          cd worker/
-          # ✅ 修复核心：使用环境变量写入，避免 Shell 解析特殊字符
-          printf '%s\n' "$WRANGLER_TOML_CONTENT" > wrangler.toml
-
-          pnpm install --no-frozen-lockfile
-
-          pnpm run deploy
-
-          node -e 'require("node:fs").writeFileSync(".worker-secrets.json", JSON.stringify({ JWT_SECRET: process.env.JWT_SECRET, ADMIN_PASSWORD: process.env.ADMIN_PASSWORD, CF_TURNSTILE_SECRET_KEY: process.env.CF_TURNSTILE_SECRET_KEY }))'
-          pnpm wrangler secret bulk .worker-secrets.json --name mail
-          rm -f .worker-secrets.json
-          echo "Deployed for ${{ github.ref_name }}"
+      - name: Deploy worker
+        working-directory: worker
         env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           WRANGLER_TOML_CONTENT: ${{ secrets.BACKEND_TOML }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
           CF_TURNSTILE_SECRET_KEY: ${{ secrets.CF_TURNSTILE_SECRET_KEY }}
+        run: |
+          set -euo pipefail
+          trap 'rm -f .worker-secrets.json' EXIT
+
+          printf '%s\n' "$WRANGLER_TOML_CONTENT" > wrangler.toml
+          pnpm install --frozen-lockfile
+          pnpm run deploy
+
+          node -e 'require("node:fs").writeFileSync(".worker-secrets.json", JSON.stringify({ JWT_SECRET: process.env.JWT_SECRET, ADMIN_PASSWORD: process.env.ADMIN_PASSWORD, CF_TURNSTILE_SECRET_KEY: process.env.CF_TURNSTILE_SECRET_KEY }))'
+          pnpm wrangler secret bulk .worker-secrets.json --name mail
