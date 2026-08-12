@@ -6,8 +6,6 @@
 ### Features
 
 - feat: |API| Add server-side parsed-mail endpoints `/api/parsed_mails` and `/api/parsed_mail/:id` that return `sender` / `subject` / `text` / `html` / `attachments` metadata directly (reuses `commonParseMail`), so AI agents no longer need a client-side MIME parser
-- feat: |Skill| Bundle a read-only skill `cf-temp-mail-agent-mail` (`.agents/skills/cf-temp-mail-agent-mail/`) so AI agents like OpenClaw / Codex / Cursor can consume a mailbox with a user-supplied Address JWT + API base URL — list mails, poll verification codes, etc. — sidestepping the Turnstile challenge required to create a mailbox. Install via `npx degit bitscoid/BITS-Mail-Cloudflare/.agents/skills/cf-temp-mail-agent-mail`
-- docs: |Docs| Add "AI Agent Mailbox Usage" doc (`guide/feature/agent-email`) covering the `parsed_mail` API and a local-parse fallback using `mail-parser-wasm` + `postal-mime` (mirrors the frontend) when parsed endpoints are unavailable
 - feat: |Deployment| Switch to a single-worker deployment: `wrangler.toml.template` now enables `[assets]` by default (`../frontend/dist/` → `ASSETS` binding), so one Worker serves both the backend API and the frontend SPA. The `Deploy Backend` workflow builds the frontend and deploys it together with the Worker; the web frontend is no longer deployed to Cloudflare Pages (the Telegram Mini App still has its own optional Pages deployment)
 
 ### Bug Fixes
@@ -19,7 +17,7 @@
 - fix: |Worker| With `ASSETS` enabled, `/health_check` is no longer swallowed by the static-asset middleware (assets are only served for GET/HEAD on non-API paths, with `/health_check` excluded), so health checks keep working
 - docs: |Docs| Remove the entire VitePress documentation site (`vitepress-docs/`) and the `docs_deploy.yml` workflow, and clean up documentation references in README / CLAUDE.md / skills
 - docs: |Docs| Consolidate documentation and README to a single English version: delete `README_EN.md` and the Chinese `CHANGELOG.md`, rename `CHANGELOG_EN.md` to `CHANGELOG.md`
-- refactor: |Skill| Consolidate skills to a single `cf-temp-mail-agent-mail` skill for opencode CLI at `.agents/skills/`, removing the `.claude/` and `skills/` duplicates and the release / release-notify / upgrade-dependencies / version-upgrade skills
+- refactor: |Skill| Remove all bundled agent skills (`.agents/`, `.claude/`, `skills/`) and the `AGENTS.md` symlink; the repository no longer ships skills
 
 ## v1.7.0(main)
 
