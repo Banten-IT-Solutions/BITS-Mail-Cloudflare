@@ -1,0 +1,53 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "frontend"
+    commit-message:
+      prefix: "chore(deps):"
+    groups:
+      dev-deps:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "postal-mime"
+        update-types: ["major"]
+      - dependency-name: "mail-parser-wasm"
+        update-types: ["major"]
+
+  - package-ecosystem: "npm"
+    directory: "worker"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:30"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "worker"
+    commit-message:
+      prefix: "chore(deps):"
+    groups:
+      dev-deps:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "hono"
+        update-types: ["major"]
+      - dependency-name: "resend"
+        update-types: ["major"]
+      - dependency-name: "telegraf"
+        update-types: ["major"]
