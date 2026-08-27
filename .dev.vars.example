@@ -1,0 +1,19 @@
+# Salin ke `.dev.vars` untuk wrangler dev lokal (file ter-gitignore).
+# Ini adalah SECRETS — jangan commit. Untuk production, isi via `wrangler secret put`
+# atau GitHub Secrets → workflow akan `wrangler secret bulk`.
+
+JWT_SECRET=dev-jwt-secret-min-32-char-ganti-di-production
+ADMIN_PASSWORD=admin123
+# Alternatif multiple admin (JSON array string):
+# ADMIN_PASSWORDS=["admin123","superadmin"]
+CF_TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+# Telegram (opsional) — JSON string:
+# TG_BOT_INFO={"token":"123:abc","username":"your_bot"}
+# Email sending (opsional):
+# RESEND_TOKEN=re_xxxxxxxx
+# SMTP_CONFIG={"mail.bits.co.id":{"host":"smtp.example.com","port":587,"auth":{"user":"...","pass":"..."}}}
+# S3 (opsional):
+# S3_ENDPOINT=https://s3.example.com
+# S3_ACCESS_KEY_ID=ak
+# S3_SECRET_ACCESS_KEY=sk
+# S3_BUCKET=bits-mail-cloudflare

@@ -141,3 +141,17 @@ wrangler.toml
 e2e/test-results/
 e2e/playwright-report/
 e2e/.e2e-pids
+
+# ── Dinamis ala BITS-Nota ──────────────────────────────────────────────
+# Generated dari wrangler.template.jsonc oleh `pnpm cf:config`
+wrangler.jsonc
+# pnpm workspace
+.pnpm-store/
+# Vite + Cloudflare
+.open-next/
+*.local
+# Env & secrets (jangan commit wrangler.jsonc hasil generate)
+.env
+.env.*
+!.env.example
+

@@ -1,0 +1,71 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // ── TEMPLATE — jangan deploy file ini langsung ──────────────────────────
+  // `pnpm cf:config` men-generate wrangler.jsonc (gitignored) dengan
+  // mensubstitusi semua placeholder VAR dari:
+  //   - lokal : file .env (salin dari .env.example)
+  //   - CI    : environment job, diisi dari GitHub Secrets
+  "name": "${WORKER_NAME}",
+  "main": "worker/src/worker.ts",
+  "compatibility_date": "2025-04-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "keep_vars": true,
+
+  // SPA static assets — gratis & tak dihitung kuota request Workers
+  // run_worker_first = true agar /api/* tetap ke Worker, sisanya fallback SPA
+  "assets": {
+    "directory": "frontend/dist",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "not_found_handling": "single-page-application"
+  },
+
+  // D1 (free tier: 5GB, 5jt rows read/hari)
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "${D1_DATABASE_NAME}",
+      "database_id": "${D1_DATABASE_ID}"
+    }
+  ],
+
+  // KV (free tier: 1GB, 100k read/hari)
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "${KV_NAMESPACE_ID}"
+    }
+  ],
+
+  // Workers AI (untuk AI extract)
+  "ai": {
+    "binding": "AI"
+  },
+
+  // Email Sending — tanpa API key, prasyarat domain onboarded
+  // Uncomment jika pakai Cloudflare Email Routing / Sending
+  // "send_email": [{ "name": "SEND_MAIL" }],
+
+  // Rate limiter (opsional) — uncomment jika sudah buat namespace
+  // "ratelimits": [{ "name": "RATE_LIMITER" }],
+
+  "vars": {
+    "PREFIX": "${ADDRESS_PREFIX}",
+    "DEFAULT_DOMAINS": ${DEFAULT_DOMAINS},
+    "DOMAINS": ${DOMAINS},
+    "DEFAULT_LANG": "${DEFAULT_LANG}",
+    "TITLE": "${WORKER_TITLE}",
+    "FRONTEND_URL": "${FRONTEND_URL}",
+    "ENABLE_USER_CREATE_EMAIL": ${ENABLE_USER_CREATE_EMAIL},
+    "DISABLE_ANONYMOUS_USER_CREATE_EMAIL": ${DISABLE_ANONYMOUS_USER_CREATE_EMAIL},
+    "ENABLE_USER_DELETE_EMAIL": ${ENABLE_USER_DELETE_EMAIL},
+    "ENABLE_AI_EMAIL_EXTRACT": ${ENABLE_AI_EMAIL_EXTRACT},
+    "AI_EXTRACT_MODEL": "${AI_EXTRACT_MODEL}",
+    "CF_TURNSTILE_SITE_KEY": "${CF_TURNSTILE_SITE_KEY}"
+  },
+
+  // Custom domain — zone harus aktif di Cloudflare
+  "routes": [{ "pattern": "${WORKER_DOMAIN}", "custom_domain": true }],
+
+  "observability": { "enabled": true }
+}

@@ -1,14 +1,17 @@
 {
-  "name": "bits-mail-cloudflare",
+  "name": "bits-mail-cloudflare-worker",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
+    "cf:config": "node ../scripts/gen-wrangler.mjs",
+    "dev": "wrangler dev --config ../wrangler.jsonc",
     "lint": "eslint src",
-    "deploy": "wrangler deploy --minify",
-    "start": "wrangler dev",
-    "build": "wrangler deploy --dry-run --outdir dist --minify"
+    "deploy": "wrangler deploy --config ../wrangler.jsonc --minify",
+    "start": "wrangler dev --config ../wrangler.jsonc",
+    "build": "wrangler deploy --dry-run --outdir dist --minify --config ../wrangler.jsonc",
+    "check": "eslint src",
+    "cf:typegen": "wrangler types --config ../wrangler.jsonc"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260812.1",

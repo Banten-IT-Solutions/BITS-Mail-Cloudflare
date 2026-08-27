@@ -1,37 +1,5 @@
-name = "__WORKER_NAME__"
-main = "src/worker.ts"
-compatibility_date = "2025-04-01"
-compatibility_flags = ["nodejs_compat"]
-keep_vars = true
-routes = [{ pattern = "__WORKER_DOMAIN__", custom_domain = true }]
-
-[assets]
-directory = "../frontend/dist/"
-binding = "ASSETS"
-run_worker_first = true
-
-[vars]
-PREFIX = "__ADDRESS_PREFIX__"
-DEFAULT_DOMAINS = __DEFAULT_DOMAINS_TOML__
-DOMAINS = __DOMAINS_TOML__
-DEFAULT_LANG = "__DEFAULT_LANG__"
-TITLE = "__WORKER_TITLE__"
-FRONTEND_URL = "__FRONTEND_URL__"
-ENABLE_USER_CREATE_EMAIL = __ENABLE_USER_CREATE_EMAIL__
-DISABLE_ANONYMOUS_USER_CREATE_EMAIL = __DISABLE_ANONYMOUS_USER_CREATE_EMAIL__
-ENABLE_USER_DELETE_EMAIL = __ENABLE_USER_DELETE_EMAIL__
-ENABLE_AI_EMAIL_EXTRACT = __ENABLE_AI_EMAIL_EXTRACT__
-AI_EXTRACT_MODEL = "__AI_EXTRACT_MODEL__"
-CF_TURNSTILE_SITE_KEY = "__CF_TURNSTILE_SITE_KEY__"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "__D1_DATABASE_NAME__"
-database_id = "__D1_DATABASE_ID__"
-
-[[kv_namespaces]]
-binding = "KV"
-id = "__KV_NAMESPACE_ID__"
-
-[ai]
-binding = "AI"
+# DEPRECATED — migrasi ke dinamis ala BITS-Nota
+# File ini tidak lagi dipakai. Gunakan root:
+#   wrangler.template.jsonc + scripts/gen-wrangler.mjs → wrangler.jsonc
+# Lihat README dan .env.example di root.
+# Untuk kompatibilitas lama, copy dari wrangler.template.jsonc.

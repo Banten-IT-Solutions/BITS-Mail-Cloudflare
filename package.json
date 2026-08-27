@@ -1,0 +1,37 @@
+{
+  "name": "bits-mail-cloudflare",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "BITS Mail Cloudflare \u2014 temporary email on Cloudflare Workers, dinamis ala BITS-Nota",
+  "packageManager": "pnpm@10.10.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "cf:config": "node scripts/gen-wrangler.mjs",
+    "dev": "pnpm cf:config && vite",
+    "dev:frontend": "pnpm --filter ./frontend dev",
+    "dev:worker": "pnpm --filter ./worker dev",
+    "dev:all": "pnpm cf:config && concurrently \"vite\" \"pnpm --filter ./worker dev\"",
+    "build": "pnpm cf:config && pnpm --filter ./frontend build:pages && pnpm --filter ./worker build",
+    "build:frontend": "pnpm --filter ./frontend build:pages",
+    "build:worker": "pnpm cf:config && pnpm --filter ./worker build",
+    "deploy": "pnpm build && wrangler deploy --config wrangler.jsonc",
+    "preview": "pnpm build && wrangler dev --config wrangler.jsonc",
+    "check": "pnpm --filter ./worker lint; pnpm --filter ./frontend test -- --run || true",
+    "cf:typegen": "wrangler types --config wrangler.jsonc",
+    "test": "pnpm --filter ./frontend test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "wrangler": "^4.85.0",
+    "@cloudflare/vite-plugin": "^1.53.1",
+    "vite": "^7.3.2",
+    "@vitejs/plugin-vue": "^6.0.6",
+    "vite-plugin-wasm": "^3.6.0",
+    "unplugin-auto-import": "^20.3.0",
+    "unplugin-vue-components": "^30.0.0",
+    "vite-plugin-pwa": "^1.2.0"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "preserve",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noEmit": true,
+    "types": ["@cloudflare/workers-types", "vite/client"],
+    "paths": {
+      "@/*": ["./frontend/src/*", "./worker/src/*"],
+      "@worker/*": ["./worker/src/*"]
+    }
+  },
+  "include": ["frontend/src", "worker/src", "vite.config.ts", "scripts/gen-wrangler.mjs", "frontend/vite.config.js"],
+  "exclude": ["node_modules", "frontend/dist", "worker/dist", ".wrangler"]
+}
