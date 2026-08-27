@@ -15,5 +15,7 @@ CF_TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
 # S3 (opsional):
 # S3_ENDPOINT=https://s3.example.com
 # S3_ACCESS_KEY_ID=ak
-# S3_SECRET_ACCESS_KEY=sk
+
+# S3 (opsional) — juga pakai KV, ID sudah di .env di atas:
+# KV_NAMESPACE_ID=9510c4e9caab4d0cafd51ae55d21c96f
 # S3_BUCKET=bits-mail-cloudflare
