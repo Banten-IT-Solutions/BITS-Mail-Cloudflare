@@ -24,14 +24,14 @@
     "test": "pnpm --filter ./frontend test"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2",
-    "wrangler": "^4.85.0",
     "@cloudflare/vite-plugin": "^1.53.1",
-    "vite": "^7.3.2",
     "@vitejs/plugin-vue": "^6.0.6",
-    "vite-plugin-wasm": "^3.6.0",
+    "concurrently": "^9.1.2",
     "unplugin-auto-import": "^20.3.0",
     "unplugin-vue-components": "^30.0.0",
-    "vite-plugin-pwa": "^1.2.0"
+    "vite": "^7.3.2",
+    "vite-plugin-pwa": "^1.2.0",
+    "vite-plugin-wasm": "^3.6.0",
+    "wrangler": "^4.85.0"
   }
 }
