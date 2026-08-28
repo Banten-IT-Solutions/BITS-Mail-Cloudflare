@@ -1,7 +1,7 @@
 <div align="center">
   <h1>BITS Mail Cloudflare</h1>
   <p>
-    Temporary email platform built on Cloudflare Workers — fully dynamic configuration ala BITS-Nota.
+    Temporary email platform built on Cloudflare Workers — fully dynamic configuration.
   </p>
   <p>
     <img src="https://img.shields.io/badge/Cloudflare%20Workers-F38020?style=flat&logo=cloudflare&logoColor=white" alt="Cloudflare Workers" />
@@ -29,7 +29,7 @@
 | **Workers AI Extraction** | Extract verification codes and key links from email content |
 | **Admin Console** | Manage domains, users, quotas, settings, and cleanup tasks |
 | **Cloudflare Native** | Built for Workers, D1, KV, Turnstile, and Email Routing |
-| **Dynamic Configuration** | Ala BITS-Nota — `wrangler.template.jsonc` + `pnpm cf:config` sinjeksi `${VAR}` dari `.env`/`GitHub Secrets`, tidak ada nilai environment di-commit |
+| **Dynamic Configuration** | Uses `wrangler.template.jsonc` + `pnpm cf:config` to inject `${VAR}` from `.env`/`GitHub Secrets`; no environment values committed |
 
 ## 🛠️ Tech Stack
 
@@ -93,7 +93,7 @@ cd BITS-Mail-Cloudflare
 pnpm install
 ```
 
-### 3. Configure (dinamis ala Nota)
+### 3. Configure
 
 Salin contoh lalu edit nilainya:
 
@@ -103,7 +103,7 @@ cp .dev.vars.example .dev.vars  # secrets lokal: JWT_SECRET, ADMIN_PASSWORD, dsb
 
 # Edit .env — isi minimal:
 #   WORKER_NAME, WORKER_DOMAIN, D1_DATABASE_ID, KV_NAMESPACE_ID
-#   DEFAULT_DOMAINS=["bits.co.id"], DOMAINS=["bits.co.id"]
+#   DEFAULT_DOMAINS=["yourdomain.com"], DOMAINS=["yourdomain.com"]
 
 # Generate config (validasi REQUIRED + ganti ${VAR})
 pnpm cf:config
@@ -156,7 +156,7 @@ pnpm deploy
 
 ## ⚙️ Configuration (Dinamis)
 
-### Konfigurasi dinamis — prinsip BITS-Nota
+### Konfigurasi dinamis
 
 Tidak ada ID database, nama bucket, atau domain yang di-commit. Semua nilai dijalankan via `scripts/gen-wrangler.mjs` → `wrangler.jsonc`:
 
@@ -175,12 +175,12 @@ wrangler.jsonc            ← generated, ter-gitignore
 | Variabel | Contoh | Catatan |
 |----------|--------|---------|
 | `WORKER_NAME` | `bits-mail-cloudflare` | Nama Worker di Cloudflare |
-| `WORKER_DOMAIN` | `mail.bits.co.id` | Custom domain Worker |
+| `WORKER_DOMAIN` | `mail.yourdomain.com` | Custom domain Worker |
 | `D1_DATABASE_NAME` | `bits-mail-cloudflare` | Nama database D1 |
-| `D1_DATABASE_ID` | `3e71543b-…` | Dari output `wrangler d1 create` |
-| `KV_NAMESPACE_ID` | `9510c4e9caab4d0cafd51ae55d21c96f` | Dari output `wrangler kv namespace create` |
-| `DEFAULT_DOMAINS` | `["bits.co.id"]` | JSON array string |
-| `DOMAINS` | `["bits.co.id"]` | JSON array string |
+| `D1_DATABASE_ID` | `your-d1-database-id` | Dari output `wrangler d1 create` |
+| `KV_NAMESPACE_ID` | `your-kv-namespace-id` | Dari output `wrangler kv namespace create` |
+| `DEFAULT_DOMAINS` | `["yourdomain.com"]` | JSON array string |
+| `DOMAINS` | `["yourdomain.com"]` | JSON array string |
 
 Nilai opsional di `.env` (bisa kosong, pakai default worker):
 
@@ -189,13 +189,13 @@ Nilai opsional di `.env` (bisa kosong, pakai default worker):
 | `ADDRESS_PREFIX` | `tmp` |
 | `DEFAULT_LANG` | `en` |
 | `WORKER_TITLE` | `BITS Mail Cloudflare` |
-| `FRONTEND_URL` | `https://mail.bits.co.id` |
+| `FRONTEND_URL` | `https://mail.yourdomain.com` |
 | `ENABLE_USER_CREATE_EMAIL` | `true` |
 | `DISABLE_ANONYMOUS_USER_CREATE_EMAIL` | `true` |
 | `ENABLE_USER_DELETE_EMAIL` | `true` |
 | `ENABLE_AI_EMAIL_EXTRACT` | `false` |
 | `AI_EXTRACT_MODEL` | `@cf/meta/llama-3.1-8b-instruct` |
-| `CF_TURNSTILE_SITE_KEY` | `0x…` |
+| `CF_TURNSTILE_SITE_KEY` | `0x4AAAA…` |
 
 ### Secrets (lokal via `.dev.vars`, produksi via GitHub Secrets)
 
@@ -205,7 +205,8 @@ Nilai opsional di `.env` (bisa kosong, pakai default worker):
 | `ADMIN_PASSWORD` | `.dev.vars` / GitHub Secrets |
 | `ADMIN_PASSWORDS` | opsional JSON array |
 | `CF_TURNSTILE_SECRET_KEY` | `.dev.vars` / GitHub Secrets |
-| `TG_BOT_INFO` | opsional |
+| `TG_BOT_INFO` | opsional JSON `{"token":"...","username":"..."}` |
+| `TELEGRAM_BOT_TOKEN` | opsional — token bot Telegram (alternatif `TG_BOT_INFO`) |
 | `RESEND_TOKEN` | opsional — fallback kirim ke arbitrary klien |
 | `SMTP_CONFIG` | opsional — JSON S3/SMTP config |
 | `S3_*` | opsional — S3-compatible storage (R2) |

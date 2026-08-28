@@ -1,7 +1,7 @@
 name: Deploy
 
 on:
-  # Manual trigger — deploy langsung via workflow_dispatch (ala BITS-Nota).
+  # Manual trigger — deploy langsung via workflow_dispatch.
   # Push ke main TIDAK auto-deploy; gunakan Actions → Deploy → Run workflow
   # untuk kontrol penuh. Tidak ada nilai env yang di-commit.
   workflow_dispatch:
@@ -15,7 +15,7 @@ env:
   # ── Worker & Domain ───────────────────────────────────────────────
   WORKER_NAME: ${{ vars.WORKER_NAME }}
   WORKER_DOMAIN: ${{ vars.WORKER_DOMAIN }}
-  # Alternatif fallback jika pakai APP_DOMAIN seperti Nota:
+  # Alternatif fallback jika pakai APP_DOMAIN:
   # WORKER_DOMAIN: ${{ secrets.APP_DOMAIN || vars.WORKER_DOMAIN }}
   ADDRESS_PREFIX: ${{ vars.ADDRESS_PREFIX }}
   DEFAULT_DOMAINS: ${{ vars.DEFAULT_DOMAINS }}
@@ -38,6 +38,7 @@ env:
   ADMIN_PASSWORDS: ${{ secrets.ADMIN_PASSWORDS }}
   CF_TURNSTILE_SECRET_KEY: ${{ secrets.CF_TURNSTILE_SECRET_KEY }}
   TG_BOT_INFO: ${{ secrets.TG_BOT_INFO }}
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
   RESEND_TOKEN: ${{ secrets.RESEND_TOKEN }}
   SMTP_CONFIG: ${{ secrets.SMTP_CONFIG }}
   S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
@@ -65,7 +66,7 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          # pnpm-workspace ala Nota: cache semua lockfile
+          # pnpm-workspace: cache semua lockfile
           cache-dependency-path: |
             pnpm-lock.yaml
             frontend/pnpm-lock.yaml
@@ -90,7 +91,7 @@ jobs:
           node -e '
             const fs=require("fs");
             const secrets={};
-            for (const k of ["JWT_SECRET","ADMIN_PASSWORD","ADMIN_PASSWORDS","CF_TURNSTILE_SECRET_KEY","TG_BOT_INFO","RESEND_TOKEN","SMTP_CONFIG","S3_ENDPOINT","S3_ACCESS_KEY_ID","S3_SECRET_ACCESS_KEY"]) {
+              for (const k of ["JWT_SECRET","ADMIN_PASSWORD","ADMIN_PASSWORDS","CF_TURNSTILE_SECRET_KEY","TG_BOT_INFO","TELEGRAM_BOT_TOKEN","RESEND_TOKEN","SMTP_CONFIG","S3_ENDPOINT","S3_ACCESS_KEY_ID","S3_SECRET_ACCESS_KEY"]) {
               if (process.env[k]) secrets[k]=process.env[k];
             }
             if (Object.keys(secrets).length) {
@@ -106,7 +107,7 @@ jobs:
             rm -f .worker-secrets.json
           fi
 
-      - name: Deploy Worker (ala Nota — wrangler-action@v4)
+      - name: Deploy Worker
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

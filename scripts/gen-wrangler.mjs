@@ -1,5 +1,5 @@
 /**
- * Generator wrangler.jsonc dari wrangler.template.jsonc — ala BITS-Nota.
+ * Generator wrangler.jsonc dari wrangler.template.jsonc.
  *
  * Sumber nilai ${VAR}:
  *  - lokal : file .env di root project (salin dari .env.example)

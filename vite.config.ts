@@ -8,7 +8,7 @@ import { NaiveUiResolver } from "unplugin-vue-components/resolvers";
 import wasm from "vite-plugin-wasm";
 import { VitePWA } from "vite-plugin-pwa";
 
-// Vite + Cloudflare ala BITS-Nota — dev terpadu: SPA + Worker + Assets
+// Vite + Cloudflare — unified dev: SPA + Worker + Assets
 // Root vite ini membungkus frontend/ sebagai SPA dan worker/src/worker.ts sebagai Worker.
 // `pnpm dev` → single vite dengan HMR untuk Vue + Worker reload.
 // Build produksi tetap via `pnpm --filter frontend build:pages` + wrangler deploy (wrangler.jsonc).
