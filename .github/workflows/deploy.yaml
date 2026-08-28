@@ -1,4 +1,4 @@
-name: Deploy
+name: "🚀 Deploy"
 
 on:
   # Manual trigger — deploy langsung via workflow_dispatch.
@@ -55,17 +55,18 @@ concurrency:
 
 jobs:
   deploy:
+    name: "☁️ Deploy to Cloudflare"
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - name: Checkout
+      - name: "📥 Checkout"
         uses: actions/checkout@v7.0.1
 
-      - name: Setup pnpm
+      - name: "📦 Setup pnpm"
         uses: pnpm/action-setup@v6.0.10
 
-      - name: Setup Node.js
+      - name: "🟢 Setup Node.js"
         uses: actions/setup-node@v7.0.0
         with:
           node-version: lts/*
@@ -73,16 +74,16 @@ jobs:
           # pnpm-workspace: cache semua lockfile
           cache-dependency-path: pnpm-lock.yaml
 
-      - name: Install dependencies (workspace)
+      - name: "📚 Install dependencies"
         run: pnpm install --frozen-lockfile
 
-      - name: Typecheck
+      - name: "🔍 Typecheck"
         run: pnpm check || echo "typecheck warning"
 
-      - name: Build frontend + worker (includes cf:config)
+      - name: "🏗️ Build"
         run: pnpm build
 
-      - name: Deploy Worker
+      - name: "🚀 Deploy Worker"
         uses: cloudflare/wrangler-action@v4.0.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -90,7 +91,7 @@ jobs:
           # wrangler.jsonc sudah digenerate; command default deploy
           # config sudah di wrangler.jsonc, tidak perlu wrangler.toml
 
-      - name: Put secrets ke Worker (jika diisi) - after deploy to avoid vars/secrets collision
+      - name: "🔐 Sync Secrets"
         run: |
           set -euo pipefail
           node -e '
