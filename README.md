@@ -73,7 +73,7 @@ BITS-Mail-Cloudflare/
 
 ### Prerequisites
 
-- Node.js 22+
+- Node.js LTS (20+)
 - pnpm 10+
 - [Cloudflare account](https://dash.cloudflare.com)
 - Cloudflare D1 database (e.g., `my-mail-db` — your chosen name)
