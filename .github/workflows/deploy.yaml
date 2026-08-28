@@ -78,13 +78,10 @@ jobs:
       - name: Install dependencies (workspace)
         run: pnpm install --frozen-lockfile
 
-      - name: Generate wrangler.jsonc dari template + secrets
-        run: pnpm cf:config
-
       - name: Typecheck
         run: pnpm check || echo "typecheck warning"
 
-      - name: Build frontend + worker
+      - name: Build frontend + worker (includes cf:config)
         run: pnpm build
 
       - name: Put secrets ke Worker (jika diisi)
