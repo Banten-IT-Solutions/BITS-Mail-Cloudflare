@@ -9,7 +9,7 @@
   "main": "worker/src/worker.ts",
   "compatibility_date": "2025-04-01",
   "compatibility_flags": ["nodejs_compat"],
-  "keep_vars": true,
+  "keep_vars": false,
 
   // SPA static assets — gratis & tak dihitung kuota request Workers
   // run_worker_first = true agar /api/* tetap ke Worker, sisanya fallback SPA

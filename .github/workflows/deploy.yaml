@@ -82,10 +82,17 @@ jobs:
       - name: Build frontend + worker (includes cf:config)
         run: pnpm build
 
-      - name: Put secrets ke Worker (jika diisi)
+      - name: Deploy Worker
+        uses: cloudflare/wrangler-action@v4.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # wrangler.jsonc sudah digenerate; command default deploy
+          # config sudah di wrangler.jsonc, tidak perlu wrangler.toml
+
+      - name: Put secrets ke Worker (jika diisi) - after deploy to avoid vars/secrets collision
         run: |
           set -euo pipefail
-          # Kumpulkan secrets yang ada ke JSON untuk bulk
           node -e '
             const fs=require("fs");
             const secrets={};
@@ -104,11 +111,3 @@ jobs:
             pnpm exec wrangler secret bulk .worker-secrets.json --config wrangler.jsonc
             rm -f .worker-secrets.json
           fi
-
-      - name: Deploy Worker
-        uses: cloudflare/wrangler-action@v4.0.0
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # wrangler.jsonc sudah digenerate; command default deploy
-          # config sudah di wrangler.jsonc, tidak perlu wrangler.toml
