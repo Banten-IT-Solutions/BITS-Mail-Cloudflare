@@ -30,17 +30,18 @@
 | **Admin Console**            | Manage domains, users, quotas, settings, and cleanup tasks                                                                          |
 | **Cloudflare Native**        | Built for Workers, D1, KV, Turnstile, and Email Routing                                                                             |
 | **Dynamic Configuration**    | Uses `wrangler.template.jsonc` + `pnpm cf:config` to inject `${VAR}` from `.env` / GitHub Secrets — no environment values committed |
+| **Code Quality**             | Prettier + ESLint + `simple-git-hooks` + `lint-staged` — auto-format on commit, `check` + `build` on push                           |
 
 ## 🛠️ Tech Stack
 
-| Layer               | Technology                                                                             |
-| ------------------- | -------------------------------------------------------------------------------------- |
-| **Frontend**        | Vue 3, Naive UI, Vite, TypeScript — SPA in `frontend/`                                 |
-| **Backend**         | Cloudflare Workers, Hono, D1 (SQLite), KV — in `worker/`                               |
-| **Build**           | pnpm workspace monorepo, root `vite.config.ts` + `@cloudflare/vite-plugin` unified dev |
-| **Mail Processing** | `mail-parser-wasm` (client), `PostalMime` (server)                                     |
-| **Integrations**    | Telegram Bot, Workers AI, Turnstile, S3-compatible storage                             |
-| **Tooling**         | Wrangler 4, pnpm 10, ESLint, `scripts/gen-wrangler.mjs`                                |
+| Layer               | Technology                                                                                                 |
+| ------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Frontend**        | Vue 3, Naive UI, Vite 8, TypeScript — SPA in `frontend/`                                                   |
+| **Backend**         | Cloudflare Workers, Hono, D1 (SQLite), KV — in `worker/`                                                   |
+| **Build**           | pnpm workspace monorepo, root `vite.config.ts` + `@cloudflare/vite-plugin` unified dev, esbuild minify     |
+| **Mail Processing** | `mail-parser-wasm` (client), `PostalMime` (server)                                                         |
+| **Integrations**    | Telegram Bot, Workers AI, Turnstile, S3-compatible storage                                                 |
+| **Tooling**         | Wrangler 4, pnpm 10, ESLint 10, Prettier 3, `simple-git-hooks` + `lint-staged`, `scripts/gen-wrangler.mjs` |
 
 ---
 
@@ -58,8 +59,11 @@ BITS-Mail-Cloudflare/
 ├── wrangler.template.jsonc    # template with ${VAR} placeholders (do not deploy directly)
 ├── .env.example               # example vars for local development
 ├── .dev.vars.example          # example secrets for local development
-├── pnpm-workspace.yaml        # pnpm workspace: frontend + worker
-├── package.json               # root orchestrator (cf:config, build, deploy)
+├── .prettierrc.json           # Prettier config (root, shared with worker)
+├── .prettierignore            # ignore wrangler templates, locks, dist, env
+├── .npmrc                     # NODE_NO_WARNINGS for pnpm url.parse deprecation
+├── pnpm-workspace.yaml        # pnpm workspace: frontend + worker + overrides
+├── package.json               # root orchestrator (cf:config, build, deploy, format, hooks)
 ├── vite.config.ts             # root Vite: unified dev SPA + Worker via Cloudflare plugin
 ├── tsconfig.json
 ├── LICENSE
@@ -91,6 +95,7 @@ cd BITS-Mail-Cloudflare
 
 ```bash
 pnpm install
+# → auto-installs git hooks via `prepare` (simple-git-hooks)
 ```
 
 ### 3. Configure (Local)
@@ -165,7 +170,7 @@ pnpm deploy
 **How it works:**
 
 - `pnpm cf:config` validates required vars and generates `wrangler.jsonc`
-- `pnpm build` builds the frontend and bundles the worker
+- `pnpm build` builds the frontend (Vite 8 esbuild minify, drop console) and bundles the worker (`--minify`)
 - `wrangler deploy` uploads the worker; secrets from `.dev.vars` are applied via `wrangler secret bulk` if present
 
 > **Use when:** you want fast iteration without setting up GitHub. **Not ideal for:** shared production where secrets should live in CI.
@@ -256,23 +261,58 @@ wrangler.jsonc           (generated, gitignored — used by wrangler)
 
 ### Commands
 
-| Command              | Description                                                         |
-| -------------------- | ------------------------------------------------------------------- |
-| `pnpm cf:config`     | Generate `wrangler.jsonc` from `.env` / environment                 |
-| `pnpm dev`           | Start unified Vite dev (SPA + Worker via `@cloudflare/vite-plugin`) |
-| `pnpm dev:frontend`  | Frontend dev only                                                   |
-| `pnpm dev:worker`    | Worker dev only (`wrangler dev --config wrangler.jsonc`)            |
-| `pnpm build`         | `cf:config` → build frontend → bundle worker                        |
-| `pnpm deploy`        | Deploy to Cloudflare (`wrangler deploy --config wrangler.jsonc`)    |
-| `pnpm cf:typegen`    | Generate Cloudflare Workers type bindings                           |
-| `pnpm check`         | Lint worker + test frontend                                         |
-| `pnpm db:init:local` | Initialize / test local D1 database                                 |
+| Command              | Description                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------ |
+| `pnpm cf:config`     | Generate `wrangler.jsonc` from `.env` / environment                                              |
+| `pnpm dev`           | Start unified Vite dev (SPA + Worker via `@cloudflare/vite-plugin`)                              |
+| `pnpm dev:frontend`  | Frontend dev only                                                                                |
+| `pnpm dev:worker`    | Worker dev only (`wrangler dev --config wrangler.jsonc`)                                         |
+| `pnpm build`         | `cf:config` → build frontend (esbuild minify) → bundle worker (`--minify`)                       |
+| `pnpm deploy`        | Deploy to Cloudflare (`wrangler deploy --config wrangler.jsonc`)                                 |
+| `pnpm cf:typegen`    | Generate Cloudflare Workers type bindings                                                        |
+| `pnpm check`         | Lint worker (`eslint`) + test frontend (`vitest` 21 tests)                                       |
+| `pnpm db:init:local` | Initialize / test local D1 database                                                              |
+| `pnpm format`        | Format all files with Prettier                                                                   |
+| `pnpm format:check`  | Check formatting without writing                                                                 |
+| `pnpm audit`         | Check for known vulnerabilities (`NODE_NO_WARNINGS=1 pnpm audit` to hide pnpm url.parse warning) |
+
+### Code Style & Git Hooks
+
+- **Formatter:** Prettier 3 (`prettier --write .`) with `.prettierrc.json` (`printWidth:100, singleQuote, semi, 2 spaces`) and `.prettierignore` (ignores `wrangler.*.jsonc`, `pnpm-lock.yaml`, `dist`, `.env`)
+- **Linter:** ESLint 10 + `eslint-config-prettier` (no conflicts) for `worker/src`
+- **Git Hooks:** `simple-git-hooks` + `lint-staged` (auto-installed via `prepare`):
+  - `pre-commit`: `lint-staged` → `prettier --write` for `*.{js,ts,vue,json,css,md}` + `eslint --fix` for `worker/**/*.{js,ts}`
+  - `pre-push`: `pnpm check && pnpm build` (21 tests + Vite build must pass)
+- **Usage:**
+  ```bash
+  pnpm format              # manual format
+  pnpm format:check        # CI check
+  # hooks run automatically on `git commit` / `git push`
+  # skip if needed: SKIP_SIMPLE_GIT_HOOKS=1 git commit -m "..."
+  ```
+
+### Build Optimization
+
+- **Vite 8 (frontend + root):** `build.minify: 'esbuild'`, `cssMinify: true`, `sourcemap: false`, `chunkSizeWarningLimit: 1000`, `esbuild.drop: ['console','debugger']` in production, `legalComments: 'none'`, `reportCompressedSize: true` — see `vite.config.ts` / `frontend/vite.config.js`
+- **Worker:** `wrangler deploy --minify` (esbuild minify for Worker bundle)
+- **Result:** `pnpm build` → `Total Upload ~1278 KiB / gzip ~357 KiB` (frontend) + minified Worker
 
 ### Workspace Notes
 
 - `frontend/` and `worker/` are separate workspace packages defined in `pnpm-workspace.yaml`.
 - Shared dependencies (Vite, Vue plugin, Wrangler) are hoisted to the root `package.json`.
-- `pnpm.patchedDependencies` for `telegraf@4.16.3` is configured in `pnpm-workspace.yaml` (pnpm 10).
+- `pnpm.overrides` for `fast-xml-parser@5.11.1` and `uuid@11.1.1` (security fixes) lives in `pnpm-workspace.yaml`.
+- `pnpm.patchedDependencies` for `telegraf@4.16.3` and `onlyBuiltDependencies: [simple-git-hooks]` live in `pnpm-workspace.yaml` (pnpm 10).
+
+### Troubleshooting — `url.parse() DeprecationWarning`
+
+```
+(node:...) DeprecationWarning: `url.parse()` behavior is not standardized ...
+```
+
+- **Source:** `pnpm 10.10.0` internal `toNerfDart` uses `url.parse()` — **not your code**, harmless.
+- **CI:** suppressed via `NODE_NO_WARNINGS=1` in `deploy.yaml` `env:` and `.npmrc` (`node-options=--no-deprecation`)
+- **Local:** run `NODE_NO_WARNINGS=1 pnpm audit` / `pnpm install` to hide, or export `export NODE_NO_WARNINGS=1` in your shell. Will disappear when pnpm fixes upstream.
 
 ---
 
