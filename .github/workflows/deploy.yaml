@@ -46,6 +46,7 @@ env:
   S3_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
   S3_BUCKET: ${{ vars.S3_BUCKET }}
   S3_URL_EXPIRES: ${{ vars.S3_URL_EXPIRES }}
+  VITE_API_BASE: ${{ vars.VITE_API_BASE }}
 
 concurrency:
   group: deploy-${{ github.ref }}
