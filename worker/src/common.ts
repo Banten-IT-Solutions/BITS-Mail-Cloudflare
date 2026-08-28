@@ -311,7 +311,7 @@ const insertAddressRecord = async (
                 `INSERT INTO address(name) VALUES(?)`
             ).bind(address).run();
             if (!result.success) {
-                throw new Error(msgs.FailedCreateAddressMsg)
+                throw new Error(msgs.FailedCreateAddressMsg, { cause: e })
             }
             return;
         }
@@ -437,9 +437,9 @@ export const newAddress = async (
                 if (enableRandomSubdomain && attempt < maxAttempts - 1) {
                     continue;
                 }
-                throw new Error(msgs.AddressAlreadyExistsMsg)
+                throw new Error(msgs.AddressAlreadyExistsMsg, { cause: e })
             }
-            throw new Error(msgs.FailedCreateAddressMsg)
+            throw new Error(msgs.FailedCreateAddressMsg, { cause: e })
         }
     }
 

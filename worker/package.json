@@ -14,23 +14,23 @@
     "cf:typegen": "wrangler types --config ../wrangler.jsonc"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20260812.1",
-    "@eslint/js": "9.39.1",
-    "@types/node": "^25.6.0",
-    "eslint": "9.39.1",
-    "globals": "^16.5.0",
-    "typescript-eslint": "^8.58.2",
-    "wrangler": "^4.85.0"
+    "@cloudflare/workers-types": "5.20260828.1",
+    "@eslint/js": "10.0.1",
+    "@types/node": "26.4.0",
+    "eslint": "10.9.1",
+    "globals": "17.11.0",
+    "typescript-eslint": "8.68.0",
+    "wrangler": "4.127.0"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1120.0",
     "@aws-sdk/s3-request-presigner": "3.1120.0",
-    "@simplewebauthn/server": "13.2.3",
-    "hono": "^4.12.14",
+    "@simplewebauthn/server": "13.3.3",
+    "hono": "4.13.5",
     "jsonpath-plus": "^10.4.0",
     "mimetext": "^3.0.28",
-    "postal-mime": "^2.7.4",
-    "resend": "^6.12.0",
+    "postal-mime": "3.0.0",
+    "resend": "6.24.0",
     "telegraf": "4.16.3",
     "worker-mailer": "^1.2.1"
   },
