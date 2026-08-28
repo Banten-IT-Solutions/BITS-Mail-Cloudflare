@@ -1,9 +1,31 @@
 {
   "name": "bits-mail-cloudflare",
   "version": "1.0.0",
-  "private": true,
+  "description": "BITS Mail Cloudflare — temporary email on Cloudflare Workers",
+  "keywords": [
+    "email",
+    "cloudflare",
+    "workers",
+    "mail",
+    "temporary-email",
+    "vite"
+  ],
+  "license": "MIT",
   "type": "module",
-  "description": "BITS Mail Cloudflare \u2014 temporary email on Cloudflare Workers",
+  "private": true,
+  "author": {
+    "name": "Banten IT Solutions",
+    "email": "admin@bits.co.id",
+    "url": "https://bits.co.id"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Banten-IT-Solutions/BITS-Mail-Cloudflare.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Banten-IT-Solutions/BITS-Mail-Cloudflare/issues"
+  },
+  "homepage": "https://bits.co.id",
   "packageManager": "pnpm@10.10.0",
   "engines": {
     "node": ">=20"

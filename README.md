@@ -19,7 +19,7 @@
 
 | Feature                      | Description                                                                                                                         |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| **Single Worker Deployment** | One Cloudflare Worker (e.g., `my-mail-worker`) serves API and frontend assets through `[assets]` binding                            |
+| **Single Worker Deployment** | One Cloudflare Worker (e.g., `bits-mail-cloudflare`) serves API and frontend assets through `[assets]` binding                            |
 | **Temporary Mailboxes**      | Create and manage disposable email addresses with multiple domains                                                                  |
 | **Fast Email Parsing**       | Client-side `mail-parser-wasm` plus server-side `PostalMime` fallback                                                               |
 | **User Accounts**            | Register, login, and manage mailbox access with JWT                                                                                 |
@@ -80,8 +80,8 @@ BITS-Mail-Cloudflare/
 - Node.js LTS (20+)
 - pnpm 10+
 - [Cloudflare account](https://dash.cloudflare.com)
-- Cloudflare D1 database (e.g., `my-mail-db` — your chosen name)
-- Cloudflare KV namespace (e.g., `my-mail-kv` — your chosen name)
+- Cloudflare D1 database (e.g., `bits-mail-cloudflare` — your chosen name)
+- Cloudflare KV namespace (e.g., `bits-mail-cloudflare` — your chosen name)
 - Optional: Turnstile, Telegram bot, Workers AI, Email Routing, Resend API key
 
 ### 1. Clone
@@ -127,9 +127,9 @@ Create these **once** before the first deploy. Required for **both** Local and R
 
 | Resource         | Command / Dashboard                                                     |
 | ---------------- | ----------------------------------------------------------------------- |
-| **D1 Database**  | `wrangler d1 create <your-d1-name>` (e.g., `my-mail-db`)                |
-| **KV Namespace** | `wrangler kv namespace create <your-kv-name>` (e.g., `my-mail-kv`)      |
-| **R2 Bucket**    | `wrangler r2 bucket create <your-bucket-name>` (e.g., `my-mail-bucket`) |
+| **D1 Database**  | `wrangler d1 create <your-d1-name>` (e.g., `bits-mail-cloudflare`)                |
+| **KV Namespace** | `wrangler kv namespace create <your-kv-name>` (e.g., `bits-mail-cloudflare`)      |
+| **R2 Bucket**    | `wrangler r2 bucket create <your-bucket-name>` (e.g., `bits-mail-cloudflare`) |
 
 > **Custom Domain is auto-provisioned on deploy** — `wrangler deploy` creates/updates it from `routes: [{ "pattern": "${WORKER_DOMAIN}", "custom_domain": true }]` in `wrangler.template.jsonc`. No manual Dashboard step needed; just ensure the zone for `WORKER_DOMAIN` (e.g., `mail.yourdomain.com`) is already active in your Cloudflare account.
 
@@ -141,7 +141,7 @@ Email Routing **is not auto-provisioned** by `wrangler deploy`. The Worker only 
 
 1. Cloudflare Dashboard → Select your zone (e.g., `yourdomain.com`) → **Email → Email Routing** → **Enable** (if not yet enabled) and verify the DNS records Cloudflare adds.
 2. Go to **Routing rules → Catch-all address** (or **Create address**).
-3. Choose **Action: Send to Worker** → Select Worker: `my-mail-worker` (your `WORKER_NAME`) → **Create**.
+3. Choose **Action: Send to Worker** → Select Worker: `bits-mail-cloudflare` (your `WORKER_NAME`) → **Create**.
 4. (Alternative) Create specific addresses: `*@yourdomain.com` or `*@mail.yourdomain.com` → Send to Worker → same Worker.
 5. Send a test email to `test@yourdomain.com` and check it appears in the app / D1 `raw_mails` table and triggers Telegram/Webhook/Forward if configured.
 
@@ -195,9 +195,9 @@ Configure at `Settings → Secrets and variables → Actions → Variables` (non
 
 | Variable                              | Example                                         | Required    | Description                                            |
 | ------------------------------------- | ----------------------------------------------- | ----------- | ------------------------------------------------------ |
-| `WORKER_NAME`                         | `my-mail-worker`                                | ✅ Required | Worker name on Cloudflare (placeholder — use your own) |
+| `WORKER_NAME`                         | `bits-mail-cloudflare`                                | ✅ Required | Worker name on Cloudflare (placeholder — use your own) |
 | `WORKER_DOMAIN`                       | `mail.yourdomain.com`                           | ✅ Required | Custom domain for the Worker                           |
-| `D1_DATABASE_NAME`                    | `my-mail-db`                                    | ✅ Required | D1 database name (placeholder — use your own)          |
+| `D1_DATABASE_NAME`                    | `bits-mail-cloudflare`                                    | ✅ Required | D1 database name (placeholder — use your own)          |
 | `D1_DATABASE_ID`                      | `xxxx-xxxx-xxxx`                                | ✅ Required | D1 database ID from `wrangler d1 create`               |
 | `KV_NAMESPACE_ID`                     | `xxxx-xxxx-xxxx`                                | ✅ Required | KV namespace ID from `wrangler kv namespace create`    |
 | `DEFAULT_DOMAINS`                     | `["mail.yourdomain.com"]`                       | ✅ Required | JSON array string — default mail domains               |
@@ -213,7 +213,7 @@ Configure at `Settings → Secrets and variables → Actions → Variables` (non
 | `AI_EXTRACT_MODEL`                    | `@cf/meta/llama-3-8b-instruct`                  | Optional    | Workers AI model ID                                    |
 | `CF_TURNSTILE_SITE_KEY`               | `0x4AAAAAAA...`                                 | Optional    | Turnstile public site key                              |
 | `S3_ENDPOINT`                         | `https://<account_id>.r2.cloudflarestorage.com` | Optional    | S3-compatible endpoint (R2)                            |
-| `S3_BUCKET`                           | `my-mail-bucket`                                | Optional    | R2 / S3 bucket name (placeholder — use your own)       |
+| `S3_BUCKET`                           | `bits-mail-cloudflare`                                | Optional    | R2 / S3 bucket name (placeholder — use your own)       |
 | `S3_URL_EXPIRES`                      | `360`                                           | Optional    | Presigned URL expiry in seconds                        |
 | `VITE_API_BASE`                       | `https://mail.yourdomain.com`                   | Optional    | API base URL for frontend build                        |
 
