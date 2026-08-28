@@ -125,8 +125,22 @@ Create these **once** before the first deploy. Required for **both** Local and R
 | **D1 Database** | `wrangler d1 create <your-d1-name>` (e.g., `my-mail-db`) |
 | **KV Namespace** | `wrangler kv namespace create <your-kv-name>` (e.g., `my-mail-kv`) |
 | **R2 Bucket** | `wrangler r2 bucket create <your-bucket-name>` (e.g., `my-mail-bucket`) |
-| **Custom Domain** | Cloudflare Dashboard → Worker → Settings → Domains & Routes → Add custom domain `mail.yourdomain.com` |
-| **Email Routing** *(optional)* | Cloudflare Dashboard → Email → Email Routing |
+
+> **Custom Domain is auto-provisioned on deploy** — `wrangler deploy` creates/updates it from `routes: [{ "pattern": "${WORKER_DOMAIN}", "custom_domain": true }]` in `wrangler.template.jsonc`. No manual Dashboard step needed; just ensure the zone for `WORKER_DOMAIN` (e.g., `mail.yourdomain.com`) is already active in your Cloudflare account.
+
+#### 📧 Email Routing Setup (Optional — Required to Receive Emails)
+
+Email Routing **is not auto-provisioned** by `wrangler deploy`. The Worker only provides the `email(message)` handler (`worker/src/email/index.ts`) — you must connect your domain to the Worker manually **after the first deploy** (the Worker must exist first to appear in the dropdown).
+
+**Steps (once per domain):**
+
+1. Cloudflare Dashboard → Select your zone (e.g., `yourdomain.com`) → **Email → Email Routing** → **Enable** (if not yet enabled) and verify the DNS records Cloudflare adds.
+2. Go to **Routing rules → Catch-all address** (or **Create address**).
+3. Choose **Action: Send to Worker** → Select Worker: `my-mail-worker` (your `WORKER_NAME`) → **Create**.
+4. (Alternative) Create specific addresses: `*@yourdomain.com` or `*@mail.yourdomain.com` → Send to Worker → same Worker.
+5. Send a test email to `test@yourdomain.com` and check it appears in the app / D1 `raw_mails` table and triggers Telegram/Webhook/Forward if configured.
+
+> **For both Local and Remote deploys:** do this once after your first successful deploy. No `wrangler` command can automate it. If you use multiple `DOMAINS`/`DEFAULT_DOMAINS`, repeat for each zone.
 
 ### 6. Deploy
 
