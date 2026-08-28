@@ -5,7 +5,7 @@
 JWT_SECRET=dev-jwt-secret-min-32-char-ganti-di-production
 ADMIN_PASSWORD=your-secure-admin-password
 # Alternatif multiple admin (JSON array string):
-# ADMIN_PASSWORDS=["admin123","superadmin"]
+# ADMIN_PASSWORDS=["your-secure-password","another-secure-password"]
 CF_TURNSTILE_SECRET_KEY=your-turnstile-secret-key
 # Telegram (required for bot feature):
 # TELEGRAM_BOT_TOKEN=123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
