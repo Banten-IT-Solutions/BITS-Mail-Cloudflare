@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "BITS Mail Cloudflare \u2014 temporary email on Cloudflare Workers, dinamis ala BITS-Nota",
+  "description": "BITS Mail Cloudflare \u2014 temporary email on Cloudflare Workers",
   "packageManager": "pnpm@10.10.0",
   "engines": {
     "node": ">=20"

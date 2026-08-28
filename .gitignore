@@ -142,7 +142,7 @@ e2e/test-results/
 e2e/playwright-report/
 e2e/.e2e-pids
 
-# ── Dinamis ala BITS-Nota ──────────────────────────────────────────────
+# ── Generated config ──────────────────────────────────────────────
 # Generated dari wrangler.template.jsonc oleh `pnpm cf:config`
 wrangler.jsonc
 # pnpm workspace

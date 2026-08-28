@@ -1,4 +1,4 @@
-# DEPRECATED — migrasi ke dinamis ala BITS-Nota
+# DEPRECATED — migrasi ke versi baru
 # File ini tidak lagi dipakai. Gunakan root:
 #   wrangler.template.jsonc + scripts/gen-wrangler.mjs → wrangler.jsonc
 # Lihat README dan .env.example di root.
