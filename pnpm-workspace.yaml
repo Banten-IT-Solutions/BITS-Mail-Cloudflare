@@ -1,10 +1,10 @@
 packages:
   - frontend
   - worker
-
-patchedDependencies:
-  telegraf@4.16.3: worker/patches/telegraf@4.16.3.patch
-
+onlyBuiltDependencies:
+  - simple-git-hooks
 overrides:
   fast-xml-parser: 5.11.1
   uuid: 11.1.1
+patchedDependencies:
+  telegraf@4.16.3: worker/patches/telegraf@4.16.3.patch
