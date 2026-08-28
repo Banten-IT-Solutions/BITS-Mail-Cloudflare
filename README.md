@@ -29,14 +29,14 @@
 | **Workers AI Extraction** | Extract verification codes and key links from email content |
 | **Admin Console** | Manage domains, users, quotas, settings, and cleanup tasks |
 | **Cloudflare Native** | Built for Workers, D1, KV, Turnstile, and Email Routing |
-| **Dynamic Configuration** | Uses `wrangler.template.jsonc` + `pnpm cf:config` to inject `${VAR}` from `.env`/`GitHub Secrets`; no environment values committed |
+| **Dynamic Configuration** | Uses `wrangler.template.jsonc` + `pnpm cf:config` to inject `${VAR}` from `.env` / GitHub Secrets — no environment values committed |
 
 ## 🛠️ Tech Stack
 
 | Layer | Technology |
 |-------|------------|
-| **Frontend** | Vue 3, Naive UI, Vite, TypeScript — SPA di `frontend/` |
-| **Backend** | Cloudflare Workers, Hono, D1 (SQLite), KV — di `worker/` |
+| **Frontend** | Vue 3, Naive UI, Vite, TypeScript — SPA in `frontend/` |
+| **Backend** | Cloudflare Workers, Hono, D1 (SQLite), KV — in `worker/` |
 | **Build** | pnpm workspace monorepo, root `vite.config.ts` + `@cloudflare/vite-plugin` unified dev |
 | **Mail Processing** | `mail-parser-wasm` (client), `PostalMime` (server) |
 | **Integrations** | Telegram Bot, Workers AI, Turnstile, S3-compatible storage |
@@ -50,17 +50,17 @@
 BITS-Mail-Cloudflare/
 ├── .github/
 │   └── workflows/
-│       └── deploy.yaml       # workflow_dispatch only, pnpm cf:config, secret bulk
+│       └── deploy.yaml       # workflow_dispatch only — cf:config + secret bulk + deploy
 ├── frontend/                 # Vue 3 SPA (package: bits-mail-cloudflare-frontend)
 ├── worker/                   # Cloudflare Worker API + asset hosting (bits-mail-cloudflare-worker)
 ├── scripts/
-│   └── gen-wrangler.mjs      # generator: .env/secrets → wrangler.jsonc
-├── wrangler.template.jsonc    # template dengan ${VAR} (jangan deploy)
-├── .env.example               # contoh vars lokal
-├── .dev.vars.example          # contoh secrets lokal
+│   └── gen-wrangler.mjs      # generator: .env / env vars → wrangler.jsonc
+├── wrangler.template.jsonc    # template with ${VAR} placeholders (do not deploy directly)
+├── .env.example               # example vars for local development
+├── .dev.vars.example          # example secrets for local development
 ├── pnpm-workspace.yaml        # pnpm workspace: frontend + worker
 ├── package.json               # root orchestrator (cf:config, build, deploy)
-├── vite.config.ts             # root Vite: unified dev SPA + Worker via cloudflare plugin
+├── vite.config.ts             # root Vite: unified dev SPA + Worker via Cloudflare plugin
 ├── tsconfig.json
 ├── LICENSE
 ├── README.md
@@ -76,8 +76,8 @@ BITS-Mail-Cloudflare/
 - Node.js 22+
 - pnpm 10+
 - [Cloudflare account](https://dash.cloudflare.com)
-- Cloudflare D1 database (nama `bits-mail-cloudflare`)
-- Cloudflare KV namespace (nama `bits-mail-cloudflare`)
+- Cloudflare D1 database named `bits-mail-cloudflare`
+- Cloudflare KV namespace named `bits-mail-cloudflare`
 - Optional: Turnstile, Telegram bot, Workers AI, Email Routing, Resend API key
 
 ### 1. Clone
@@ -87,64 +87,128 @@ git clone https://github.com/Banten-IT-Solutions/BITS-Mail-Cloudflare.git
 cd BITS-Mail-Cloudflare
 ```
 
-### 2. Install (workspace)
+### 2. Install
 
 ```bash
 pnpm install
 ```
 
-### 3. Configure
-
-Salin contoh lalu edit nilainya:
+### 3. Configure (Local)
 
 ```bash
-cp .env.example .env          # vars: WORKER_NAME, D1_*, KV_*, DOMAINS, dsb.
-cp .dev.vars.example .dev.vars  # secrets lokal: JWT_SECRET, ADMIN_PASSWORD, dsb.
+cp .env.example .env            # vars: WORKER_NAME, D1_*, KV_*, DOMAINS, etc.
+cp .dev.vars.example .dev.vars  # secrets: JWT_SECRET, ADMIN_PASSWORD, etc.
 
-# Edit .env — isi minimal:
+# Edit .env — minimum required:
 #   WORKER_NAME, WORKER_DOMAIN, D1_DATABASE_ID, KV_NAMESPACE_ID
 #   DEFAULT_DOMAINS=["yourdomain.com"], DOMAINS=["yourdomain.com"]
 
-# Generate config (validasi REQUIRED + ganti ${VAR})
-pnpm cf:config
+pnpm cf:config                  # validates REQUIRED vars and generates wrangler.jsonc (gitignored)
 ```
 
-Ini akan menghasilkan `wrangler.jsonc` (gitignored) yang dipakai oleh `wrangler dev`/`wrangler deploy`.
+> `wrangler.jsonc` is generated and gitignored. It is the only config consumed by `wrangler dev` / `wrangler deploy`.
 
-### 4. Dev
-
-Perintah ini otomatis jalankan `pnpm cf:config` dulu:
+### 4. Develop
 
 ```bash
-pnpm dev          # Vite SPA + cloudflare dev (unified, HMR)
-pnpm dev:worker   # hanya Worker
+pnpm dev          # unified Vite dev: SPA + Worker with HMR
+pnpm dev:worker   # Worker only (wrangler dev --config wrangler.jsonc)
+pnpm dev:frontend # frontend only
 ```
 
 ### 5. Deploy
 
-#### Manual deploy (lokal)
+#### Manual deploy (local)
 
 ```bash
 pnpm deploy
 ```
 
-#### GitHub Actions
+#### GitHub Actions (recommended)
 
-1. Pastikan semua **GitHub Secrets/Variables** sudah diisi (lihat tabel di bawah).
-2. Buka `Actions → Deploy → Run workflow`.
-3. Workflow otomatis: generate `wrangler.jsonc` → build → put secrets → deploy.
+1. Fill in all **GitHub Variables and Secrets** (see tables below: Settings → Secrets and variables → Actions).
+2. Go to `Actions → Deploy → Run workflow`.
+3. The workflow automatically: `cf:config` → build → `wrangler secret bulk` → deploy.
 
-#### Resource yang harus sudah dibuat (manual)
+Pushes to `main` do **not** auto-deploy — deployment is `workflow_dispatch` only.
+
+### 6. Required Cloudflare Resources
+
+Create these **once** before the first deploy. CI only deploys code — it does not provision resources.
 
 | Resource | Command / Dashboard |
 |----------|---------------------|
 | **D1 Database** | `wrangler d1 create bits-mail-cloudflare` |
 | **KV Namespace** | `wrangler kv namespace create bits-mail-cloudflare` |
 | **R2 Bucket** | `wrangler r2 bucket create bits-mail-cloudflare` |
-| **Custom domain** | Cloudflare Dashboard → Worker → Routes → Add custom domain `mail.bits.co.id` |
-| **Email Routing** (opsional) | Cloudflare Dashboard → Email → Routing |
+| **Custom Domain** | Cloudflare Dashboard → Worker → Settings → Domains & Routes → Add custom domain `mail.yourdomain.com` |
+| **Email Routing** *(optional)* | Cloudflare Dashboard → Email → Email Routing |
 
-> CI hanya deploy code — tidak create/update resource di atas.
+### 7. GitHub Variables
+
+Configure at `Settings → Secrets and variables → Actions → Variables` (non-sensitive). These fill `${VAR}` placeholders in `wrangler.template.jsonc` via `pnpm cf:config`.
+
+| Variable | Example | Required | Description |
+|----------|---------|----------|-------------|
+| `WORKER_NAME` | `bits-mail-cloudflare` | ✅ Required | Worker name on Cloudflare |
+| `WORKER_DOMAIN` | `mail.yourdomain.com` | ✅ Required | Custom domain for the Worker |
+| `D1_DATABASE_NAME` | `bits-mail-cloudflare` | ✅ Required | D1 database name |
+| `D1_DATABASE_ID` | `xxxx-xxxx-xxxx` | ✅ Required | D1 database ID from `wrangler d1 create` |
+| `KV_NAMESPACE_ID` | `xxxx-xxxx-xxxx` | ✅ Required | KV namespace ID from `wrangler kv namespace create` |
+| `DEFAULT_DOMAINS` | `["mail.yourdomain.com"]` | ✅ Required | JSON array string — default mail domains |
+| `DOMAINS` | `["mail.yourdomain.com"]` | ✅ Required | JSON array string — active mail domains |
+| `ADDRESS_PREFIX` | `tmp` | Optional | Prefix for temporary email addresses |
+| `DEFAULT_LANG` | `en` | Optional | Default UI language |
+| `WORKER_TITLE` | `BITS Mail Cloudflare` | Optional | Page title |
+| `FRONTEND_URL` | `https://mail.yourdomain.com` | Optional | Frontend URL |
+| `ENABLE_USER_CREATE_EMAIL` | `true` | Optional | Allow users to create email addresses |
+| `DISABLE_ANONYMOUS_USER_CREATE_EMAIL` | `false` | Optional | Disable guest email creation |
+| `ENABLE_USER_DELETE_EMAIL` | `true` | Optional | Allow users to delete emails |
+| `ENABLE_AI_EMAIL_EXTRACT` | `false` | Optional | Enable Workers AI extraction |
+| `AI_EXTRACT_MODEL` | `@cf/meta/llama-3-8b-instruct` | Optional | Workers AI model ID |
+| `CF_TURNSTILE_SITE_KEY` | `0x4AAAAAAA...` | Optional | Turnstile public site key |
+| `S3_BUCKET` | `bits-mail-cloudflare` | Optional | R2 / S3 bucket name |
+| `S3_URL_EXPIRES` | `360` | Optional | Presigned URL expiry in seconds |
+| `VITE_API_BASE` | `https://mail.yourdomain.com` | Optional | API base URL for frontend build |
+
+> Validation is enforced by `scripts/gen-wrangler.mjs`. Missing required variables will fail `pnpm cf:config` with a clear error.
+
+### 8. GitHub Secrets
+
+Configure at `Settings → Secrets and variables → Actions → Secrets` (sensitive). Injected via `wrangler secret bulk` during deploy. For local dev, put them in `.dev.vars`.
+
+| Secret | Required | Description |
+|--------|----------|-------------|
+| `CLOUDFLARE_API_TOKEN` | ✅ Required | Cloudflare API token with Workers Edit permission |
+| `CLOUDFLARE_ACCOUNT_ID` | ✅ Required | Cloudflare Account ID (Dashboard → right sidebar) |
+| `JWT_SECRET` | ✅ Required | Min. 32 characters — used to sign auth tokens |
+| `ADMIN_PASSWORD` | ✅ Required* | Admin panel password (`*` either this or `ADMIN_PASSWORDS` is required) |
+| `ADMIN_PASSWORDS` | Optional | JSON array `["pass1","pass2"]` — multiple admin passwords |
+| `CF_TURNSTILE_SECRET_KEY` | Optional | Turnstile server-side secret key |
+| `TG_BOT_INFO` | Optional | JSON `{"token":"123:abc","username":"your_bot"}` — Telegram bot info |
+| `TELEGRAM_BOT_TOKEN` | Optional | Telegram bot token (alternative to `TG_BOT_INFO`) |
+| `RESEND_TOKEN` | Optional | Resend API key — fallback for sending to arbitrary recipients |
+| `SMTP_CONFIG` | Optional | JSON SMTP config: `{"mail.yourdomain.com":{"host":"smtp.example.com","port":587,"auth":{"user":"...","pass":"..."}}}` |
+| `S3_ENDPOINT` | Optional | S3-compatible endpoint (R2: `https://<account_id>.r2.cloudflarestorage.com`) |
+| `S3_ACCESS_KEY_ID` | Optional | S3 / R2 access key ID |
+| `S3_SECRET_ACCESS_KEY` | Optional | S3 / R2 secret access key |
+
+### 9. Configuration Flow
+
+No database IDs, bucket names, or domains are committed. All values are injected at build time:
+
+```
+wrangler.template.jsonc  (committed, contains ${VAR} placeholders)
+        │  pnpm cf:config  (scripts/gen-wrangler.mjs)
+        ▼
+wrangler.jsonc           (generated, gitignored — used by wrangler)
+        ▲
+        ├─ local : .env + .dev.vars
+        └─ CI    : GitHub Variables + Secrets
+```
+
+- `"${VAR}"` in template → replaced as JSON string (quoted).
+- `${VAR}` in template (unquoted) → replaced as raw JSON (arrays / booleans / numbers).
 
 ---
 
@@ -154,112 +218,53 @@ pnpm deploy
 
 | Command | Description |
 |---------|-------------|
-| `pnpm cf:config` | Generate `wrangler.jsonc` dari `.env`/secrets |
-| `pnpm dev` | Start unified Vite dev (SPA + Workers via `@cloudflare/vite-plugin`) |
-| `pnpm dev:frontend` | Dev frontend saja |
-| `pnpm dev:worker` | Dev worker saja (`wrangler dev --config wrangler.jsonc`) |
+| `pnpm cf:config` | Generate `wrangler.jsonc` from `.env` / environment |
+| `pnpm dev` | Start unified Vite dev (SPA + Worker via `@cloudflare/vite-plugin`) |
+| `pnpm dev:frontend` | Frontend dev only |
+| `pnpm dev:worker` | Worker dev only (`wrangler dev --config wrangler.jsonc`) |
 | `pnpm build` | `cf:config` → build frontend → bundle worker |
-| `pnpm deploy` | Deploy ke Cloudflare |
-| `pnpm cf:typegen` | Generate `@cloudflare/workers-types` bindings |
+| `pnpm deploy` | Deploy to Cloudflare (`wrangler deploy --config wrangler.jsonc`) |
+| `pnpm cf:typegen` | Generate Cloudflare Workers type bindings |
 | `pnpm check` | Lint worker + test frontend |
-| `pnpm db:init:local` | Init/test D1 local |
+| `pnpm db:init:local` | Initialize / test local D1 database |
 
-### Workspace notes
+### Workspace Notes
 
-- `frontend/` & `worker/` adalah package workspace terpisah di `pnpm-workspace.yaml`
-- Shared deps (vite, vue plugin, wrangler) diletakkan di **root** `package.json`
-- `pnpm.patchedDependencies` untuk `telegraf@4.16.3` ada di `pnpm-workspace.yaml` (pnpm 10)
-
----
-
-## ⚙️ Configuration (Dinamis)
-
-### Konfigurasi dinamis
-
-Tidak ada ID database, nama bucket, atau domain yang di-commit. Semua nilai dijalankan via `scripts/gen-wrangler.mjs` → `wrangler.jsonc`:
-
-```
-wrangler.template.jsonc (di-commit, placeholder ${VAR})
-        │  pnpm cf:config
-        ▼
-wrangler.jsonc            ← generated, ter-gitignore
-        ▲
-        ├─ lokal : file .env (salin dari .env.example)
-        └─ CI    : GitHub Secrets/Variables
-```
-
-### Nilai wajib di `.env` (`.env.example`)
-
-| Variabel | Contoh | Catatan |
-|----------|--------|---------|
-| `WORKER_NAME` | `bits-mail-cloudflare` | Nama Worker di Cloudflare |
-| `WORKER_DOMAIN` | `mail.yourdomain.com` | Custom domain Worker |
-| `D1_DATABASE_NAME` | `bits-mail-cloudflare` | Nama database D1 |
-| `D1_DATABASE_ID` | `your-d1-database-id` | Dari output `wrangler d1 create` |
-| `KV_NAMESPACE_ID` | `your-kv-namespace-id` | Dari output `wrangler kv namespace create` |
-| `DEFAULT_DOMAINS` | `["yourdomain.com"]` | JSON array string |
-| `DOMAINS` | `["yourdomain.com"]` | JSON array string |
-
-Nilai opsional di `.env` (bisa kosong, pakai default worker):
-
-| Variabel | Contoh |
-|----------|--------|
-| `ADDRESS_PREFIX` | `tmp` |
-| `DEFAULT_LANG` | `en` |
-| `WORKER_TITLE` | `BITS Mail Cloudflare` |
-| `FRONTEND_URL` | `https://mail.yourdomain.com` |
-| `ENABLE_USER_CREATE_EMAIL` | `true` |
-| `DISABLE_ANONYMOUS_USER_CREATE_EMAIL` | `true` |
-| `ENABLE_USER_DELETE_EMAIL` | `true` |
-| `ENABLE_AI_EMAIL_EXTRACT` | `false` |
-| `AI_EXTRACT_MODEL` | `@cf/meta/llama-3.1-8b-instruct` |
-| `CF_TURNSTILE_SITE_KEY` | `0x4AAAA…` |
-
-### Secrets (lokal via `.dev.vars`, produksi via GitHub Secrets)
-
-| Secret | Di mana |
-|--------|---------|
-| `JWT_SECRET` | `.dev.vars` / GitHub Secrets |
-| `ADMIN_PASSWORD` | `.dev.vars` / GitHub Secrets |
-| `ADMIN_PASSWORDS` | opsional JSON array |
-| `CF_TURNSTILE_SECRET_KEY` | `.dev.vars` / GitHub Secrets |
-| `TG_BOT_INFO` | opsional JSON `{"token":"...","username":"..."}` |
-| `TELEGRAM_BOT_TOKEN` | opsional — token bot Telegram (alternatif `TG_BOT_INFO`) |
-| `RESEND_TOKEN` | opsional — fallback kirim ke arbitrary klien |
-| `SMTP_CONFIG` | opsional — JSON S3/SMTP config |
-| `S3_*` | opsional — S3-compatible storage (R2) |
+- `frontend/` and `worker/` are separate workspace packages defined in `pnpm-workspace.yaml`.
+- Shared dependencies (Vite, Vue plugin, Wrangler) are hoisted to the root `package.json`.
+- `pnpm.patchedDependencies` for `telegraf@4.16.3` is configured in `pnpm-workspace.yaml` (pnpm 10).
 
 ---
 
 ## 📡 API Overview
 
-### Public and user flows
+### Public and User Flows
 
 | Area | Notes |
 |------|-------|
 | **Mailboxes** | Create, delete, and manage disposable addresses |
 | **Email Inbox** | List, view, delete, and forward emails |
 | **Auth** | Register, login, logout, and JWT-based access |
-| **Send Mail** | Send through binding/SMTP/email routing paths |
+| **Send Mail** | Send via binding / SMTP / Email Routing |
 | **Telegram** | Push incoming mail and bot commands |
 
-### Admin flows
+### Admin Flows
 
 | Area | Notes |
 |------|-------|
 | **Admin Console** | Manage domains, users, and mailbox policies |
 | **Cleanup** | Run mailbox cleanup and custom SQL cleanup rules |
-| **Settings** | Configure Turnstile, send balance, forwarding, webhook, and AI extraction |
+| **Settings** | Configure Turnstile, send balance, forwarding, webhooks, and AI extraction |
 
 ---
 
 ## 🔒 Security Notes
 
-- JWT required for protected routes
-- Admin panel protected by `ADMIN_PASSWORDS`
-- Turnstile support available for login forms
-- Optional address passwords for mailbox access
-- Email content parsing falls back safely when WASM parser fails
+- JWT is required for protected routes.
+- Admin panel is protected by `ADMIN_PASSWORD` / `ADMIN_PASSWORDS`.
+- Turnstile can be enabled for login and registration forms.
+- Optional per-address passwords for mailbox access.
+- Email content parsing falls back safely when the WASM parser fails.
 
 ---
 
