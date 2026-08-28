@@ -116,25 +116,9 @@ pnpm dev:worker   # Worker only (wrangler dev --config wrangler.jsonc)
 pnpm dev:frontend # frontend only
 ```
 
-### 5. Deploy
+### 5. Required Cloudflare Resources (One-Time Setup)
 
-#### Manual deploy (local)
-
-```bash
-pnpm deploy
-```
-
-#### GitHub Actions (recommended)
-
-1. Fill in all **GitHub Variables and Secrets** (see tables below: Settings → Secrets and variables → Actions).
-2. Go to `Actions → Deploy → Run workflow`.
-3. The workflow automatically: `cf:config` → build → `wrangler secret bulk` → deploy.
-
-Pushes to `main` do **not** auto-deploy — deployment is `workflow_dispatch` only.
-
-### 6. Required Cloudflare Resources
-
-Create these **once** before the first deploy. CI only deploys code — it does not provision resources.
+Create these **once** before the first deploy. Required for **both** Local and Remote deploys — CI only deploys code, it does not provision resources.
 
 | Resource | Command / Dashboard |
 |----------|---------------------|
@@ -144,7 +128,47 @@ Create these **once** before the first deploy. CI only deploys code — it does 
 | **Custom Domain** | Cloudflare Dashboard → Worker → Settings → Domains & Routes → Add custom domain `mail.yourdomain.com` |
 | **Email Routing** *(optional)* | Cloudflare Dashboard → Email → Email Routing |
 
-### 7. GitHub Variables
+### 6. Deploy
+
+Choose one method below. Use **Local** for quick testing and **Remote (Cloudflare)** for production / team workflows.
+
+#### 🖥️ Option A — Local Deploy (from your machine)
+
+Best for development, testing, or one-off deploys. Uses your local `.env` + `.dev.vars` and your authenticated `wrangler` session.
+
+```bash
+# 1. Authenticate wrangler (first time only)
+npx wrangler login
+
+# 2. Ensure config is generated
+pnpm cf:config
+
+# 3. Deploy to Cloudflare
+pnpm deploy
+# equivalent: pnpm build && wrangler deploy --config wrangler.jsonc
+```
+
+**How it works:**
+- `pnpm cf:config` validates required vars and generates `wrangler.jsonc`
+- `pnpm build` builds the frontend and bundles the worker
+- `wrangler deploy` uploads the worker; secrets from `.dev.vars` are applied via `wrangler secret bulk` if present
+
+> **Use when:** you want fast iteration without setting up GitHub. **Not ideal for:** shared production where secrets should live in CI.
+
+---
+
+#### ☁️ Option B — Remote Deploy via GitHub Actions to Cloudflare (Recommended for Production)
+
+Best for production and team collaboration. Code is built and deployed by GitHub Actions using **GitHub Variables + Secrets** — triggered manually via `workflow_dispatch`.
+
+**Steps:**
+1. Fill in **GitHub Variables** and **GitHub Secrets** (tables below) at `Settings → Secrets and variables → Actions`.
+2. Go to GitHub → `Actions → Deploy → Run workflow`.
+3. The workflow automatically runs: `cf:config` → `build` → `wrangler secret bulk` → `wrangler deploy`.
+
+> Pushes to `main` do **not** auto-deploy — deployment is `workflow_dispatch` only.
+
+##### GitHub Variables
 
 Configure at `Settings → Secrets and variables → Actions → Variables` (non-sensitive). These fill `${VAR}` placeholders in `wrangler.template.jsonc` via `pnpm cf:config`.
 
@@ -173,7 +197,7 @@ Configure at `Settings → Secrets and variables → Actions → Variables` (non
 
 > Validation is enforced by `scripts/gen-wrangler.mjs`. Missing required variables will fail `pnpm cf:config` with a clear error.
 
-### 8. GitHub Secrets
+##### GitHub Secrets
 
 Configure at `Settings → Secrets and variables → Actions → Secrets` (sensitive). Injected via `wrangler secret bulk` during deploy. For local dev, put them in `.dev.vars`.
 
@@ -193,7 +217,7 @@ Configure at `Settings → Secrets and variables → Actions → Secrets` (sensi
 | `S3_ACCESS_KEY_ID` | Optional | S3 / R2 access key ID |
 | `S3_SECRET_ACCESS_KEY` | Optional | S3 / R2 secret access key |
 
-### 9. Configuration Flow
+### 7. Configuration Flow
 
 No database IDs, bucket names, or domains are committed. All values are injected at build time:
 
@@ -203,8 +227,8 @@ wrangler.template.jsonc  (committed, contains ${VAR} placeholders)
         ▼
 wrangler.jsonc           (generated, gitignored — used by wrangler)
         ▲
-        ├─ local : .env + .dev.vars
-        └─ CI    : GitHub Variables + Secrets
+        ├─ local : .env + .dev.vars        →  Option A (Local Deploy)
+        └─ CI    : GitHub Variables + Secrets  →  Option B (Remote Deploy)
 ```
 
 - `"${VAR}"` in template → replaced as JSON string (quoted).
