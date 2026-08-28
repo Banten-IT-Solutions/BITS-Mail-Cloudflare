@@ -122,11 +122,29 @@ pnpm dev:worker   # hanya Worker
 
 ### 5. Deploy
 
+#### Manual deploy (lokal)
+
 ```bash
 pnpm deploy
 ```
 
-> Deploy otomatis via GitHub Actions: `Actions → Deploy → Run workflow` (workflow_dispatch).
+#### GitHub Actions
+
+1. Pastikan semua **GitHub Secrets/Variables** sudah diisi (lihat tabel di bawah).
+2. Buka `Actions → Deploy → Run workflow`.
+3. Workflow otomatis: generate `wrangler.jsonc` → build → put secrets → deploy.
+
+#### Resource yang harus sudah dibuat (manual)
+
+| Resource | Command / Dashboard |
+|----------|---------------------|
+| **D1 Database** | `wrangler d1 create bits-mail-cloudflare` |
+| **KV Namespace** | `wrangler kv namespace create bits-mail-cloudflare` |
+| **R2 Bucket** | `wrangler r2 bucket create bits-mail-cloudflare` |
+| **Custom domain** | Cloudflare Dashboard → Worker → Routes → Add custom domain `mail.bits.co.id` |
+| **Email Routing** (opsional) | Cloudflare Dashboard → Email → Routing |
+
+> CI hanya deploy code — tidak create/update resource di atas.
 
 ---
 
