@@ -193,28 +193,29 @@ Best for production and team collaboration. Code is built and deployed by GitHub
 
 Configure at `Settings → Secrets and variables → Actions → Variables` (non-sensitive). These fill `${VAR}` placeholders in `wrangler.template.jsonc` via `pnpm cf:config`.
 
-| Variable                              | Example                        | Required    | Description                                            |
-| ------------------------------------- | ------------------------------ | ----------- | ------------------------------------------------------ |
-| `WORKER_NAME`                         | `my-mail-worker`               | ✅ Required | Worker name on Cloudflare (placeholder — use your own) |
-| `WORKER_DOMAIN`                       | `mail.yourdomain.com`          | ✅ Required | Custom domain for the Worker                           |
-| `D1_DATABASE_NAME`                    | `my-mail-db`                   | ✅ Required | D1 database name (placeholder — use your own)          |
-| `D1_DATABASE_ID`                      | `xxxx-xxxx-xxxx`               | ✅ Required | D1 database ID from `wrangler d1 create`               |
-| `KV_NAMESPACE_ID`                     | `xxxx-xxxx-xxxx`               | ✅ Required | KV namespace ID from `wrangler kv namespace create`    |
-| `DEFAULT_DOMAINS`                     | `["mail.yourdomain.com"]`      | ✅ Required | JSON array string — default mail domains               |
-| `DOMAINS`                             | `["mail.yourdomain.com"]`      | ✅ Required | JSON array string — active mail domains                |
-| `ADDRESS_PREFIX`                      | `tmp`                          | Optional    | Prefix for temporary email addresses                   |
-| `DEFAULT_LANG`                        | `en`                           | Optional    | Default UI language                                    |
-| `WORKER_TITLE`                        | `BITS Mail Cloudflare`         | Optional    | Page title                                             |
-| `FRONTEND_URL`                        | `https://mail.yourdomain.com`  | Optional    | Frontend URL                                           |
-| `ENABLE_USER_CREATE_EMAIL`            | `true`                         | Optional    | Allow users to create email addresses                  |
-| `DISABLE_ANONYMOUS_USER_CREATE_EMAIL` | `false`                        | Optional    | Disable guest email creation                           |
-| `ENABLE_USER_DELETE_EMAIL`            | `true`                         | Optional    | Allow users to delete emails                           |
-| `ENABLE_AI_EMAIL_EXTRACT`             | `false`                        | Optional    | Enable Workers AI extraction                           |
-| `AI_EXTRACT_MODEL`                    | `@cf/meta/llama-3-8b-instruct` | Optional    | Workers AI model ID                                    |
-| `CF_TURNSTILE_SITE_KEY`               | `0x4AAAAAAA...`                | Optional    | Turnstile public site key                              |
-| `S3_BUCKET`                           | `my-mail-bucket`               | Optional    | R2 / S3 bucket name (placeholder — use your own)       |
-| `S3_URL_EXPIRES`                      | `360`                          | Optional    | Presigned URL expiry in seconds                        |
-| `VITE_API_BASE`                       | `https://mail.yourdomain.com`  | Optional    | API base URL for frontend build                        |
+| Variable                              | Example                                         | Required    | Description                                            |
+| ------------------------------------- | ----------------------------------------------- | ----------- | ------------------------------------------------------ |
+| `WORKER_NAME`                         | `my-mail-worker`                                | ✅ Required | Worker name on Cloudflare (placeholder — use your own) |
+| `WORKER_DOMAIN`                       | `mail.yourdomain.com`                           | ✅ Required | Custom domain for the Worker                           |
+| `D1_DATABASE_NAME`                    | `my-mail-db`                                    | ✅ Required | D1 database name (placeholder — use your own)          |
+| `D1_DATABASE_ID`                      | `xxxx-xxxx-xxxx`                                | ✅ Required | D1 database ID from `wrangler d1 create`               |
+| `KV_NAMESPACE_ID`                     | `xxxx-xxxx-xxxx`                                | ✅ Required | KV namespace ID from `wrangler kv namespace create`    |
+| `DEFAULT_DOMAINS`                     | `["mail.yourdomain.com"]`                       | ✅ Required | JSON array string — default mail domains               |
+| `DOMAINS`                             | `["mail.yourdomain.com"]`                       | ✅ Required | JSON array string — active mail domains                |
+| `ADDRESS_PREFIX`                      | `tmp`                                           | Optional    | Prefix for temporary email addresses                   |
+| `DEFAULT_LANG`                        | `en`                                            | Optional    | Default UI language                                    |
+| `WORKER_TITLE`                        | `BITS Mail Cloudflare`                          | Optional    | Page title                                             |
+| `FRONTEND_URL`                        | `https://mail.yourdomain.com`                   | Optional    | Frontend URL                                           |
+| `ENABLE_USER_CREATE_EMAIL`            | `true`                                          | Optional    | Allow users to create email addresses                  |
+| `DISABLE_ANONYMOUS_USER_CREATE_EMAIL` | `false`                                         | Optional    | Disable guest email creation                           |
+| `ENABLE_USER_DELETE_EMAIL`            | `true`                                          | Optional    | Allow users to delete emails                           |
+| `ENABLE_AI_EMAIL_EXTRACT`             | `false`                                         | Optional    | Enable Workers AI extraction                           |
+| `AI_EXTRACT_MODEL`                    | `@cf/meta/llama-3-8b-instruct`                  | Optional    | Workers AI model ID                                    |
+| `CF_TURNSTILE_SITE_KEY`               | `0x4AAAAAAA...`                                 | Optional    | Turnstile public site key                              |
+| `S3_ENDPOINT`                         | `https://<account_id>.r2.cloudflarestorage.com` | Optional    | S3-compatible endpoint (R2)                            |
+| `S3_BUCKET`                           | `my-mail-bucket`                                | Optional    | R2 / S3 bucket name (placeholder — use your own)       |
+| `S3_URL_EXPIRES`                      | `360`                                           | Optional    | Presigned URL expiry in seconds                        |
+| `VITE_API_BASE`                       | `https://mail.yourdomain.com`                   | Optional    | API base URL for frontend build                        |
 
 > Validation is enforced by `scripts/gen-wrangler.mjs`. Missing required variables will fail `pnpm cf:config` with a clear error.
 
@@ -234,9 +235,8 @@ Configure at `Settings → Secrets and variables → Actions → Secrets` (sensi
 | `TELEGRAM_BOT_TOKEN`      | Optional     | Telegram bot token (alternative to `TG_BOT_INFO`)                                                                     |
 | `RESEND_TOKEN`            | Optional     | Resend API key — fallback for sending to arbitrary recipients                                                         |
 | `SMTP_CONFIG`             | Optional     | JSON SMTP config: `{"mail.yourdomain.com":{"host":"smtp.example.com","port":587,"auth":{"user":"...","pass":"..."}}}` |
-| `S3_ENDPOINT`             | Optional     | S3-compatible endpoint (R2: `https://<account_id>.r2.cloudflarestorage.com`)                                          |
-| `S3_ACCESS_KEY_ID`        | Optional     | S3 / R2 access key ID                                                                                                 |
-| `S3_SECRET_ACCESS_KEY`    | Optional     | S3 / R2 secret access key                                                                                             |
+| `S3_ACCESS_KEY_ID`        | Optional     | S3 / R2 access key ID (secret)                                                                                        |
+| `S3_SECRET_ACCESS_KEY`    | Optional     | S3 / R2 secret access key (secret)                                                                                    |
 
 ### 7. Configuration Flow
 
