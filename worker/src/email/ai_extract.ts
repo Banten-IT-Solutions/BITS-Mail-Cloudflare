@@ -6,11 +6,11 @@
  * service links, and subscription management links from email content.
  */
 
-import { commonParseMail } from "../common";
-import { getBooleanValue, getJsonSetting } from "../utils";
-import { CONSTANTS } from "../constants";
-import { Context } from "hono";
-import type { AiExtractSettings } from "../admin_api/ai_extract_settings";
+import { commonParseMail } from '../common';
+import { getBooleanValue, getJsonSetting } from '../utils';
+import { CONSTANTS } from '../constants';
+import { Context } from 'hono';
+import type { AiExtractSettings } from '../admin_api/ai_extract_settings';
 
 // AI Prompt for email analysis
 const PROMPT = `
@@ -92,48 +92,52 @@ IMPORTANT: Return ONLY the JSON, no explanations or additional text.
  * @param env - Cloudflare Workers environment bindings
  * @returns Promise<ExtractResult> - The extracted information
  */
-async function extractWithCloudflareAI(
-    content: string,
-    env: Bindings
-): Promise<ExtractResult> {
-    // Get the AI model name from environment variable or use default
-    const modelName = env.AI_EXTRACT_MODEL || '@cf/meta/llama-3.1-8b-instruct';
+async function extractWithCloudflareAI(content: string, env: Bindings): Promise<ExtractResult> {
+  // Get the AI model name from environment variable or use default
+  const modelName = env.AI_EXTRACT_MODEL || '@cf/meta/llama-3.1-8b-instruct';
 
-    const result = await env.AI.run(modelName as keyof AiModels, {
-        messages: [
-            { role: 'system', content: PROMPT },
-            { role: 'user', content },
-        ],
-        response_format: {
-            type: 'json_schema',
-            json_schema: {
-                type: 'object',
-                properties: {
-                    type: {
-                        type: 'string',
-                        enum: ['auth_code', 'auth_link', 'service_link', 'subscription_link', 'other_link', 'none']
-                    },
-                    result: { type: 'string' },
-                    result_text: { type: 'string' },
-                },
-                required: ['type', 'result', 'result_text'],
-            },
+  const result = await env.AI.run(modelName as keyof AiModels, {
+    messages: [
+      { role: 'system', content: PROMPT },
+      { role: 'user', content },
+    ],
+    response_format: {
+      type: 'json_schema',
+      json_schema: {
+        type: 'object',
+        properties: {
+          type: {
+            type: 'string',
+            enum: [
+              'auth_code',
+              'auth_link',
+              'service_link',
+              'subscription_link',
+              'other_link',
+              'none',
+            ],
+          },
+          result: { type: 'string' },
+          result_text: { type: 'string' },
         },
-        stream: false,
-    });
+        required: ['type', 'result', 'result_text'],
+      },
+    },
+    stream: false,
+  });
 
-    // @ts-expect-error result.response
-    const response = result.response;
+  // @ts-expect-error result.response
+  const response = result.response;
 
-    if (typeof response === 'string') {
-        return JSON.parse(response) as ExtractResult;
-    }
+  if (typeof response === 'string') {
+    return JSON.parse(response) as ExtractResult;
+  }
 
-    if (response && typeof response === 'object') {
-        return response as ExtractResult;
-    }
+  if (response && typeof response === 'object') {
+    return response as ExtractResult;
+  }
 
-    throw new Error('Unexpected response format from Cloudflare AI');
+  throw new Error('Unexpected response format from Cloudflare AI');
 }
 
 /**
@@ -147,89 +151,88 @@ async function extractWithCloudflareAI(
  * @returns Promise<void>
  */
 export async function extractEmailInfo(
-    parsedEmailContext: ParsedEmailContext,
-    env: Bindings,
-    message_id: string | null,
-    address: string
+  parsedEmailContext: ParsedEmailContext,
+  env: Bindings,
+  message_id: string | null,
+  address: string
 ): Promise<void> {
-    try {
-        // Check if AI extraction is enabled via environment variable
-        if (!getBooleanValue(env.ENABLE_AI_EMAIL_EXTRACT)) {
-            return;
-        }
-
-        // Ensure AI binding is available
-        if (!env.AI) {
-            console.error('AI binding not available');
-            return;
-        }
-
-        // Check allowlist if enabled
-        const aiSettings = await getJsonSetting<AiExtractSettings>(
-            { env: env } as Context<HonoCustomType>,
-            CONSTANTS.AI_EXTRACT_SETTINGS_KEY
-        );
-
-        if (aiSettings?.enableAllowList && aiSettings.allowList?.length > 0) {
-            const isAllowed = aiSettings.allowList.some(pattern => {
-                // Support wildcard matching
-                if (pattern.includes('*')) {
-                    // Escape special regex characters except *
-                    const escapedPattern = pattern
-                        .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
-                        .replace(/\*/g, '.*');
-                    const regex = new RegExp('^' + escapedPattern + '$');
-                    return regex.test(address);
-                }
-                // Exact match
-                return address === pattern;
-            });
-
-            if (!isAllowed) {
-                console.log(`AI extraction skipped for ${address}: not in allowlist`);
-                return;
-            }
-        }
-
-        // Parse email to get content
-        const parsedEmail = await commonParseMail(parsedEmailContext);
-        const emailContent = parsedEmail?.text || parsedEmail?.html || "";
-
-        if (!emailContent) {
-            return;
-        }
-
-        // Truncate content if too long (max 4000 characters to avoid token limits)
-        const truncatedContent = emailContent.length > 4000
-            ? emailContent.substring(0, 4000) + '...[truncated]'
-            : emailContent;
-
-        const result = await extractWithCloudflareAI(truncatedContent, env);
-
-        // If extraction found something useful, save it to database
-        if (result.type !== 'none' && result.result) {
-            const metadata = JSON.stringify({
-                ai_extract: result,
-                extracted_at: new Date().toISOString()
-            });
-
-            // Update the raw_mails record with metadata
-            await env.DB.prepare(
-                `UPDATE raw_mails SET metadata = ? WHERE message_id = ?`
-            ).bind(metadata, message_id).run();
-
-            console.log(`AI extraction completed for ${message_id}: ${result.type}`);
-        }
-    } catch (e) {
-        console.error('AI email extraction error:', e);
+  try {
+    // Check if AI extraction is enabled via environment variable
+    if (!getBooleanValue(env.ENABLE_AI_EMAIL_EXTRACT)) {
+      return;
     }
+
+    // Ensure AI binding is available
+    if (!env.AI) {
+      console.error('AI binding not available');
+      return;
+    }
+
+    // Check allowlist if enabled
+    const aiSettings = await getJsonSetting<AiExtractSettings>(
+      { env: env } as Context<HonoCustomType>,
+      CONSTANTS.AI_EXTRACT_SETTINGS_KEY
+    );
+
+    if (aiSettings?.enableAllowList && aiSettings.allowList?.length > 0) {
+      const isAllowed = aiSettings.allowList.some(pattern => {
+        // Support wildcard matching
+        if (pattern.includes('*')) {
+          // Escape special regex characters except *
+          const escapedPattern = pattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
+          const regex = new RegExp('^' + escapedPattern + '$');
+          return regex.test(address);
+        }
+        // Exact match
+        return address === pattern;
+      });
+
+      if (!isAllowed) {
+        console.log(`AI extraction skipped for ${address}: not in allowlist`);
+        return;
+      }
+    }
+
+    // Parse email to get content
+    const parsedEmail = await commonParseMail(parsedEmailContext);
+    const emailContent = parsedEmail?.text || parsedEmail?.html || '';
+
+    if (!emailContent) {
+      return;
+    }
+
+    // Truncate content if too long (max 4000 characters to avoid token limits)
+    const truncatedContent =
+      emailContent.length > 4000
+        ? emailContent.substring(0, 4000) + '...[truncated]'
+        : emailContent;
+
+    const result = await extractWithCloudflareAI(truncatedContent, env);
+
+    // If extraction found something useful, save it to database
+    if (result.type !== 'none' && result.result) {
+      const metadata = JSON.stringify({
+        ai_extract: result,
+        extracted_at: new Date().toISOString(),
+      });
+
+      // Update the raw_mails record with metadata
+      await env.DB.prepare(`UPDATE raw_mails SET metadata = ? WHERE message_id = ?`)
+        .bind(metadata, message_id)
+        .run();
+
+      console.log(`AI extraction completed for ${message_id}: ${result.type}`);
+    }
+  } catch (e) {
+    console.error('AI email extraction error:', e);
+  }
 }
 
 /**
  * Type definition for extraction result
  */
 export type ExtractResult = {
-    type: 'auth_code' | 'auth_link' | 'service_link' | 'subscription_link' | 'other_link' | 'none';
-    result: string;
-    result_text: string;
+  type: 'auth_code' | 'auth_link' | 'service_link' | 'subscription_link' | 'other_link' | 'none';
+  result: string;
+  result_text: string;
 };

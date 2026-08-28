@@ -1,70 +1,67 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
-import { useGlobalState } from '../../store'
+import { useGlobalState } from '../../store';
 import { api } from '../../api';
 
-const {
-    userJwt, userOauth2SessionState, userOauth2SessionClientID
-} = useGlobalState()
+const { userJwt, userOauth2SessionState, userOauth2SessionClientID } = useGlobalState();
 
 const message = useMessage();
-const route = useRoute()
-const router = useRouter()
-const errorInfo = ref('')
+const route = useRoute();
+const router = useRouter();
+const errorInfo = ref('');
 const { t } = useI18n({
-    messages: {
-        en: {
-            logging: 'Logging in...',
-            stateNotMatch: 'state not match',
-            codeNotFound: 'code not found',
-        },
-        id: {
-            logging: 'Sedang masuk...',
-            stateNotMatch: 'state tidak cocok',
-            codeNotFound: 'kode tidak ditemukan',
-        },
-    }
+  messages: {
+    en: {
+      logging: 'Logging in...',
+      stateNotMatch: 'state not match',
+      codeNotFound: 'code not found',
+    },
+    id: {
+      logging: 'Sedang masuk...',
+      stateNotMatch: 'state tidak cocok',
+      codeNotFound: 'kode tidak ditemukan',
+    },
+  },
 });
 
 onMounted(async () => {
-    try {
-        const state = route.query.state;
-        if (state != userOauth2SessionState.value) {
-            console.error('state not match');
-            message.error(t('stateNotMatch'));
-            return;
-        }
-        const code = route.query.code;
-        if (!code) {
-            console.error('code not found');
-            message.error(t('codeNotFound'));
-            return;
-        }
-        const res = await api.fetch(`/user_api/oauth2/callback`, {
-            method: 'POST',
-            body: JSON.stringify({
-                code: code,
-                clientID: userOauth2SessionClientID.value
-            })
-        });
-        userJwt.value = res.jwt;
-        router.push('/user');
-    } catch (error) {
-        console.error(error);
-        message.error(error.message || 'error');
-    } finally {
-        userOauth2SessionState.value = '';
-        userOauth2SessionClientID.value = '';
+  try {
+    const state = route.query.state;
+    if (state != userOauth2SessionState.value) {
+      console.error('state not match');
+      message.error(t('stateNotMatch'));
+      return;
     }
+    const code = route.query.code;
+    if (!code) {
+      console.error('code not found');
+      message.error(t('codeNotFound'));
+      return;
+    }
+    const res = await api.fetch(`/user_api/oauth2/callback`, {
+      method: 'POST',
+      body: JSON.stringify({
+        code: code,
+        clientID: userOauth2SessionClientID.value,
+      }),
+    });
+    userJwt.value = res.jwt;
+    router.push('/user');
+  } catch (error) {
+    console.error(error);
+    message.error(error.message || 'error');
+  } finally {
+    userOauth2SessionState.value = '';
+    userOauth2SessionClientID.value = '';
+  }
 });
 </script>
 
 <template>
-    <n-card :bordered="false" embedded>
-        <n-result status="info" :title="t('logging')" :description="errorInfo">
-        </n-result>
-    </n-card>
+  <n-card :bordered="false" embedded>
+    <n-result status="info" :title="t('logging')" :description="errorInfo"> </n-result>
+  </n-card>
 </template>

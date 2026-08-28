@@ -17,30 +17,30 @@
 
 ## ✨ Features
 
-| Feature | Description |
-|---------|-------------|
-| **Single Worker Deployment** | One Cloudflare Worker (e.g., `my-mail-worker`) serves API and frontend assets through `[assets]` binding |
-| **Temporary Mailboxes** | Create and manage disposable email addresses with multiple domains |
-| **Fast Email Parsing** | Client-side `mail-parser-wasm` plus server-side `PostalMime` fallback |
-| **User Accounts** | Register, login, and manage mailbox access with JWT |
-| **Address Passwords** | Optional password-protected mailboxes |
-| **Auto Reply & Forwarding** | Configure auto-reply, forward rules, and email filters |
-| **Telegram Integration** | Push incoming mail to Telegram and manage mailboxes from bot flows |
-| **Workers AI Extraction** | Extract verification codes and key links from email content |
-| **Admin Console** | Manage domains, users, quotas, settings, and cleanup tasks |
-| **Cloudflare Native** | Built for Workers, D1, KV, Turnstile, and Email Routing |
-| **Dynamic Configuration** | Uses `wrangler.template.jsonc` + `pnpm cf:config` to inject `${VAR}` from `.env` / GitHub Secrets — no environment values committed |
+| Feature                      | Description                                                                                                                         |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **Single Worker Deployment** | One Cloudflare Worker (e.g., `my-mail-worker`) serves API and frontend assets through `[assets]` binding                            |
+| **Temporary Mailboxes**      | Create and manage disposable email addresses with multiple domains                                                                  |
+| **Fast Email Parsing**       | Client-side `mail-parser-wasm` plus server-side `PostalMime` fallback                                                               |
+| **User Accounts**            | Register, login, and manage mailbox access with JWT                                                                                 |
+| **Address Passwords**        | Optional password-protected mailboxes                                                                                               |
+| **Auto Reply & Forwarding**  | Configure auto-reply, forward rules, and email filters                                                                              |
+| **Telegram Integration**     | Push incoming mail to Telegram and manage mailboxes from bot flows                                                                  |
+| **Workers AI Extraction**    | Extract verification codes and key links from email content                                                                         |
+| **Admin Console**            | Manage domains, users, quotas, settings, and cleanup tasks                                                                          |
+| **Cloudflare Native**        | Built for Workers, D1, KV, Turnstile, and Email Routing                                                                             |
+| **Dynamic Configuration**    | Uses `wrangler.template.jsonc` + `pnpm cf:config` to inject `${VAR}` from `.env` / GitHub Secrets — no environment values committed |
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| **Frontend** | Vue 3, Naive UI, Vite, TypeScript — SPA in `frontend/` |
-| **Backend** | Cloudflare Workers, Hono, D1 (SQLite), KV — in `worker/` |
-| **Build** | pnpm workspace monorepo, root `vite.config.ts` + `@cloudflare/vite-plugin` unified dev |
-| **Mail Processing** | `mail-parser-wasm` (client), `PostalMime` (server) |
-| **Integrations** | Telegram Bot, Workers AI, Turnstile, S3-compatible storage |
-| **Tooling** | Wrangler 4, pnpm 10, ESLint, `scripts/gen-wrangler.mjs` |
+| Layer               | Technology                                                                             |
+| ------------------- | -------------------------------------------------------------------------------------- |
+| **Frontend**        | Vue 3, Naive UI, Vite, TypeScript — SPA in `frontend/`                                 |
+| **Backend**         | Cloudflare Workers, Hono, D1 (SQLite), KV — in `worker/`                               |
+| **Build**           | pnpm workspace monorepo, root `vite.config.ts` + `@cloudflare/vite-plugin` unified dev |
+| **Mail Processing** | `mail-parser-wasm` (client), `PostalMime` (server)                                     |
+| **Integrations**    | Telegram Bot, Workers AI, Turnstile, S3-compatible storage                             |
+| **Tooling**         | Wrangler 4, pnpm 10, ESLint, `scripts/gen-wrangler.mjs`                                |
 
 ---
 
@@ -120,11 +120,11 @@ pnpm dev:frontend # frontend only
 
 Create these **once** before the first deploy. Required for **both** Local and Remote deploys — CI only deploys code, it does not provision resources.
 
-| Resource | Command / Dashboard |
-|----------|---------------------|
-| **D1 Database** | `wrangler d1 create <your-d1-name>` (e.g., `my-mail-db`) |
-| **KV Namespace** | `wrangler kv namespace create <your-kv-name>` (e.g., `my-mail-kv`) |
-| **R2 Bucket** | `wrangler r2 bucket create <your-bucket-name>` (e.g., `my-mail-bucket`) |
+| Resource         | Command / Dashboard                                                     |
+| ---------------- | ----------------------------------------------------------------------- |
+| **D1 Database**  | `wrangler d1 create <your-d1-name>` (e.g., `my-mail-db`)                |
+| **KV Namespace** | `wrangler kv namespace create <your-kv-name>` (e.g., `my-mail-kv`)      |
+| **R2 Bucket**    | `wrangler r2 bucket create <your-bucket-name>` (e.g., `my-mail-bucket`) |
 
 > **Custom Domain is auto-provisioned on deploy** — `wrangler deploy` creates/updates it from `routes: [{ "pattern": "${WORKER_DOMAIN}", "custom_domain": true }]` in `wrangler.template.jsonc`. No manual Dashboard step needed; just ensure the zone for `WORKER_DOMAIN` (e.g., `mail.yourdomain.com`) is already active in your Cloudflare account.
 
@@ -163,6 +163,7 @@ pnpm deploy
 ```
 
 **How it works:**
+
 - `pnpm cf:config` validates required vars and generates `wrangler.jsonc`
 - `pnpm build` builds the frontend and bundles the worker
 - `wrangler deploy` uploads the worker; secrets from `.dev.vars` are applied via `wrangler secret bulk` if present
@@ -176,6 +177,7 @@ pnpm deploy
 Best for production and team collaboration. Code is built and deployed by GitHub Actions using **GitHub Variables + Secrets** — triggered manually via `workflow_dispatch`.
 
 **Steps:**
+
 1. Fill in **GitHub Variables** and **GitHub Secrets** (tables below) at `Settings → Secrets and variables → Actions`.
 2. Go to GitHub → `Actions → Deploy → Run workflow`.
 3. The workflow automatically runs: `cf:config` → `build` → `wrangler secret bulk` → `wrangler deploy`.
@@ -186,28 +188,28 @@ Best for production and team collaboration. Code is built and deployed by GitHub
 
 Configure at `Settings → Secrets and variables → Actions → Variables` (non-sensitive). These fill `${VAR}` placeholders in `wrangler.template.jsonc` via `pnpm cf:config`.
 
-| Variable | Example | Required | Description |
-|----------|---------|----------|-------------|
-| `WORKER_NAME` | `my-mail-worker` | ✅ Required | Worker name on Cloudflare (placeholder — use your own) |
-| `WORKER_DOMAIN` | `mail.yourdomain.com` | ✅ Required | Custom domain for the Worker |
-| `D1_DATABASE_NAME` | `my-mail-db` | ✅ Required | D1 database name (placeholder — use your own) |
-| `D1_DATABASE_ID` | `xxxx-xxxx-xxxx` | ✅ Required | D1 database ID from `wrangler d1 create` |
-| `KV_NAMESPACE_ID` | `xxxx-xxxx-xxxx` | ✅ Required | KV namespace ID from `wrangler kv namespace create` |
-| `DEFAULT_DOMAINS` | `["mail.yourdomain.com"]` | ✅ Required | JSON array string — default mail domains |
-| `DOMAINS` | `["mail.yourdomain.com"]` | ✅ Required | JSON array string — active mail domains |
-| `ADDRESS_PREFIX` | `tmp` | Optional | Prefix for temporary email addresses |
-| `DEFAULT_LANG` | `en` | Optional | Default UI language |
-| `WORKER_TITLE` | `BITS Mail Cloudflare` | Optional | Page title |
-| `FRONTEND_URL` | `https://mail.yourdomain.com` | Optional | Frontend URL |
-| `ENABLE_USER_CREATE_EMAIL` | `true` | Optional | Allow users to create email addresses |
-| `DISABLE_ANONYMOUS_USER_CREATE_EMAIL` | `false` | Optional | Disable guest email creation |
-| `ENABLE_USER_DELETE_EMAIL` | `true` | Optional | Allow users to delete emails |
-| `ENABLE_AI_EMAIL_EXTRACT` | `false` | Optional | Enable Workers AI extraction |
-| `AI_EXTRACT_MODEL` | `@cf/meta/llama-3-8b-instruct` | Optional | Workers AI model ID |
-| `CF_TURNSTILE_SITE_KEY` | `0x4AAAAAAA...` | Optional | Turnstile public site key |
-| `S3_BUCKET` | `my-mail-bucket` | Optional | R2 / S3 bucket name (placeholder — use your own) |
-| `S3_URL_EXPIRES` | `360` | Optional | Presigned URL expiry in seconds |
-| `VITE_API_BASE` | `https://mail.yourdomain.com` | Optional | API base URL for frontend build |
+| Variable                              | Example                        | Required    | Description                                            |
+| ------------------------------------- | ------------------------------ | ----------- | ------------------------------------------------------ |
+| `WORKER_NAME`                         | `my-mail-worker`               | ✅ Required | Worker name on Cloudflare (placeholder — use your own) |
+| `WORKER_DOMAIN`                       | `mail.yourdomain.com`          | ✅ Required | Custom domain for the Worker                           |
+| `D1_DATABASE_NAME`                    | `my-mail-db`                   | ✅ Required | D1 database name (placeholder — use your own)          |
+| `D1_DATABASE_ID`                      | `xxxx-xxxx-xxxx`               | ✅ Required | D1 database ID from `wrangler d1 create`               |
+| `KV_NAMESPACE_ID`                     | `xxxx-xxxx-xxxx`               | ✅ Required | KV namespace ID from `wrangler kv namespace create`    |
+| `DEFAULT_DOMAINS`                     | `["mail.yourdomain.com"]`      | ✅ Required | JSON array string — default mail domains               |
+| `DOMAINS`                             | `["mail.yourdomain.com"]`      | ✅ Required | JSON array string — active mail domains                |
+| `ADDRESS_PREFIX`                      | `tmp`                          | Optional    | Prefix for temporary email addresses                   |
+| `DEFAULT_LANG`                        | `en`                           | Optional    | Default UI language                                    |
+| `WORKER_TITLE`                        | `BITS Mail Cloudflare`         | Optional    | Page title                                             |
+| `FRONTEND_URL`                        | `https://mail.yourdomain.com`  | Optional    | Frontend URL                                           |
+| `ENABLE_USER_CREATE_EMAIL`            | `true`                         | Optional    | Allow users to create email addresses                  |
+| `DISABLE_ANONYMOUS_USER_CREATE_EMAIL` | `false`                        | Optional    | Disable guest email creation                           |
+| `ENABLE_USER_DELETE_EMAIL`            | `true`                         | Optional    | Allow users to delete emails                           |
+| `ENABLE_AI_EMAIL_EXTRACT`             | `false`                        | Optional    | Enable Workers AI extraction                           |
+| `AI_EXTRACT_MODEL`                    | `@cf/meta/llama-3-8b-instruct` | Optional    | Workers AI model ID                                    |
+| `CF_TURNSTILE_SITE_KEY`               | `0x4AAAAAAA...`                | Optional    | Turnstile public site key                              |
+| `S3_BUCKET`                           | `my-mail-bucket`               | Optional    | R2 / S3 bucket name (placeholder — use your own)       |
+| `S3_URL_EXPIRES`                      | `360`                          | Optional    | Presigned URL expiry in seconds                        |
+| `VITE_API_BASE`                       | `https://mail.yourdomain.com`  | Optional    | API base URL for frontend build                        |
 
 > Validation is enforced by `scripts/gen-wrangler.mjs`. Missing required variables will fail `pnpm cf:config` with a clear error.
 
@@ -215,21 +217,21 @@ Configure at `Settings → Secrets and variables → Actions → Variables` (non
 
 Configure at `Settings → Secrets and variables → Actions → Secrets` (sensitive). Injected via `wrangler secret bulk` during deploy. For local dev, put them in `.dev.vars`.
 
-| Secret | Required | Description |
-|--------|----------|-------------|
-| `CLOUDFLARE_API_TOKEN` | ✅ Required | Cloudflare API token with Workers Edit permission |
-| `CLOUDFLARE_ACCOUNT_ID` | ✅ Required | Cloudflare Account ID (Dashboard → right sidebar) |
-| `JWT_SECRET` | ✅ Required | Min. 32 characters — used to sign auth tokens |
-| `ADMIN_PASSWORD` | ✅ Required* | Admin panel password (`*` either this or `ADMIN_PASSWORDS` is required) |
-| `ADMIN_PASSWORDS` | Optional | JSON array `["pass1","pass2"]` — multiple admin passwords |
-| `CF_TURNSTILE_SECRET_KEY` | Optional | Turnstile server-side secret key |
-| `TG_BOT_INFO` | Optional | JSON `{"token":"123:abc","username":"your_bot"}` — Telegram bot info |
-| `TELEGRAM_BOT_TOKEN` | Optional | Telegram bot token (alternative to `TG_BOT_INFO`) |
-| `RESEND_TOKEN` | Optional | Resend API key — fallback for sending to arbitrary recipients |
-| `SMTP_CONFIG` | Optional | JSON SMTP config: `{"mail.yourdomain.com":{"host":"smtp.example.com","port":587,"auth":{"user":"...","pass":"..."}}}` |
-| `S3_ENDPOINT` | Optional | S3-compatible endpoint (R2: `https://<account_id>.r2.cloudflarestorage.com`) |
-| `S3_ACCESS_KEY_ID` | Optional | S3 / R2 access key ID |
-| `S3_SECRET_ACCESS_KEY` | Optional | S3 / R2 secret access key |
+| Secret                    | Required     | Description                                                                                                           |
+| ------------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`    | ✅ Required  | Cloudflare API token with Workers Edit permission                                                                     |
+| `CLOUDFLARE_ACCOUNT_ID`   | ✅ Required  | Cloudflare Account ID (Dashboard → right sidebar)                                                                     |
+| `JWT_SECRET`              | ✅ Required  | Min. 32 characters — used to sign auth tokens                                                                         |
+| `ADMIN_PASSWORD`          | ✅ Required* | Admin panel password (`*` either this or `ADMIN_PASSWORDS` is required)                                               |
+| `ADMIN_PASSWORDS`         | Optional     | JSON array `["pass1","pass2"]` — multiple admin passwords                                                             |
+| `CF_TURNSTILE_SECRET_KEY` | Optional     | Turnstile server-side secret key                                                                                      |
+| `TG_BOT_INFO`             | Optional     | JSON `{"token":"123:abc","username":"your_bot"}` — Telegram bot info                                                  |
+| `TELEGRAM_BOT_TOKEN`      | Optional     | Telegram bot token (alternative to `TG_BOT_INFO`)                                                                     |
+| `RESEND_TOKEN`            | Optional     | Resend API key — fallback for sending to arbitrary recipients                                                         |
+| `SMTP_CONFIG`             | Optional     | JSON SMTP config: `{"mail.yourdomain.com":{"host":"smtp.example.com","port":587,"auth":{"user":"...","pass":"..."}}}` |
+| `S3_ENDPOINT`             | Optional     | S3-compatible endpoint (R2: `https://<account_id>.r2.cloudflarestorage.com`)                                          |
+| `S3_ACCESS_KEY_ID`        | Optional     | S3 / R2 access key ID                                                                                                 |
+| `S3_SECRET_ACCESS_KEY`    | Optional     | S3 / R2 secret access key                                                                                             |
 
 ### 7. Configuration Flow
 
@@ -254,17 +256,17 @@ wrangler.jsonc           (generated, gitignored — used by wrangler)
 
 ### Commands
 
-| Command | Description |
-|---------|-------------|
-| `pnpm cf:config` | Generate `wrangler.jsonc` from `.env` / environment |
-| `pnpm dev` | Start unified Vite dev (SPA + Worker via `@cloudflare/vite-plugin`) |
-| `pnpm dev:frontend` | Frontend dev only |
-| `pnpm dev:worker` | Worker dev only (`wrangler dev --config wrangler.jsonc`) |
-| `pnpm build` | `cf:config` → build frontend → bundle worker |
-| `pnpm deploy` | Deploy to Cloudflare (`wrangler deploy --config wrangler.jsonc`) |
-| `pnpm cf:typegen` | Generate Cloudflare Workers type bindings |
-| `pnpm check` | Lint worker + test frontend |
-| `pnpm db:init:local` | Initialize / test local D1 database |
+| Command              | Description                                                         |
+| -------------------- | ------------------------------------------------------------------- |
+| `pnpm cf:config`     | Generate `wrangler.jsonc` from `.env` / environment                 |
+| `pnpm dev`           | Start unified Vite dev (SPA + Worker via `@cloudflare/vite-plugin`) |
+| `pnpm dev:frontend`  | Frontend dev only                                                   |
+| `pnpm dev:worker`    | Worker dev only (`wrangler dev --config wrangler.jsonc`)            |
+| `pnpm build`         | `cf:config` → build frontend → bundle worker                        |
+| `pnpm deploy`        | Deploy to Cloudflare (`wrangler deploy --config wrangler.jsonc`)    |
+| `pnpm cf:typegen`    | Generate Cloudflare Workers type bindings                           |
+| `pnpm check`         | Lint worker + test frontend                                         |
+| `pnpm db:init:local` | Initialize / test local D1 database                                 |
 
 ### Workspace Notes
 
@@ -278,21 +280,21 @@ wrangler.jsonc           (generated, gitignored — used by wrangler)
 
 ### Public and User Flows
 
-| Area | Notes |
-|------|-------|
-| **Mailboxes** | Create, delete, and manage disposable addresses |
-| **Email Inbox** | List, view, delete, and forward emails |
-| **Auth** | Register, login, logout, and JWT-based access |
-| **Send Mail** | Send via binding / SMTP / Email Routing |
-| **Telegram** | Push incoming mail and bot commands |
+| Area            | Notes                                           |
+| --------------- | ----------------------------------------------- |
+| **Mailboxes**   | Create, delete, and manage disposable addresses |
+| **Email Inbox** | List, view, delete, and forward emails          |
+| **Auth**        | Register, login, logout, and JWT-based access   |
+| **Send Mail**   | Send via binding / SMTP / Email Routing         |
+| **Telegram**    | Push incoming mail and bot commands             |
 
 ### Admin Flows
 
-| Area | Notes |
-|------|-------|
-| **Admin Console** | Manage domains, users, and mailbox policies |
-| **Cleanup** | Run mailbox cleanup and custom SQL cleanup rules |
-| **Settings** | Configure Turnstile, send balance, forwarding, webhooks, and AI extraction |
+| Area              | Notes                                                                      |
+| ----------------- | -------------------------------------------------------------------------- |
+| **Admin Console** | Manage domains, users, and mailbox policies                                |
+| **Cleanup**       | Run mailbox cleanup and custom SQL cleanup rules                           |
+| **Settings**      | Configure Turnstile, send balance, forwarding, webhooks, and AI extraction |
 
 ---
 

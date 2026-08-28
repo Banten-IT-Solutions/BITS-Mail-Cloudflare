@@ -21,12 +21,16 @@
     "preview": "pnpm build && wrangler dev --config wrangler.jsonc",
     "check": "pnpm --filter ./worker lint; pnpm --filter ./frontend test -- --run || true",
     "cf:typegen": "wrangler types --config wrangler.jsonc",
-    "test": "pnpm --filter ./frontend test"
+    "test": "pnpm --filter ./frontend test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "1.54.1",
     "@vitejs/plugin-vue": "6.0.8",
     "concurrently": "10.0.5",
+    "eslint-config-prettier": "10.1.8",
+    "prettier": "3.9.6",
     "unplugin-auto-import": "21.1.0",
     "unplugin-vue-components": "32.1.0",
     "vite": "8.2.2",

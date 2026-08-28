@@ -1,594 +1,679 @@
 <script setup>
 import { computed, onMounted, ref, h } from 'vue';
-import { useI18n } from 'vue-i18n'
-import { NButton, NPopconfirm, NInput, NSelect, NRadioGroup, NRadio } from 'naive-ui'
+import { useI18n } from 'vue-i18n';
+import { NButton, NPopconfirm, NInput, NSelect, NRadioGroup, NRadio } from 'naive-ui';
 
-import { useGlobalState } from '../../store'
-import { api } from '../../api'
+import { useGlobalState } from '../../store';
+import { api } from '../../api';
 
-const { loading, openSettings } = useGlobalState()
-const message = useMessage()
+const { loading, openSettings } = useGlobalState();
+const message = useMessage();
 
 const { t } = useI18n({
-    messages: {
-        en: {
-            tip: 'You can manually input the following multiple select input and enter',
-            manualInputPrompt: 'Type and press Enter to add',
-            save: 'Save',
-            successTip: 'Save Success',
-            address_block_list: 'Address Block Keywords for Users(Admin can skip)',
-            address_block_list_placeholder: 'Please enter the keywords you want to block',
-            send_address_block_list: 'Address Block Keywords for send email',
-            noLimitSendAddressList: 'No Balance Limit Send Address List',
-            verified_address_list: 'Verified Address List(Can send email by cf internal api)',
-            send_mail_limit: 'Send Mail Limit',
-            send_mail_limit_tip: 'This applies to all send channels. Use -1 for unlimited and 0 to block sending.',
-            send_mail_daily_limit: 'Daily Limit',
-            send_mail_monthly_limit: 'Monthly Limit',
-            send_mail_daily_limit_invalid: 'Daily limit must be an integer greater than or equal to -1',
-            send_mail_monthly_limit_invalid: 'Monthly limit must be an integer greater than or equal to -1',
-            fromBlockList: 'Block Keywords for receive email',
-            block_receive_unknow_address_email: 'Block receive unknow address email',
-            email_forwarding_config: 'Email Forwarding Configuration',
-            domain_list: 'Domain List (Optional)',
-            forward_address: 'Forward Address',
-            actions: 'Actions',
-            select_domain: 'Select Domain',
-            forward_placeholder: 'forward@example.com',
-            delete_rule: 'Delete',
-            delete_rule_confirm: 'Are you sure you want to delete this rule?',
-            delete_success: 'Delete Success',
-            forwarding_rule_warning: 'Each rule will run independently. Forward address needs to be a verified address.',
-            add: 'Add',
-            cancel: 'Cancel',
-            config: 'Config',
-            source_patterns: 'Source Address Regex (Optional)',
-            source_patterns_placeholder: 'e.g. gmail.com',
-            source_match_mode: 'Match Mode',
-            match_any: 'Any',
-            match_all: 'All',
-            source_patterns_tip: 'Domain list filters by recipient address, source regex filters by sender address. Both conditions must match for forwarding (AND logic). Leave either empty to skip that filter.',
-            regex_too_long: 'Regex pattern too long (max 200 characters)',
-            regex_invalid: 'Invalid regex pattern',
-            forward_address_required: 'Forward address is required',
-            rule_index: 'Rule',
-            create_address_subdomain_match: 'Allow Subdomain Suffix Match When Creating Address',
-            create_address_subdomain_match_tip: 'Only affects /api/new_address and /admin/new_address domain validation. Example: when enabled, foo.example.com can match configured base domain example.com.',
-            create_address_subdomain_match_note: 'This is different from RANDOM_SUBDOMAIN_DOMAINS: this switch allows API callers to specify custom subdomains directly, while random subdomain only auto-generates one during creation.',
-            create_address_subdomain_match_follow_env: 'Follow Environment Variable',
-            create_address_subdomain_match_force_enable: 'Force Enable',
-            create_address_subdomain_match_force_disable: 'Force Disable',
-            create_address_subdomain_match_follow_env_note: 'Choosing "Follow Environment Variable" clears the admin override and returns to the unset state. The effective result is still controlled by the Worker env and the precedence rules.',
-            create_address_subdomain_match_env_locked: 'Worker env ENABLE_CREATE_ADDRESS_SUBDOMAIN_MATCH is currently false. The saved admin switch can be modified, but it will not take effect until env is enabled or removed.',
-        },
-        id: {
-            tip: 'Anda dapat memasukkan secara manual ke dalam input pilihan ganda berikut ini',
-            manualInputPrompt: 'Ketik dan tekan Enter untuk menambahkan',
-            save: 'Simpan',
-            successTip: 'Berhasil Disimpan',
-            address_block_list: 'Kata Kunci Blokir Alamat untuk Pengguna (Admin dapat melewati)',
-            address_block_list_placeholder: 'Silakan masukkan kata kunci yang ingin diblokir',
-            send_address_block_list: 'Kata Kunci Blokir Alamat untuk Mengirim Email',
-            noLimitSendAddressList: 'Daftar Alamat Pengirim Tanpa Batas Saldo',
-            verified_address_list: 'Daftar Alamat Terverifikasi (Dapat mengirim email melalui API internal cf)',
-            send_mail_limit: 'Batas Pengiriman Email',
-            send_mail_limit_tip: 'Ini berlaku untuk semua saluran pengiriman. Gunakan -1 untuk tak terbatas dan 0 untuk memblokir pengiriman.',
-            send_mail_daily_limit: 'Batas Harian',
-            send_mail_monthly_limit: 'Batas Bulanan',
-            send_mail_daily_limit_invalid: 'Batas harian harus berupa bilangan bulat lebih besar dari atau sama dengan -1',
-            send_mail_monthly_limit_invalid: 'Batas bulanan harus berupa bilangan bulat lebih besar dari atau sama dengan -1',
-            fromBlockList: 'Kata Kunci Blokir untuk Menerima Email',
-            block_receive_unknow_address_email: 'Blokir email ke alamat tak dikenal',
-            email_forwarding_config: 'Konfigurasi Penerusan Email',
-            domain_list: 'Daftar Domain (Opsional)',
-            forward_address: 'Alamat Terusan',
-            actions: 'Aksi',
-            select_domain: 'Pilih Domain',
-            forward_placeholder: 'forward@example.com',
-            delete_rule: 'Hapus',
-            delete_rule_confirm: 'Anda yakin ingin menghapus Aturan ini?',
-            delete_success: 'Berhasil Dihapus',
-            forwarding_rule_warning: 'Setiap Aturan akan dijalankan secara independen. Alamat terusan harus berupa alamat terverifikasi.',
-            add: 'Tambahkan',
-            cancel: 'Batal',
-            config: 'Konfigurasi',
-            source_patterns: 'Regex Alamat Pengirim (Opsional)',
-            source_patterns_placeholder: 'mis. gmail.com',
-            source_match_mode: 'Mode Pencocokan',
-            match_any: 'Apa Saja',
-            match_all: 'Semua',
-            source_patterns_tip: 'Daftar domain memfiltrasi berdasarkan alamat penerima, regex sumber memfiltrasi berdasarkan alamat pengirim. Kedua kondisi harus cocok untuk penerusan (logika AND). Biarkan salah satu kosong untuk melewati filter tersebut.',
-            regex_too_long: 'Pola regex terlalu panjang (maksimal 200 karakter)',
-            regex_invalid: 'Pola regex tidak valid',
-            forward_address_required: 'Alamat terusan wajib diisi',
-            rule_index: 'Aturan',
-            create_address_subdomain_match: 'Izinkan Pencocokan Akhiran Subdomain Saat Membuat Alamat',
-            create_address_subdomain_match_tip: 'Hanya mempengaruhi validasi domain /api/new_address dan /admin/new_address. Contoh: saat diaktifkan, foo.example.com dapat mencocokkan domain dasar yang dikonfigurasi example.com.',
-            create_address_subdomain_match_note: 'Ini berbeda dari RANDOM_SUBDOMAIN_DOMAINS: pengaturan ini memungkinkan pemanggil API untuk menentukan subdomain khusus secara langsung, sementara subdomain acak hanya otomatis membuatnya selama pembuatan.',
-            create_address_subdomain_match_follow_env: 'Ikuti Variabel Lingkungan',
-            create_address_subdomain_match_force_enable: 'Paksa Aktifkan',
-            create_address_subdomain_match_force_disable: 'Paksa Nonaktifkan',
-            create_address_subdomain_match_follow_env_note: 'Memilih "Ikuti Variabel Lingkungan" akan menghapus penimpaan admin dan kembali ke keadaan belum diatur. Hasil yang efektif masih dikontrol oleh env Worker dan aturan preceden.',
-            create_address_subdomain_match_env_locked: 'Env Worker ENABLE_CREATE_ADDRESS_SUBDOMAIN_MATCH saat ini salah. Pengaturan admin yang tersimpan dapat dimodifikasi, tetapi tidak akan berhasil sampai env diaktifkan atau dihapus.',
-        },
-    }
+  messages: {
+    en: {
+      tip: 'You can manually input the following multiple select input and enter',
+      manualInputPrompt: 'Type and press Enter to add',
+      save: 'Save',
+      successTip: 'Save Success',
+      address_block_list: 'Address Block Keywords for Users(Admin can skip)',
+      address_block_list_placeholder: 'Please enter the keywords you want to block',
+      send_address_block_list: 'Address Block Keywords for send email',
+      noLimitSendAddressList: 'No Balance Limit Send Address List',
+      verified_address_list: 'Verified Address List(Can send email by cf internal api)',
+      send_mail_limit: 'Send Mail Limit',
+      send_mail_limit_tip:
+        'This applies to all send channels. Use -1 for unlimited and 0 to block sending.',
+      send_mail_daily_limit: 'Daily Limit',
+      send_mail_monthly_limit: 'Monthly Limit',
+      send_mail_daily_limit_invalid: 'Daily limit must be an integer greater than or equal to -1',
+      send_mail_monthly_limit_invalid:
+        'Monthly limit must be an integer greater than or equal to -1',
+      fromBlockList: 'Block Keywords for receive email',
+      block_receive_unknow_address_email: 'Block receive unknow address email',
+      email_forwarding_config: 'Email Forwarding Configuration',
+      domain_list: 'Domain List (Optional)',
+      forward_address: 'Forward Address',
+      actions: 'Actions',
+      select_domain: 'Select Domain',
+      forward_placeholder: 'forward@example.com',
+      delete_rule: 'Delete',
+      delete_rule_confirm: 'Are you sure you want to delete this rule?',
+      delete_success: 'Delete Success',
+      forwarding_rule_warning:
+        'Each rule will run independently. Forward address needs to be a verified address.',
+      add: 'Add',
+      cancel: 'Cancel',
+      config: 'Config',
+      source_patterns: 'Source Address Regex (Optional)',
+      source_patterns_placeholder: 'e.g. gmail.com',
+      source_match_mode: 'Match Mode',
+      match_any: 'Any',
+      match_all: 'All',
+      source_patterns_tip:
+        'Domain list filters by recipient address, source regex filters by sender address. Both conditions must match for forwarding (AND logic). Leave either empty to skip that filter.',
+      regex_too_long: 'Regex pattern too long (max 200 characters)',
+      regex_invalid: 'Invalid regex pattern',
+      forward_address_required: 'Forward address is required',
+      rule_index: 'Rule',
+      create_address_subdomain_match: 'Allow Subdomain Suffix Match When Creating Address',
+      create_address_subdomain_match_tip:
+        'Only affects /api/new_address and /admin/new_address domain validation. Example: when enabled, foo.example.com can match configured base domain example.com.',
+      create_address_subdomain_match_note:
+        'This is different from RANDOM_SUBDOMAIN_DOMAINS: this switch allows API callers to specify custom subdomains directly, while random subdomain only auto-generates one during creation.',
+      create_address_subdomain_match_follow_env: 'Follow Environment Variable',
+      create_address_subdomain_match_force_enable: 'Force Enable',
+      create_address_subdomain_match_force_disable: 'Force Disable',
+      create_address_subdomain_match_follow_env_note:
+        'Choosing "Follow Environment Variable" clears the admin override and returns to the unset state. The effective result is still controlled by the Worker env and the precedence rules.',
+      create_address_subdomain_match_env_locked:
+        'Worker env ENABLE_CREATE_ADDRESS_SUBDOMAIN_MATCH is currently false. The saved admin switch can be modified, but it will not take effect until env is enabled or removed.',
+    },
+    id: {
+      tip: 'Anda dapat memasukkan secara manual ke dalam input pilihan ganda berikut ini',
+      manualInputPrompt: 'Ketik dan tekan Enter untuk menambahkan',
+      save: 'Simpan',
+      successTip: 'Berhasil Disimpan',
+      address_block_list: 'Kata Kunci Blokir Alamat untuk Pengguna (Admin dapat melewati)',
+      address_block_list_placeholder: 'Silakan masukkan kata kunci yang ingin diblokir',
+      send_address_block_list: 'Kata Kunci Blokir Alamat untuk Mengirim Email',
+      noLimitSendAddressList: 'Daftar Alamat Pengirim Tanpa Batas Saldo',
+      verified_address_list:
+        'Daftar Alamat Terverifikasi (Dapat mengirim email melalui API internal cf)',
+      send_mail_limit: 'Batas Pengiriman Email',
+      send_mail_limit_tip:
+        'Ini berlaku untuk semua saluran pengiriman. Gunakan -1 untuk tak terbatas dan 0 untuk memblokir pengiriman.',
+      send_mail_daily_limit: 'Batas Harian',
+      send_mail_monthly_limit: 'Batas Bulanan',
+      send_mail_daily_limit_invalid:
+        'Batas harian harus berupa bilangan bulat lebih besar dari atau sama dengan -1',
+      send_mail_monthly_limit_invalid:
+        'Batas bulanan harus berupa bilangan bulat lebih besar dari atau sama dengan -1',
+      fromBlockList: 'Kata Kunci Blokir untuk Menerima Email',
+      block_receive_unknow_address_email: 'Blokir email ke alamat tak dikenal',
+      email_forwarding_config: 'Konfigurasi Penerusan Email',
+      domain_list: 'Daftar Domain (Opsional)',
+      forward_address: 'Alamat Terusan',
+      actions: 'Aksi',
+      select_domain: 'Pilih Domain',
+      forward_placeholder: 'forward@example.com',
+      delete_rule: 'Hapus',
+      delete_rule_confirm: 'Anda yakin ingin menghapus Aturan ini?',
+      delete_success: 'Berhasil Dihapus',
+      forwarding_rule_warning:
+        'Setiap Aturan akan dijalankan secara independen. Alamat terusan harus berupa alamat terverifikasi.',
+      add: 'Tambahkan',
+      cancel: 'Batal',
+      config: 'Konfigurasi',
+      source_patterns: 'Regex Alamat Pengirim (Opsional)',
+      source_patterns_placeholder: 'mis. gmail.com',
+      source_match_mode: 'Mode Pencocokan',
+      match_any: 'Apa Saja',
+      match_all: 'Semua',
+      source_patterns_tip:
+        'Daftar domain memfiltrasi berdasarkan alamat penerima, regex sumber memfiltrasi berdasarkan alamat pengirim. Kedua kondisi harus cocok untuk penerusan (logika AND). Biarkan salah satu kosong untuk melewati filter tersebut.',
+      regex_too_long: 'Pola regex terlalu panjang (maksimal 200 karakter)',
+      regex_invalid: 'Pola regex tidak valid',
+      forward_address_required: 'Alamat terusan wajib diisi',
+      rule_index: 'Aturan',
+      create_address_subdomain_match: 'Izinkan Pencocokan Akhiran Subdomain Saat Membuat Alamat',
+      create_address_subdomain_match_tip:
+        'Hanya mempengaruhi validasi domain /api/new_address dan /admin/new_address. Contoh: saat diaktifkan, foo.example.com dapat mencocokkan domain dasar yang dikonfigurasi example.com.',
+      create_address_subdomain_match_note:
+        'Ini berbeda dari RANDOM_SUBDOMAIN_DOMAINS: pengaturan ini memungkinkan pemanggil API untuk menentukan subdomain khusus secara langsung, sementara subdomain acak hanya otomatis membuatnya selama pembuatan.',
+      create_address_subdomain_match_follow_env: 'Ikuti Variabel Lingkungan',
+      create_address_subdomain_match_force_enable: 'Paksa Aktifkan',
+      create_address_subdomain_match_force_disable: 'Paksa Nonaktifkan',
+      create_address_subdomain_match_follow_env_note:
+        'Memilih "Ikuti Variabel Lingkungan" akan menghapus penimpaan admin dan kembali ke keadaan belum diatur. Hasil yang efektif masih dikontrol oleh env Worker dan aturan preceden.',
+      create_address_subdomain_match_env_locked:
+        'Env Worker ENABLE_CREATE_ADDRESS_SUBDOMAIN_MATCH saat ini salah. Pengaturan admin yang tersimpan dapat dimodifikasi, tetapi tidak akan berhasil sampai env diaktifkan atau dihapus.',
+    },
+  },
 });
 
-const addressBlockList = ref([])
-const sendAddressBlockList = ref([])
-const noLimitSendAddressList = ref([])
-const verifiedAddressList = ref([])
-const fromBlockList = ref([])
+const addressBlockList = ref([]);
+const sendAddressBlockList = ref([]);
+const noLimitSendAddressList = ref([]);
+const verifiedAddressList = ref([]);
+const fromBlockList = ref([]);
 const emailRuleSettings = ref({
-    blockReceiveUnknowAddressEmail: false,
-    emailForwardingList: []
-})
+  blockReceiveUnknowAddressEmail: false,
+  emailForwardingList: [],
+});
 const ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE = {
-    FOLLOW_ENV: 'follow_env',
-    FORCE_ENABLE: 'force_enable',
-    FORCE_DISABLE: 'force_disable'
-}
-const DEFAULT_SEND_MAIL_DAILY_LIMIT = 100
-const DEFAULT_SEND_MAIL_MONTHLY_LIMIT = 3000
-const addressCreationSubdomainMatchMode = ref(ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FOLLOW_ENV)
-const sendMailDailyLimitEnabled = ref(false)
-const sendMailMonthlyLimitEnabled = ref(false)
-const sendMailDailyLimit = ref(DEFAULT_SEND_MAIL_DAILY_LIMIT)
-const sendMailMonthlyLimit = ref(DEFAULT_SEND_MAIL_MONTHLY_LIMIT)
+  FOLLOW_ENV: 'follow_env',
+  FORCE_ENABLE: 'force_enable',
+  FORCE_DISABLE: 'force_disable',
+};
+const DEFAULT_SEND_MAIL_DAILY_LIMIT = 100;
+const DEFAULT_SEND_MAIL_MONTHLY_LIMIT = 3000;
+const addressCreationSubdomainMatchMode = ref(ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FOLLOW_ENV);
+const sendMailDailyLimitEnabled = ref(false);
+const sendMailMonthlyLimitEnabled = ref(false);
+const sendMailDailyLimit = ref(DEFAULT_SEND_MAIL_DAILY_LIMIT);
+const sendMailMonthlyLimit = ref(DEFAULT_SEND_MAIL_MONTHLY_LIMIT);
 const addressCreationSubdomainMatchStatus = ref({
-    envConfigured: false,
-    envEnabled: false,
-    storedEnabled: undefined,
-    effectiveEnabled: false
-})
+  envConfigured: false,
+  envEnabled: false,
+  storedEnabled: undefined,
+  effectiveEnabled: false,
+});
 const subdomainMatchEnvLocked = computed(() => {
-    return addressCreationSubdomainMatchStatus.value.envConfigured
-        && !addressCreationSubdomainMatchStatus.value.envEnabled
-})
+  return (
+    addressCreationSubdomainMatchStatus.value.envConfigured &&
+    !addressCreationSubdomainMatchStatus.value.envEnabled
+  );
+});
 const subdomainMatchModeOptions = computed(() => {
-    return [
-        {
-            value: ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FOLLOW_ENV,
-            label: t('create_address_subdomain_match_follow_env')
-        },
-        {
-            value: ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FORCE_ENABLE,
-            label: t('create_address_subdomain_match_force_enable')
-        },
-        {
-            value: ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FORCE_DISABLE,
-            label: t('create_address_subdomain_match_force_disable')
-        }
-    ]
-})
+  return [
+    {
+      value: ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FOLLOW_ENV,
+      label: t('create_address_subdomain_match_follow_env'),
+    },
+    {
+      value: ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FORCE_ENABLE,
+      label: t('create_address_subdomain_match_force_enable'),
+    },
+    {
+      value: ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FORCE_DISABLE,
+      label: t('create_address_subdomain_match_force_disable'),
+    },
+  ];
+});
 
-const showEmailForwardingModal = ref(false)
-const emailForwardingList = ref([])
-
+const showEmailForwardingModal = ref(false);
+const emailForwardingList = ref([]);
 
 const emailForwardingColumns = [
-    {
-        title: t('domain_list'),
-        key: 'domains',
-        render: (row, index) => {
-            return h(NSelect, {
-                value: Array.isArray(row.domains) ? row.domains : [],
-                onUpdateValue: (val) => {
-                    emailForwardingList.value[index].domains = val
+  {
+    title: t('domain_list'),
+    key: 'domains',
+    render: (row, index) => {
+      return h(NSelect, {
+        value: Array.isArray(row.domains) ? row.domains : [],
+        onUpdateValue: val => {
+          emailForwardingList.value[index].domains = val;
+        },
+        options: openSettings.value?.domains || [],
+        multiple: true,
+        filterable: true,
+        tag: true,
+        placeholder: t('select_domain'),
+      });
+    },
+  },
+  {
+    title: t('source_patterns'),
+    key: 'sourcePatterns',
+    render: (row, index) => {
+      return h('div', { style: 'display: flex; flex-direction: column; gap: 4px;' }, [
+        h(
+          NSelect,
+          {
+            value: Array.isArray(row.sourcePatterns) ? row.sourcePatterns : [],
+            onUpdateValue: val => {
+              emailForwardingList.value[index].sourcePatterns = val;
+            },
+            multiple: true,
+            filterable: true,
+            tag: true,
+            placeholder: t('source_patterns_placeholder'),
+          },
+          {
+            empty: () =>
+              h('span', { style: 'color: #999; font-size: 12px;' }, t('manualInputPrompt')),
+          }
+        ),
+        h(
+          NRadioGroup,
+          {
+            value: row.sourceMatchMode || 'any',
+            onUpdateValue: val => {
+              emailForwardingList.value[index].sourceMatchMode = val;
+            },
+            size: 'small',
+            style: 'margin-top: 4px;',
+          },
+          {
+            default: () => [
+              h(NRadio, { value: 'any' }, { default: () => t('match_any') }),
+              h(NRadio, { value: 'all' }, { default: () => t('match_all') }),
+            ],
+          }
+        ),
+      ]);
+    },
+  },
+  {
+    title: t('forward_address'),
+    key: 'forward',
+    render: (row, index) => {
+      return h(NInput, {
+        value: row.forward,
+        onUpdateValue: val => {
+          emailForwardingList.value[index].forward = val;
+        },
+        placeholder: 'forward@example.com',
+      });
+    },
+  },
+  {
+    title: t('actions'),
+    key: 'actions',
+    render: (row, index) => {
+      return h('div', { style: 'display: flex; gap: 8px;' }, [
+        h(
+          NPopconfirm,
+          {
+            onPositiveClick: () => {
+              emailForwardingList.value = emailForwardingList.value.filter((_, i) => i !== index);
+              message.success(t('delete_success'));
+            },
+          },
+          {
+            default: () => t('delete_rule_confirm'),
+            trigger: () =>
+              h(
+                NButton,
+                {
+                  size: 'small',
+                  type: 'error',
                 },
-                options: openSettings.value?.domains || [],
-                multiple: true,
-                filterable: true,
-                tag: true,
-                placeholder: t('select_domain')
-            })
-        }
+                { default: () => t('delete_rule') }
+              ),
+          }
+        ),
+      ]);
     },
-    {
-        title: t('source_patterns'),
-        key: 'sourcePatterns',
-        render: (row, index) => {
-            return h('div', { style: 'display: flex; flex-direction: column; gap: 4px;' }, [
-                h(NSelect, {
-                    value: Array.isArray(row.sourcePatterns) ? row.sourcePatterns : [],
-                    onUpdateValue: (val) => {
-                        emailForwardingList.value[index].sourcePatterns = val
-                    },
-                    multiple: true,
-                    filterable: true,
-                    tag: true,
-                    placeholder: t('source_patterns_placeholder')
-                }, {
-                    empty: () => h('span', { style: 'color: #999; font-size: 12px;' }, t('manualInputPrompt'))
-                }),
-                h(NRadioGroup, {
-                    value: row.sourceMatchMode || 'any',
-                    onUpdateValue: (val) => {
-                        emailForwardingList.value[index].sourceMatchMode = val
-                    },
-                    size: 'small',
-                    style: 'margin-top: 4px;'
-                }, {
-                    default: () => [
-                        h(NRadio, { value: 'any' }, { default: () => t('match_any') }),
-                        h(NRadio, { value: 'all' }, { default: () => t('match_all') })
-                    ]
-                })
-            ])
-        }
-    },
-    {
-        title: t('forward_address'),
-        key: 'forward',
-        render: (row, index) => {
-            return h(NInput, {
-                value: row.forward,
-                onUpdateValue: (val) => {
-                    emailForwardingList.value[index].forward = val
-                },
-                placeholder: 'forward@example.com'
-            })
-        }
-    },
-    {
-        title: t('actions'),
-        key: 'actions',
-        render: (row, index) => {
-            return h('div', { style: 'display: flex; gap: 8px;' }, [
-                h(NPopconfirm, {
-                    onPositiveClick: () => {
-                        emailForwardingList.value = emailForwardingList.value.filter((_, i) => i !== index)
-                        message.success(t('delete_success'))
-                    }
-                }, {
-                    default: () => t('delete_rule_confirm'),
-                    trigger: () => h(NButton, {
-                        size: 'small',
-                        type: 'error'
-                    }, { default: () => t('delete_rule') })
-                })
-            ])
-        }
-    }
-]
+  },
+];
 
 const openEmailForwardingModal = () => {
-    // 从 emailRuleSettings 转换出列表数据
-    emailForwardingList.value = emailRuleSettings.value.emailForwardingList ?
-        [...emailRuleSettings.value.emailForwardingList] : []
-    showEmailForwardingModal.value = true
-}
+  // 从 emailRuleSettings 转换出列表数据
+  emailForwardingList.value = emailRuleSettings.value.emailForwardingList
+    ? [...emailRuleSettings.value.emailForwardingList]
+    : [];
+  showEmailForwardingModal.value = true;
+};
 
 const addNewEmailForwardingItem = () => {
-    emailForwardingList.value = [
-        ...emailForwardingList.value,
-        {
-            domains: [],
-            forward: '',
-            sourcePatterns: [],
-            sourceMatchMode: 'any'
-        }
-    ]
-}
+  emailForwardingList.value = [
+    ...emailForwardingList.value,
+    {
+      domains: [],
+      forward: '',
+      sourcePatterns: [],
+      sourceMatchMode: 'any',
+    },
+  ];
+};
 
-const MAX_REGEX_LENGTH = 200
+const MAX_REGEX_LENGTH = 200;
 
 const validateForwardingRules = () => {
-    for (let i = 0; i < emailForwardingList.value.length; i++) {
-        const rule = emailForwardingList.value[i]
+  for (let i = 0; i < emailForwardingList.value.length; i++) {
+    const rule = emailForwardingList.value[i];
 
-        // 验证转发地址
-        if (!rule.forward || rule.forward.trim() === '') {
-            message.error(`${t('forward_address_required')} (${t('rule_index')} ${i + 1})`)
-            return false
-        }
-
-        // 验证正则表达式
-        if (rule.sourcePatterns && rule.sourcePatterns.length > 0) {
-            for (const pattern of rule.sourcePatterns) {
-                // 检查长度
-                if (pattern.length > MAX_REGEX_LENGTH) {
-                    message.error(`${t('regex_too_long')}: ${pattern.substring(0, 30)}...`)
-                    return false
-                }
-                // 检查正则有效性
-                try {
-                    new RegExp(pattern, 'i')
-                } catch (e) {
-                    message.error(`${t('regex_invalid')}: ${pattern}`)
-                    return false
-                }
-            }
-        }
+    // 验证转发地址
+    if (!rule.forward || rule.forward.trim() === '') {
+      message.error(`${t('forward_address_required')} (${t('rule_index')} ${i + 1})`);
+      return false;
     }
-    return true
-}
+
+    // 验证正则表达式
+    if (rule.sourcePatterns && rule.sourcePatterns.length > 0) {
+      for (const pattern of rule.sourcePatterns) {
+        // 检查长度
+        if (pattern.length > MAX_REGEX_LENGTH) {
+          message.error(`${t('regex_too_long')}: ${pattern.substring(0, 30)}...`);
+          return false;
+        }
+        // 检查正则有效性
+        try {
+          new RegExp(pattern, 'i');
+        } catch (e) {
+          message.error(`${t('regex_invalid')}: ${pattern}`);
+          return false;
+        }
+      }
+    }
+  }
+  return true;
+};
 
 const saveEmailForwardingConfig = () => {
-    if (!validateForwardingRules()) {
-        return
-    }
-    emailRuleSettings.value.emailForwardingList = [...emailForwardingList.value]
-    showEmailForwardingModal.value = false
-}
+  if (!validateForwardingRules()) {
+    return;
+  }
+  emailRuleSettings.value.emailForwardingList = [...emailForwardingList.value];
+  showEmailForwardingModal.value = false;
+};
 
-const getSubdomainMatchModeByStoredValue = (storedEnabled) => {
-    if (storedEnabled === true) {
-        return ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FORCE_ENABLE
-    }
-    if (storedEnabled === false) {
-        return ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FORCE_DISABLE
-    }
-    return ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FOLLOW_ENV
-}
+const getSubdomainMatchModeByStoredValue = storedEnabled => {
+  if (storedEnabled === true) {
+    return ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FORCE_ENABLE;
+  }
+  if (storedEnabled === false) {
+    return ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FORCE_DISABLE;
+  }
+  return ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FOLLOW_ENV;
+};
 
-const getSubdomainMatchPayloadValue = (mode) => {
-    if (mode === ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FORCE_ENABLE) {
-        return true
-    }
-    if (mode === ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FORCE_DISABLE) {
-        return false
-    }
-    return null
-}
+const getSubdomainMatchPayloadValue = mode => {
+  if (mode === ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FORCE_ENABLE) {
+    return true;
+  }
+  if (mode === ADDRESS_CREATION_SUBDOMAIN_MATCH_MODE.FORCE_DISABLE) {
+    return false;
+  }
+  return null;
+};
 
 const getSendMailLimitPayload = () => {
-    return {
-        dailyEnabled: sendMailDailyLimitEnabled.value,
-        monthlyEnabled: sendMailMonthlyLimitEnabled.value,
-        dailyLimit: sendMailDailyLimitEnabled.value ? sendMailDailyLimit.value : null,
-        monthlyLimit: sendMailMonthlyLimitEnabled.value ? sendMailMonthlyLimit.value : null
-    }
-}
+  return {
+    dailyEnabled: sendMailDailyLimitEnabled.value,
+    monthlyEnabled: sendMailMonthlyLimitEnabled.value,
+    dailyLimit: sendMailDailyLimitEnabled.value ? sendMailDailyLimit.value : null,
+    monthlyLimit: sendMailMonthlyLimitEnabled.value ? sendMailMonthlyLimit.value : null,
+  };
+};
 
-const isValidSendMailLimit = (value) => {
-    return Number.isInteger(value) && value >= -1
-}
+const isValidSendMailLimit = value => {
+  return Number.isInteger(value) && value >= -1;
+};
 
 const validateSendMailLimit = () => {
-    if (sendMailDailyLimitEnabled.value && !isValidSendMailLimit(sendMailDailyLimit.value)) {
-        message.error(t('send_mail_daily_limit_invalid'))
-        return false
-    }
-    if (sendMailMonthlyLimitEnabled.value && !isValidSendMailLimit(sendMailMonthlyLimit.value)) {
-        message.error(t('send_mail_monthly_limit_invalid'))
-        return false
-    }
-    return true
-}
+  if (sendMailDailyLimitEnabled.value && !isValidSendMailLimit(sendMailDailyLimit.value)) {
+    message.error(t('send_mail_daily_limit_invalid'));
+    return false;
+  }
+  if (sendMailMonthlyLimitEnabled.value && !isValidSendMailLimit(sendMailMonthlyLimit.value)) {
+    message.error(t('send_mail_monthly_limit_invalid'));
+    return false;
+  }
+  return true;
+};
 
 const fetchData = async ({ suppressErrorMessage = false } = {}) => {
-    try {
-        const res = await api.fetch(`/admin/account_settings`)
-        addressBlockList.value = res.blockList || []
-        sendAddressBlockList.value = res.sendBlockList || []
-        verifiedAddressList.value = res.verifiedAddressList || []
-        fromBlockList.value = res.fromBlockList || []
-        noLimitSendAddressList.value = res.noLimitSendAddressList || []
-        emailRuleSettings.value = {
-            blockReceiveUnknowAddressEmail: res.emailRuleSettings?.blockReceiveUnknowAddressEmail || false,
-            emailForwardingList: res.emailRuleSettings?.emailForwardingList || []
-        }
-        addressCreationSubdomainMatchStatus.value = {
-            envConfigured: !!res.addressCreationSubdomainMatchStatus?.envConfigured,
-            envEnabled: !!res.addressCreationSubdomainMatchStatus?.envEnabled,
-            storedEnabled: typeof res.addressCreationSubdomainMatchStatus?.storedEnabled === 'boolean'
-                ? res.addressCreationSubdomainMatchStatus.storedEnabled
-                : undefined,
-            effectiveEnabled: !!res.addressCreationSubdomainMatchStatus?.effectiveEnabled
-        }
-        addressCreationSubdomainMatchMode.value = getSubdomainMatchModeByStoredValue(
-            addressCreationSubdomainMatchStatus.value.storedEnabled
-        )
-        const sendMailLimitConfig = res.sendMailLimitConfig
-        sendMailDailyLimitEnabled.value = !!sendMailLimitConfig?.dailyEnabled
-        sendMailMonthlyLimitEnabled.value = !!sendMailLimitConfig?.monthlyEnabled
-        sendMailDailyLimit.value = sendMailDailyLimitEnabled.value
-            ? sendMailLimitConfig.dailyLimit
-            : DEFAULT_SEND_MAIL_DAILY_LIMIT
-        sendMailMonthlyLimit.value = sendMailMonthlyLimitEnabled.value
-            ? sendMailLimitConfig.monthlyLimit
-            : DEFAULT_SEND_MAIL_MONTHLY_LIMIT
-    } catch (error) {
-        if (!suppressErrorMessage) {
-            message.error(error.message || "error");
-        }
-        throw error
+  try {
+    const res = await api.fetch(`/admin/account_settings`);
+    addressBlockList.value = res.blockList || [];
+    sendAddressBlockList.value = res.sendBlockList || [];
+    verifiedAddressList.value = res.verifiedAddressList || [];
+    fromBlockList.value = res.fromBlockList || [];
+    noLimitSendAddressList.value = res.noLimitSendAddressList || [];
+    emailRuleSettings.value = {
+      blockReceiveUnknowAddressEmail:
+        res.emailRuleSettings?.blockReceiveUnknowAddressEmail || false,
+      emailForwardingList: res.emailRuleSettings?.emailForwardingList || [],
+    };
+    addressCreationSubdomainMatchStatus.value = {
+      envConfigured: !!res.addressCreationSubdomainMatchStatus?.envConfigured,
+      envEnabled: !!res.addressCreationSubdomainMatchStatus?.envEnabled,
+      storedEnabled:
+        typeof res.addressCreationSubdomainMatchStatus?.storedEnabled === 'boolean'
+          ? res.addressCreationSubdomainMatchStatus.storedEnabled
+          : undefined,
+      effectiveEnabled: !!res.addressCreationSubdomainMatchStatus?.effectiveEnabled,
+    };
+    addressCreationSubdomainMatchMode.value = getSubdomainMatchModeByStoredValue(
+      addressCreationSubdomainMatchStatus.value.storedEnabled
+    );
+    const sendMailLimitConfig = res.sendMailLimitConfig;
+    sendMailDailyLimitEnabled.value = !!sendMailLimitConfig?.dailyEnabled;
+    sendMailMonthlyLimitEnabled.value = !!sendMailLimitConfig?.monthlyEnabled;
+    sendMailDailyLimit.value = sendMailDailyLimitEnabled.value
+      ? sendMailLimitConfig.dailyLimit
+      : DEFAULT_SEND_MAIL_DAILY_LIMIT;
+    sendMailMonthlyLimit.value = sendMailMonthlyLimitEnabled.value
+      ? sendMailLimitConfig.monthlyLimit
+      : DEFAULT_SEND_MAIL_MONTHLY_LIMIT;
+  } catch (error) {
+    if (!suppressErrorMessage) {
+      message.error(error.message || 'error');
     }
-}
+    throw error;
+  }
+};
 
 const save = async () => {
-    if (!validateSendMailLimit()) {
-        return
-    }
-    try {
-        const payload = {
-            blockList: addressBlockList.value || [],
-            sendBlockList: sendAddressBlockList.value || [],
-            verifiedAddressList: verifiedAddressList.value || [],
-            fromBlockList: fromBlockList.value || [],
-            noLimitSendAddressList: noLimitSendAddressList.value || [],
-            emailRuleSettings: emailRuleSettings.value,
-            addressCreationSettings: {
-                enableSubdomainMatch: getSubdomainMatchPayloadValue(addressCreationSubdomainMatchMode.value)
-            },
-            sendMailLimitConfig: getSendMailLimitPayload()
-        }
-        await api.fetch(`/admin/account_settings`, {
-            method: 'POST',
-            body: JSON.stringify(payload)
-        })
-        message.success(t('successTip'))
-    } catch (error) {
-        message.error(error.message || "error");
-        return
-    }
+  if (!validateSendMailLimit()) {
+    return;
+  }
+  try {
+    const payload = {
+      blockList: addressBlockList.value || [],
+      sendBlockList: sendAddressBlockList.value || [],
+      verifiedAddressList: verifiedAddressList.value || [],
+      fromBlockList: fromBlockList.value || [],
+      noLimitSendAddressList: noLimitSendAddressList.value || [],
+      emailRuleSettings: emailRuleSettings.value,
+      addressCreationSettings: {
+        enableSubdomainMatch: getSubdomainMatchPayloadValue(
+          addressCreationSubdomainMatchMode.value
+        ),
+      },
+      sendMailLimitConfig: getSendMailLimitPayload(),
+    };
+    await api.fetch(`/admin/account_settings`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+    message.success(t('successTip'));
+  } catch (error) {
+    message.error(error.message || 'error');
+    return;
+  }
 
-    try {
-        await fetchData({ suppressErrorMessage: true })
-    } catch (error) {
-        console.warn('Failed to refresh account settings after save', error)
-        message.warning(error.message || "error");
-    }
-}
-
+  try {
+    await fetchData({ suppressErrorMessage: true });
+  } catch (error) {
+    console.warn('Failed to refresh account settings after save', error);
+    message.warning(error.message || 'error');
+  }
+};
 
 onMounted(async () => {
-    try {
-        await fetchData();
-    } catch {
-        // 首次加载失败时，错误提示已经在 fetchData 内部统一处理，这里无需重复提示。
-    }
-})
+  try {
+    await fetchData();
+  } catch {
+    // 首次加载失败时，错误提示已经在 fetchData 内部统一处理，这里无需重复提示。
+  }
+});
 </script>
 
 <template>
-    <div class="center">
-        <n-card :bordered="false" embedded style="max-width: 600px;">
-            <n-alert :show-icon="false" :bordered="false" type="warning" style="margin-bottom: 10px;">
-                <span>{{ t("tip") }}</span>
-            </n-alert>
-            <n-flex justify="end">
-                <n-button @click="save" type="primary" :loading="loading">
-                    {{ t('save') }}
-                </n-button>
+  <div class="center">
+    <n-card :bordered="false" embedded style="max-width: 600px">
+      <n-alert :show-icon="false" :bordered="false" type="warning" style="margin-bottom: 10px">
+        <span>{{ t('tip') }}</span>
+      </n-alert>
+      <n-flex justify="end">
+        <n-button @click="save" type="primary" :loading="loading">
+          {{ t('save') }}
+        </n-button>
+      </n-flex>
+      <n-form-item-row :label="t('address_block_list')">
+        <n-select
+          v-model:value="addressBlockList"
+          filterable
+          multiple
+          tag
+          :placeholder="t('address_block_list_placeholder')"
+        >
+          <template #empty>
+            <n-text depth="3">
+              {{ t('manualInputPrompt') }}
+            </n-text>
+          </template>
+        </n-select>
+      </n-form-item-row>
+      <n-form-item-row :label="t('send_address_block_list')">
+        <n-select
+          v-model:value="sendAddressBlockList"
+          filterable
+          multiple
+          tag
+          :placeholder="t('address_block_list_placeholder')"
+        >
+          <template #empty>
+            <n-text depth="3">
+              {{ t('manualInputPrompt') }}
+            </n-text>
+          </template>
+        </n-select>
+      </n-form-item-row>
+      <n-form-item-row :label="t('noLimitSendAddressList')">
+        <n-select
+          v-model:value="noLimitSendAddressList"
+          filterable
+          multiple
+          tag
+          :placeholder="t('noLimitSendAddressList')"
+        >
+          <template #empty>
+            <n-text depth="3">
+              {{ t('manualInputPrompt') }}
+            </n-text>
+          </template>
+        </n-select>
+      </n-form-item-row>
+      <n-form-item-row :label="t('verified_address_list')">
+        <n-select
+          v-model:value="verifiedAddressList"
+          filterable
+          multiple
+          tag
+          :placeholder="t('verified_address_list')"
+        >
+          <template #empty>
+            <n-text depth="3">
+              {{ t('manualInputPrompt') }}
+            </n-text>
+          </template>
+        </n-select>
+      </n-form-item-row>
+      <n-form-item-row :label="t('send_mail_limit')">
+        <n-flex vertical style="width: 100%">
+          <n-flex justify="space-between" align="center">
+            <n-text>{{ t('send_mail_daily_limit') }}</n-text>
+            <n-flex align="center">
+              <n-switch v-model:value="sendMailDailyLimitEnabled" :round="false" />
+              <n-input-number
+                v-model:value="sendMailDailyLimit"
+                :disabled="!sendMailDailyLimitEnabled"
+                :min="-1"
+              />
             </n-flex>
-            <n-form-item-row :label="t('address_block_list')">
-                <n-select v-model:value="addressBlockList" filterable multiple tag
-                    :placeholder="t('address_block_list_placeholder')">
-                    <template #empty>
-                        <n-text depth="3">
-                            {{ t('manualInputPrompt') }}
-                        </n-text>
-                    </template>
-                </n-select>
-            </n-form-item-row>
-            <n-form-item-row :label="t('send_address_block_list')">
-                <n-select v-model:value="sendAddressBlockList" filterable multiple tag
-                    :placeholder="t('address_block_list_placeholder')">
-                    <template #empty>
-                        <n-text depth="3">
-                            {{ t('manualInputPrompt') }}
-                        </n-text>
-                    </template>
-                </n-select>
-            </n-form-item-row>
-            <n-form-item-row :label="t('noLimitSendAddressList')">
-                <n-select v-model:value="noLimitSendAddressList" filterable multiple tag
-                    :placeholder="t('noLimitSendAddressList')">
-                    <template #empty>
-                        <n-text depth="3">
-                            {{ t('manualInputPrompt') }}
-                        </n-text>
-                    </template>
-                </n-select>
-            </n-form-item-row>
-            <n-form-item-row :label="t('verified_address_list')">
-                <n-select v-model:value="verifiedAddressList" filterable multiple tag
-                    :placeholder="t('verified_address_list')">
-                    <template #empty>
-                        <n-text depth="3">
-                            {{ t('manualInputPrompt') }}
-                        </n-text>
-                    </template>
-                </n-select>
-            </n-form-item-row>
-            <n-form-item-row :label="t('send_mail_limit')">
-                <n-flex vertical style="width: 100%;">
-                    <n-flex justify="space-between" align="center">
-                        <n-text>{{ t('send_mail_daily_limit') }}</n-text>
-                        <n-flex align="center">
-                            <n-switch v-model:value="sendMailDailyLimitEnabled" :round="false" />
-                            <n-input-number
-                                v-model:value="sendMailDailyLimit"
-                                :disabled="!sendMailDailyLimitEnabled"
-                                :min="-1"
-                            />
-                        </n-flex>
-                    </n-flex>
-                    <n-flex justify="space-between" align="center">
-                        <n-text>{{ t('send_mail_monthly_limit') }}</n-text>
-                        <n-flex align="center">
-                            <n-switch v-model:value="sendMailMonthlyLimitEnabled" :round="false" />
-                            <n-input-number
-                                v-model:value="sendMailMonthlyLimit"
-                                :disabled="!sendMailMonthlyLimitEnabled"
-                                :min="-1"
-                            />
-                        </n-flex>
-                    </n-flex>
-                    <n-text depth="3">
-                        {{ t('send_mail_limit_tip') }}
-                    </n-text>
-                </n-flex>
-            </n-form-item-row>
-            <n-form-item-row :label="t('fromBlockList')">
-                <n-select v-model:value="fromBlockList" filterable multiple tag :placeholder="t('fromBlockList')">
-                    <template #empty>
-                        <n-text depth="3">
-                            {{ t('manualInputPrompt') }}
-                        </n-text>
-                    </template>
-                </n-select>
-            </n-form-item-row>
-            <n-form-item-row :label="t('block_receive_unknow_address_email')">
-                <n-switch v-model:value="emailRuleSettings.blockReceiveUnknowAddressEmail" :round="false" />
-            </n-form-item-row>
-            <n-form-item-row :label="t('create_address_subdomain_match')">
-                <n-flex vertical style="width: 100%;">
-                    <n-radio-group v-model:value="addressCreationSubdomainMatchMode">
-                        <n-space vertical size="small">
-                            <n-radio v-for="item in subdomainMatchModeOptions" :key="item.value" :value="item.value">
-                                {{ item.label }}
-                            </n-radio>
-                        </n-space>
-                    </n-radio-group>
-                    <n-text depth="3">
-                        {{ t('create_address_subdomain_match_tip') }}
-                    </n-text>
-                    <n-text depth="3">
-                        {{ t('create_address_subdomain_match_note') }}
-                    </n-text>
-                    <n-text depth="3">
-                        {{ t('create_address_subdomain_match_follow_env_note') }}
-                    </n-text>
-                    <n-alert v-if="subdomainMatchEnvLocked" type="warning" :show-icon="false" :bordered="false">
-                        {{ t('create_address_subdomain_match_env_locked') }}
-                    </n-alert>
-                </n-flex>
-            </n-form-item-row>
-            <n-form-item-row :label="t('email_forwarding_config')">
-                <n-button @click="openEmailForwardingModal">{{ t('config') }}</n-button>
-            </n-form-item-row>
-        </n-card>
-    </div>
+          </n-flex>
+          <n-flex justify="space-between" align="center">
+            <n-text>{{ t('send_mail_monthly_limit') }}</n-text>
+            <n-flex align="center">
+              <n-switch v-model:value="sendMailMonthlyLimitEnabled" :round="false" />
+              <n-input-number
+                v-model:value="sendMailMonthlyLimit"
+                :disabled="!sendMailMonthlyLimitEnabled"
+                :min="-1"
+              />
+            </n-flex>
+          </n-flex>
+          <n-text depth="3">
+            {{ t('send_mail_limit_tip') }}
+          </n-text>
+        </n-flex>
+      </n-form-item-row>
+      <n-form-item-row :label="t('fromBlockList')">
+        <n-select
+          v-model:value="fromBlockList"
+          filterable
+          multiple
+          tag
+          :placeholder="t('fromBlockList')"
+        >
+          <template #empty>
+            <n-text depth="3">
+              {{ t('manualInputPrompt') }}
+            </n-text>
+          </template>
+        </n-select>
+      </n-form-item-row>
+      <n-form-item-row :label="t('block_receive_unknow_address_email')">
+        <n-switch v-model:value="emailRuleSettings.blockReceiveUnknowAddressEmail" :round="false" />
+      </n-form-item-row>
+      <n-form-item-row :label="t('create_address_subdomain_match')">
+        <n-flex vertical style="width: 100%">
+          <n-radio-group v-model:value="addressCreationSubdomainMatchMode">
+            <n-space vertical size="small">
+              <n-radio
+                v-for="item in subdomainMatchModeOptions"
+                :key="item.value"
+                :value="item.value"
+              >
+                {{ item.label }}
+              </n-radio>
+            </n-space>
+          </n-radio-group>
+          <n-text depth="3">
+            {{ t('create_address_subdomain_match_tip') }}
+          </n-text>
+          <n-text depth="3">
+            {{ t('create_address_subdomain_match_note') }}
+          </n-text>
+          <n-text depth="3">
+            {{ t('create_address_subdomain_match_follow_env_note') }}
+          </n-text>
+          <n-alert
+            v-if="subdomainMatchEnvLocked"
+            type="warning"
+            :show-icon="false"
+            :bordered="false"
+          >
+            {{ t('create_address_subdomain_match_env_locked') }}
+          </n-alert>
+        </n-flex>
+      </n-form-item-row>
+      <n-form-item-row :label="t('email_forwarding_config')">
+        <n-button @click="openEmailForwardingModal">{{ t('config') }}</n-button>
+      </n-form-item-row>
+    </n-card>
+  </div>
 
-    <!-- 邮件转发配置弹窗 -->
-    <n-modal v-model:show="showEmailForwardingModal" preset="card" :title="t('email_forwarding_config')"
-        style="max-width: 1000px;">
-        <n-space vertical>
-            <n-alert :show-icon="false" :bordered="false" type="warning">
-                <span>{{ t('forwarding_rule_warning') }}</span>
-                <br />
-                <span>{{ t('source_patterns_tip') }}</span>
-            </n-alert>
-            <n-space justify="end">
-                <n-button @click="addNewEmailForwardingItem">{{ t('add') }}</n-button>
-            </n-space>
-            <n-data-table :columns="emailForwardingColumns" :data="emailForwardingList" :bordered="false" striped />
-            <n-space justify="end">
-                <n-button @click="saveEmailForwardingConfig" type="primary">{{ t('save') }}</n-button>
-            </n-space>
-        </n-space>
-    </n-modal>
+  <!-- 邮件转发配置弹窗 -->
+  <n-modal
+    v-model:show="showEmailForwardingModal"
+    preset="card"
+    :title="t('email_forwarding_config')"
+    style="max-width: 1000px"
+  >
+    <n-space vertical>
+      <n-alert :show-icon="false" :bordered="false" type="warning">
+        <span>{{ t('forwarding_rule_warning') }}</span>
+        <br />
+        <span>{{ t('source_patterns_tip') }}</span>
+      </n-alert>
+      <n-space justify="end">
+        <n-button @click="addNewEmailForwardingItem">{{ t('add') }}</n-button>
+      </n-space>
+      <n-data-table
+        :columns="emailForwardingColumns"
+        :data="emailForwardingList"
+        :bordered="false"
+        striped
+      />
+      <n-space justify="end">
+        <n-button @click="saveEmailForwardingConfig" type="primary">{{ t('save') }}</n-button>
+      </n-space>
+    </n-space>
+  </n-modal>
 </template>
 
 <style scoped>
 .center {
-    display: flex;
-    text-align: left;
-    place-items: center;
-    justify-content: center;
-    margin: 20px;
+  display: flex;
+  text-align: left;
+  place-items: center;
+  justify-content: center;
+  margin: 20px;
 }
 </style>

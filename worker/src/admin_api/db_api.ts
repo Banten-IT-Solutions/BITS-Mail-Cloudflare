@@ -1,6 +1,6 @@
-import { Context } from "hono";
-import { CONSTANTS } from "../constants";
-import utils from "../utils";
+import { Context } from 'hono';
+import { CONSTANTS } from '../constants';
+import utils from '../utils';
 
 const DB_INIT_QUERIES = `
 CREATE TABLE IF NOT EXISTS raw_mails (
@@ -123,107 +123,95 @@ CREATE TABLE IF NOT EXISTS user_passkeys (
 CREATE INDEX IF NOT EXISTS idx_user_passkeys_user_id ON user_passkeys(user_id);
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_user_passkeys_user_id_passkey_id ON user_passkeys(user_id, passkey_id);
-`
+`;
 
 export default {
-    initialize: async (c: Context<HonoCustomType>) => {
-        // remove all \r and \n characters from the query string
-        // split by ; and join with a ;\n
-        const query = DB_INIT_QUERIES.replace(/[\r\n]/g, "")
-            .split(";")
-            .map((query) => query.trim())
-            .join(";\n");
-        await c.env.DB.exec(query);
+  initialize: async (c: Context<HonoCustomType>) => {
+    // remove all \r and \n characters from the query string
+    // split by ; and join with a ;\n
+    const query = DB_INIT_QUERIES.replace(/[\r\n]/g, '')
+      .split(';')
+      .map(query => query.trim())
+      .join(';\n');
+    await c.env.DB.exec(query);
 
-        const version = await utils.getSetting(c, CONSTANTS.DB_VERSION_KEY);
-        if (version) {
-            return c.json({ message: "Database already initialized" });
-        }
-        await utils.saveSetting(c, CONSTANTS.DB_VERSION_KEY, CONSTANTS.DB_VERSION);
-        return c.json({ message: "Database initialized" });
-    },
-    migrate: async (c: Context<HonoCustomType>) => {
-        const version = await utils.getSetting(c, CONSTANTS.DB_VERSION_KEY);
-        if (version && version <= "v0.0.2") {
-            // migration to v0.0.3: add password column
-            const tableInfo = await c.env.DB.prepare(
-                `PRAGMA table_info(address)`
-            ).all();
-            const hasPassword = tableInfo.results?.some(
-                (col: any) => col.name === 'password'
-            );
-            if (!hasPassword) {
-                await c.env.DB.exec(`ALTER TABLE address ADD COLUMN password TEXT;`);
-            }
-        }
-        if (version && version <= "v0.0.3") {
-            // migration to v0.0.4: add metadata column
-            const tableInfo = await c.env.DB.prepare(
-                `PRAGMA table_info(raw_mails)`
-            ).all();
-            const hasMetadata = tableInfo.results?.some(
-                (col: any) => col.name === 'metadata'
-            );
-            if (!hasMetadata) {
-                await c.env.DB.exec(`ALTER TABLE raw_mails ADD COLUMN metadata TEXT;`);
-            }
-        }
-        if (version && version <= "v0.0.4") {
-            // migration to v0.0.5: add source_meta column
-            const tableInfo = await c.env.DB.prepare(
-                `PRAGMA table_info(address)`
-            ).all();
-            const hasSourceMeta = tableInfo.results?.some(
-                (col: any) => col.name === 'source_meta'
-            );
-            if (!hasSourceMeta) {
-                await c.env.DB.exec(`ALTER TABLE address ADD COLUMN source_meta TEXT;`);
-                await c.env.DB.exec(`CREATE INDEX IF NOT EXISTS idx_address_source_meta ON address(source_meta);`);
-            }
-        }
-        if (version && version <= "v0.0.5") {
-            // migration to v0.0.6: add message_id index on raw_mails
-            await c.env.DB.exec(`CREATE INDEX IF NOT EXISTS idx_raw_mails_message_id ON raw_mails(message_id);`);
-        }
-        if (version && version <= "v0.0.6") {
-            // migration to v0.0.7: add raw_blob column for gzip compressed email storage
-            const tableInfo = await c.env.DB.prepare(
-                `PRAGMA table_info(raw_mails)`
-            ).all();
-            const hasRawBlob = tableInfo.results?.some(
-                (col: any) => col.name === 'raw_blob'
-            );
-            if (!hasRawBlob) {
-                await c.env.DB.exec(`ALTER TABLE raw_mails ADD COLUMN raw_blob BLOB;`);
-            }
-        }
-        if (version != CONSTANTS.DB_VERSION) {
-            // remove all \r and \n characters from the query string
-            // split by ; and join with a ;\n
-            const query = DB_INIT_QUERIES.replace(/[\r\n]/g, "")
-                .split(";")
-                .map((query) => query.trim())
-                .join(";\n");
-            await c.env.DB.exec(query);
-            // Update the version in the settings table
-            await utils.saveSetting(c, CONSTANTS.DB_VERSION_KEY, CONSTANTS.DB_VERSION);
-            return c.json({
-                success: true,
-                message: "Database migrated"
-            });
-        }
-        return c.json({
-            success: true,
-            message: "Database does not need migration"
-        });
-    },
-    getVersion: async (c: Context<HonoCustomType>) => {
-        const version = await utils.getSetting(c, CONSTANTS.DB_VERSION_KEY);
-        return c.json({
-            need_initialization: !version,
-            need_migration: version && version != CONSTANTS.DB_VERSION,
-            current_db_version: version,
-            code_db_version: CONSTANTS.DB_VERSION
-        });
-    },
-}
+    const version = await utils.getSetting(c, CONSTANTS.DB_VERSION_KEY);
+    if (version) {
+      return c.json({ message: 'Database already initialized' });
+    }
+    await utils.saveSetting(c, CONSTANTS.DB_VERSION_KEY, CONSTANTS.DB_VERSION);
+    return c.json({ message: 'Database initialized' });
+  },
+  migrate: async (c: Context<HonoCustomType>) => {
+    const version = await utils.getSetting(c, CONSTANTS.DB_VERSION_KEY);
+    if (version && version <= 'v0.0.2') {
+      // migration to v0.0.3: add password column
+      const tableInfo = await c.env.DB.prepare(`PRAGMA table_info(address)`).all();
+      const hasPassword = tableInfo.results?.some((col: any) => col.name === 'password');
+      if (!hasPassword) {
+        await c.env.DB.exec(`ALTER TABLE address ADD COLUMN password TEXT;`);
+      }
+    }
+    if (version && version <= 'v0.0.3') {
+      // migration to v0.0.4: add metadata column
+      const tableInfo = await c.env.DB.prepare(`PRAGMA table_info(raw_mails)`).all();
+      const hasMetadata = tableInfo.results?.some((col: any) => col.name === 'metadata');
+      if (!hasMetadata) {
+        await c.env.DB.exec(`ALTER TABLE raw_mails ADD COLUMN metadata TEXT;`);
+      }
+    }
+    if (version && version <= 'v0.0.4') {
+      // migration to v0.0.5: add source_meta column
+      const tableInfo = await c.env.DB.prepare(`PRAGMA table_info(address)`).all();
+      const hasSourceMeta = tableInfo.results?.some((col: any) => col.name === 'source_meta');
+      if (!hasSourceMeta) {
+        await c.env.DB.exec(`ALTER TABLE address ADD COLUMN source_meta TEXT;`);
+        await c.env.DB.exec(
+          `CREATE INDEX IF NOT EXISTS idx_address_source_meta ON address(source_meta);`
+        );
+      }
+    }
+    if (version && version <= 'v0.0.5') {
+      // migration to v0.0.6: add message_id index on raw_mails
+      await c.env.DB.exec(
+        `CREATE INDEX IF NOT EXISTS idx_raw_mails_message_id ON raw_mails(message_id);`
+      );
+    }
+    if (version && version <= 'v0.0.6') {
+      // migration to v0.0.7: add raw_blob column for gzip compressed email storage
+      const tableInfo = await c.env.DB.prepare(`PRAGMA table_info(raw_mails)`).all();
+      const hasRawBlob = tableInfo.results?.some((col: any) => col.name === 'raw_blob');
+      if (!hasRawBlob) {
+        await c.env.DB.exec(`ALTER TABLE raw_mails ADD COLUMN raw_blob BLOB;`);
+      }
+    }
+    if (version != CONSTANTS.DB_VERSION) {
+      // remove all \r and \n characters from the query string
+      // split by ; and join with a ;\n
+      const query = DB_INIT_QUERIES.replace(/[\r\n]/g, '')
+        .split(';')
+        .map(query => query.trim())
+        .join(';\n');
+      await c.env.DB.exec(query);
+      // Update the version in the settings table
+      await utils.saveSetting(c, CONSTANTS.DB_VERSION_KEY, CONSTANTS.DB_VERSION);
+      return c.json({
+        success: true,
+        message: 'Database migrated',
+      });
+    }
+    return c.json({
+      success: true,
+      message: 'Database does not need migration',
+    });
+  },
+  getVersion: async (c: Context<HonoCustomType>) => {
+    const version = await utils.getSetting(c, CONSTANTS.DB_VERSION_KEY);
+    return c.json({
+      need_initialization: !version,
+      need_migration: version && version != CONSTANTS.DB_VERSION,
+      current_db_version: version,
+      code_db_version: CONSTANTS.DB_VERSION,
+    });
+  },
+};

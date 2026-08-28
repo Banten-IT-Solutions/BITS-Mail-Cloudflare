@@ -1,22 +1,22 @@
 <script setup>
-import { useI18n } from 'vue-i18n'
-import { useGlobalState } from '../../store'
-const { openSettings } = useGlobalState()
+import { useI18n } from 'vue-i18n';
+import { useGlobalState } from '../../store';
+const { openSettings } = useGlobalState();
 
 const { t } = useI18n({
-    messages: {
-         en: {
-            adminContact: 'If you need help, please contact the administrator ({msg})',
-        },
-        id: {
-            adminContact: 'Jika Anda membutuhkan bantuan, silakan hubungi administrator ({msg})',
-        },
-    }
+  messages: {
+    en: {
+      adminContact: 'If you need help, please contact the administrator ({msg})',
+    },
+    id: {
+      adminContact: 'Jika Anda membutuhkan bantuan, silakan hubungi administrator ({msg})',
+    },
+  },
 });
 </script>
 
 <template>
-    <n-alert v-if="openSettings.adminContact" :show-icon="false" :bordered="false">
-        <span>{{ t('adminContact', { msg: openSettings.adminContact }) }}</span>
-    </n-alert>
+  <n-alert v-if="openSettings.adminContact" :show-icon="false" :bordered="false">
+    <span>{{ t('adminContact', { msg: openSettings.adminContact }) }}</span>
+  </n-alert>
 </template>

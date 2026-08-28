@@ -1,15 +1,15 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
-import { useGlobalState } from '../store'
-import { api } from '../api'
-import { getRouterPathWithLang, hashPassword } from '../utils'
-import Turnstile from '../components/Turnstile.vue'
+import { useGlobalState } from '../store';
+import { api } from '../api';
+import { getRouterPathWithLang, hashPassword } from '../utils';
+import Turnstile from '../components/Turnstile.vue';
 
-import SenderAccess from './admin/SenderAccess.vue'
-import Statistics from "./admin/Statistics.vue"
+import SenderAccess from './admin/SenderAccess.vue';
+import Statistics from './admin/Statistics.vue';
 import SendBox from './admin/SendBox.vue';
 import Account from './admin/Account.vue';
 import CreateAccount from './admin/CreateAccount.vue';
@@ -32,21 +32,25 @@ import IpBlacklistSettings from './admin/IpBlacklistSettings.vue';
 import AiExtractSettings from './admin/AiExtractSettings.vue';
 
 const {
-  adminAuth, showAdminAuth, adminTab, loading,
-  globalTabplacement, showAdminPage, userSettings,
-  openSettings
-} = useGlobalState()
-const message = useMessage()
-const router = useRouter()
+  adminAuth,
+  showAdminAuth,
+  adminTab,
+  loading,
+  globalTabplacement,
+  showAdminPage,
+  userSettings,
+  openSettings,
+} = useGlobalState();
+const message = useMessage();
+const router = useRouter();
 
 const SendMail = defineAsyncComponent(() => {
   loading.value = true;
-  return import('./admin/SendMail.vue')
-    .finally(() => loading.value = false);
+  return import('./admin/SendMail.vue').finally(() => (loading.value = false));
 });
 
-const cfToken = ref('')
-const turnstileRef = ref(null)
+const cfToken = ref('');
+const turnstileRef = ref(null);
 
 const authFunc = async () => {
   try {
@@ -54,18 +58,18 @@ const authFunc = async () => {
       method: 'POST',
       body: JSON.stringify({
         password: await hashPassword(tmpAdminAuth.value),
-        cf_token: cfToken.value
-      })
+        cf_token: cfToken.value,
+      }),
     });
     adminAuth.value = tmpAdminAuth.value;
-    location.reload()
+    location.reload();
   } catch (error) {
-    message.error(error.message || "error");
+    message.error(error.message || 'error');
     turnstileRef.value?.refresh?.();
   }
-}
+};
 
-const showLogoutModal = ref(false)
+const showLogoutModal = ref(false);
 
 const handleLogout = async () => {
   // 清空管理员认证
@@ -76,7 +80,7 @@ const handleLogout = async () => {
   // 显示成功提示并跳转
   message.success(t('logoutSuccess'));
   await router.push(getRouterPathWithLang('/', locale.value));
-}
+};
 
 const { t, locale } = useI18n({
   messages: {
@@ -160,13 +164,13 @@ const { t, locale } = useI18n({
       confirm: 'Konfirmasi',
       logoutSuccess: 'Berhasil keluar',
     },
-  }
+  },
 });
 
-const showAdminPasswordModal = computed(() => !showAdminPage.value || showAdminAuth.value)
-const tmpAdminAuth = ref('')
+const showAdminPasswordModal = computed(() => !showAdminPage.value || showAdminAuth.value);
+const tmpAdminAuth = ref('');
 // 判断是否通过 admin password 登录（而非用户管理员权限）
-const isAdminPasswordLogin = computed(() => !!adminAuth.value)
+const isAdminPasswordLogin = computed(() => !!adminAuth.value);
 
 // 获取当前登录方式
 const currentLoginMethod = computed(() => {
@@ -178,30 +182,45 @@ const currentLoginMethod = computed(() => {
     return t('loginViaDisabledCheck');
   }
   return '';
-})
+});
 
 onMounted(async () => {
   // make sure openSettings is fetched for turnstile check
   if (!openSettings.value.fetched) await api.getOpenSettings(message);
   // make sure user_id is fetched
   if (!userSettings.value.user_id) await api.getUserSettings(message);
-})
+});
 </script>
 
 <template>
   <div v-if="userSettings.fetched">
-    <n-modal v-model:show="showAdminPasswordModal" :closable="false" :closeOnEsc="false" :maskClosable="false"
-      preset="dialog" :title="t('accessHeader')">
+    <n-modal
+      v-model:show="showAdminPasswordModal"
+      :closable="false"
+      :closeOnEsc="false"
+      :maskClosable="false"
+      preset="dialog"
+      :title="t('accessHeader')"
+    >
       <p>{{ t('accessTip') }}</p>
       <n-input v-model:value="tmpAdminAuth" type="password" show-password-on="click" />
-      <Turnstile ref="turnstileRef" v-if="openSettings.enableGlobalTurnstileCheck" v-model:value="cfToken" />
+      <Turnstile
+        ref="turnstileRef"
+        v-if="openSettings.enableGlobalTurnstileCheck"
+        v-model:value="cfToken"
+      />
       <template #action>
         <n-button @click="authFunc" type="primary" :loading="loading">
           {{ t('ok') }}
         </n-button>
       </template>
     </n-modal>
-    <n-tabs v-if="showAdminPage" type="card" v-model:value="adminTab" :placement="globalTabplacement">
+    <n-tabs
+      v-if="showAdminPage"
+      type="card"
+      v-model:value="adminTab"
+      :placement="globalTabplacement"
+    >
       <n-tab-pane name="qucickSetup" :tab="t('qucickSetup')">
         <n-tabs type="bar" justify-content="center" animated>
           <n-tab-pane name="database" :tab="t('database')">
@@ -301,13 +320,18 @@ onMounted(async () => {
         <Appearance />
       </n-tab-pane>
       <n-tab-pane name="adminAccount" :tab="t('adminAccount')">
-        <div style="display: flex; justify-content: center; padding: 20px;">
-          <n-card style="width: 600px;">
+        <div style="display: flex; justify-content: center; padding: 20px">
+          <n-card style="width: 600px">
             <n-space vertical>
               <n-text strong>{{ t('loginMethod') }}</n-text>
               <n-text>{{ currentLoginMethod }}</n-text>
               <n-divider v-if="isAdminPasswordLogin" />
-              <n-button v-if="isAdminPasswordLogin" type="warning" @click="showLogoutModal = true" block>
+              <n-button
+                v-if="isAdminPasswordLogin"
+                type="warning"
+                @click="showLogoutModal = true"
+                block
+              >
                 {{ t('logout') }}
               </n-button>
             </n-space>

@@ -1,9 +1,9 @@
 <script setup>
-import { ref } from "vue";
-import { useI18n } from 'vue-i18n'
-import { CloudDownloadRound, ReplyFilled, ForwardFilled, FullscreenRound } from '@vicons/material'
-import ShadowHtmlComponent from "./ShadowHtmlComponent.vue";
-import AiExtractInfo from "./AiExtractInfo.vue";
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { CloudDownloadRound, ReplyFilled, ForwardFilled, FullscreenRound } from '@vicons/material';
+import ShadowHtmlComponent from './ShadowHtmlComponent.vue';
+import AiExtractInfo from './AiExtractInfo.vue';
 import { getDownloadEmlUrl } from '../utils/email-parser';
 import { utcToLocalDate } from '../utils';
 import { useGlobalState } from '../store';
@@ -38,47 +38,47 @@ const { t } = useI18n({
       size: 'Ukuran',
       fullscreen: 'Layar Penuh',
     },
-  }
+  },
 });
 
 const props = defineProps({
   mail: {
     type: Object,
-    required: true
+    required: true,
   },
   showEMailTo: {
     type: Boolean,
-    default: true
+    default: true,
   },
   enableUserDeleteEmail: {
     type: Boolean,
-    default: false
+    default: false,
   },
   showReply: {
     type: Boolean,
-    default: false
+    default: false,
   },
   showSaveS3: {
     type: Boolean,
-    default: false
+    default: false,
   },
   // 回调函数 props
   onDelete: {
     type: Function,
-    default: () => { }
+    default: () => {},
   },
   onReply: {
     type: Function,
-    default: () => { }
+    default: () => {},
   },
   onForward: {
     type: Function,
-    default: () => { }
+    default: () => {},
   },
   onSaveToS3: {
     type: Function,
-    default: () => { }
-  }
+    default: () => {},
+  },
 });
 
 const showTextMail = ref(preferShowTextMail.value);
@@ -104,7 +104,6 @@ const handleForward = () => {
   props.onForward();
 };
 
-
 const handleSaveToS3 = async (filename, blob) => {
   attachmentLoding.value = true;
   try {
@@ -113,25 +112,18 @@ const handleSaveToS3 = async (filename, blob) => {
     attachmentLoding.value = false;
   }
 };
-
 </script>
 
 <template>
   <div class="mail-content-renderer">
     <!-- 邮件信息标签 -->
     <n-space>
-      <n-tag type="info">
-        ID: {{ mail.id }}
-      </n-tag>
+      <n-tag type="info"> ID: {{ mail.id }} </n-tag>
       <n-tag type="info">
         {{ utcToLocalDate(mail.created_at, useUTCDate.value) }}
       </n-tag>
-      <n-tag type="info">
-        FROM: {{ mail.source }}
-      </n-tag>
-      <n-tag v-if="showEMailTo" type="info">
-        TO: {{ mail.address }}
-      </n-tag>
+      <n-tag type="info"> FROM: {{ mail.source }} </n-tag>
+      <n-tag v-if="showEMailTo" type="info"> TO: {{ mail.address }} </n-tag>
 
       <!-- 操作按钮 -->
       <n-popconfirm v-if="enableUserDeleteEmail" @positive-click="handleDelete">
@@ -141,13 +133,25 @@ const handleSaveToS3 = async (filename, blob) => {
         {{ t('deleteMailTip') }}
       </n-popconfirm>
 
-      <n-button v-if="mail.attachments && mail.attachments.length > 0" size="small" tertiary type="info"
-        @click="handleViewAttachments">
+      <n-button
+        v-if="mail.attachments && mail.attachments.length > 0"
+        size="small"
+        tertiary
+        type="info"
+        @click="handleViewAttachments"
+      >
         {{ t('attachments') }}
       </n-button>
 
-      <n-button tag="a" target="_blank" tertiary type="info" size="small" :download="mail.id + '.eml'"
-        :href="getDownloadEmlUrl(mail.raw)">
+      <n-button
+        tag="a"
+        target="_blank"
+        tertiary
+        type="info"
+        size="small"
+        :download="mail.id + '.eml'"
+        :href="getDownloadEmlUrl(mail.raw)"
+      >
         <template #icon>
           <n-icon :component="CloudDownloadRound" />
         </template>
@@ -186,20 +190,36 @@ const handleSaveToS3 = async (filename, blob) => {
     <!-- 邮件内容 -->
     <div class="mail-content" :class="{ 'dark-mode': isDark }">
       <pre v-if="showTextMail" class="mail-text">{{ mail.text }}</pre>
-      <iframe v-else-if="useIframeShowMail" :srcdoc="mail.message" class="mail-iframe">
-      </iframe>
-      <ShadowHtmlComponent v-else :key="mail.id" :htmlContent="mail.message" :isDark="isDark" class="mail-html" />
+      <iframe v-else-if="useIframeShowMail" :srcdoc="mail.message" class="mail-iframe"> </iframe>
+      <ShadowHtmlComponent
+        v-else
+        :key="mail.id"
+        :htmlContent="mail.message"
+        :isDark="isDark"
+        class="mail-html"
+      />
     </div>
   </div>
 
-  <n-drawer v-model:show="showFullscreen" width="100%" placement="bottom" :trap-focus="false" :block-scroll="false"
-    style="height: 100vh;">
+  <n-drawer
+    v-model:show="showFullscreen"
+    width="100%"
+    placement="bottom"
+    :trap-focus="false"
+    :block-scroll="false"
+    style="height: 100vh"
+  >
     <n-drawer-content :title="mail.subject" closable>
       <div class="fullscreen-mail-content" :class="{ 'dark-mode': isDark }">
         <pre v-if="showTextMail" class="mail-text">{{ mail.text }}</pre>
-        <iframe v-else-if="useIframeShowMail" :srcdoc="mail.message" class="mail-iframe">
-        </iframe>
-        <ShadowHtmlComponent v-else :key="mail.id" :htmlContent="mail.message" :isDark="isDark" class="mail-html" />
+        <iframe v-else-if="useIframeShowMail" :srcdoc="mail.message" class="mail-iframe"> </iframe>
+        <ShadowHtmlComponent
+          v-else
+          :key="mail.id"
+          :htmlContent="mail.message"
+          :isDark="isDark"
+          class="mail-html"
+        />
       </div>
     </n-drawer-content>
   </n-drawer>
@@ -215,19 +235,29 @@ const handleSaveToS3 = async (filename, blob) => {
           <n-thing class="center" :title="row.filename">
             <template #description>
               <n-space>
-                <n-tag type="info">
-                  Size: {{ row.size }}
-                </n-tag>
-                <n-button v-if="showSaveS3" @click="handleSaveToS3(row.filename, row.blob)" ghost type="info"
-                  size="small">
+                <n-tag type="info"> Size: {{ row.size }} </n-tag>
+                <n-button
+                  v-if="showSaveS3"
+                  @click="handleSaveToS3(row.filename, row.blob)"
+                  ghost
+                  type="info"
+                  size="small"
+                >
                   {{ t('saveToS3') }}
                 </n-button>
               </n-space>
             </template>
           </n-thing>
           <template #suffix>
-            <n-button tag="a" target="_blank" tertiary type="info" size="small" :download="row.filename"
-              :href="row.url">
+            <n-button
+              tag="a"
+              target="_blank"
+              tertiary
+              type="info"
+              size="small"
+              :download="row.filename"
+              :href="row.url"
+            >
               <n-icon :component="CloudDownloadRound" />
             </n-button>
           </template>

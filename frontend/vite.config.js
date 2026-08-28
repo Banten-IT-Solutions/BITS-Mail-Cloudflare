@@ -1,17 +1,26 @@
-import { fileURLToPath, URL } from 'node:url'
+import { fileURLToPath, URL } from 'node:url';
 
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import { VitePWA } from 'vite-plugin-pwa'
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
-import wasm from "vite-plugin-wasm";
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import { VitePWA } from 'vite-plugin-pwa';
+import AutoImport from 'unplugin-auto-import/vite';
+import Components from 'unplugin-vue-components/vite';
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers';
+import wasm from 'vite-plugin-wasm';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
     outDir: './dist',
+    minify: 'esbuild',
+    cssMinify: true,
+    sourcemap: false,
+    chunkSizeWarningLimit: 1000,
+    reportCompressedSize: true,
+  },
+  esbuild: {
+    drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
+    legalComments: 'none',
   },
   plugins: [
     vue(),
@@ -20,23 +29,17 @@ export default defineConfig({
       imports: [
         'vue',
         {
-          'naive-ui': [
-            'useMessage',
-            'useNotification',
-            'NButton',
-            'NPopconfirm',
-            'NIcon',
-          ]
-        }
-      ]
+          'naive-ui': ['useMessage', 'useNotification', 'NButton', 'NPopconfirm', 'NIcon'],
+        },
+      ],
     }),
     Components({
-      resolvers: [NaiveUiResolver()]
+      resolvers: [NaiveUiResolver()],
     }),
     VitePWA({
       registerType: null,
       devOptions: {
-        enabled: false
+        enabled: false,
       },
       workbox: {
         disableDevLogs: true,
@@ -54,18 +57,18 @@ export default defineConfig({
           {
             src: '/logo.png',
             sizes: '192x192',
-            type: 'image/png'
-          }
-        ]
-      }
-    })
+            type: 'image/png',
+          },
+        ],
+      },
+    }),
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
   },
   define: {
     'import.meta.env.PACKAGE_VERSION': JSON.stringify(process.env.npm_package_version),
-  }
-})
+  },
+});

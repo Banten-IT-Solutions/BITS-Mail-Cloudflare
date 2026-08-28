@@ -19,6 +19,12 @@
       "@worker/*": ["./worker/src/*"]
     }
   },
-  "include": ["frontend/src", "worker/src", "vite.config.ts", "scripts/gen-wrangler.mjs", "frontend/vite.config.js"],
+  "include": [
+    "frontend/src",
+    "worker/src",
+    "vite.config.ts",
+    "scripts/gen-wrangler.mjs",
+    "frontend/vite.config.js"
+  ],
   "exclude": ["node_modules", "frontend/dist", "worker/dist", ".wrangler"]
 }

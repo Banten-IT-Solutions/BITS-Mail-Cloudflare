@@ -16,9 +16,9 @@ const alertThemeOverrides = computed(() => {
       borderSuccess: '1px solid rgba(168, 199, 250, 0.3)',
       iconColorSuccess: '#A8C7FA',
       titleTextColorSuccess: '#A8C7FA',
-    }
+    };
   }
-  return {}
+  return {};
 });
 
 const tagThemeOverrides = computed(() => {
@@ -27,9 +27,9 @@ const tagThemeOverrides = computed(() => {
       colorSuccess: 'rgba(168, 199, 250, 0.15)',
       borderSuccess: '1px solid rgba(168, 199, 250, 0.3)',
       textColorSuccess: '#A8C7FA',
-    }
+    };
   }
-  return {}
+  return {};
 });
 
 const { t } = useI18n({
@@ -54,18 +54,18 @@ const { t } = useI18n({
       copyFailed: 'Penyalinan gagal',
       open: 'Buka',
     },
-  }
+  },
 });
 
 const props = defineProps({
   metadata: {
     type: String,
-    default: null
+    default: null,
   },
   compact: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 const aiExtract = computed(() => {
@@ -142,10 +142,14 @@ const openLink = () => {
         {{ typeLabel }}
       </template>
       <n-space align="center">
-        <n-text v-if="aiExtract.type === 'auth_code'" strong style="font-size: 18px; font-family: monospace;">
+        <n-text
+          v-if="aiExtract.type === 'auth_code'"
+          strong
+          style="font-size: 18px; font-family: monospace"
+        >
           {{ aiExtract.result }}
         </n-text>
-        <n-ellipsis v-else style="max-width: 400px;">
+        <n-ellipsis v-else style="max-width: 400px">
           {{ displayText }}
         </n-ellipsis>
         <n-button size="small" @click="copyToClipboard" tertiary>
@@ -158,13 +162,18 @@ const openLink = () => {
         </n-button>
       </n-space>
     </n-alert>
-    <n-tag v-else type="success" @click="copyToClipboard" style="cursor: pointer;" size="small" :theme-overrides="tagThemeOverrides">
+    <n-tag
+      v-else
+      type="success"
+      @click="copyToClipboard"
+      style="cursor: pointer"
+      size="small"
+      :theme-overrides="tagThemeOverrides"
+    >
       <template #icon>
         <n-icon :component="typeIcon" />
       </template>
-      <n-ellipsis style="max-width: 150px;">
-        {{ typeLabel }}: {{ displayText }}
-      </n-ellipsis>
+      <n-ellipsis style="max-width: 150px"> {{ typeLabel }}: {{ displayText }} </n-ellipsis>
     </n-tag>
   </div>
 </template>

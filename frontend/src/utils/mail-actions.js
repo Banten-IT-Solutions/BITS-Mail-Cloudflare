@@ -35,7 +35,7 @@ function sanitizeContent(mail) {
 export function buildReplyModel(mail, replyLabel) {
   const emailRegex = /(.+?) <(.+?)>/;
   let toMail = mail.originalSource || '';
-  let toName = "";
+  let toName = '';
   const match = emailRegex.exec(mail.source);
   if (match) {
     toName = match[1];
@@ -47,9 +47,7 @@ export function buildReplyModel(mail, replyLabel) {
     toMail,
     subject: `${replyLabel}: ${mail.subject}`,
     contentType: mail.message ? 'html' : 'rich',
-    content: safeContent
-      ? `<p><br></p><blockquote>${safeContent}</blockquote><p><br></p>`
-      : '',
+    content: safeContent ? `<p><br></p><blockquote>${safeContent}</blockquote><p><br></p>` : '',
   };
 }
 

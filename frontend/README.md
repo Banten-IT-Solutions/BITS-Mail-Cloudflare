@@ -28,9 +28,9 @@ pnpm deploy
 
 ## Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `VITE_API_BASE` | Worker API URL |
+| Variable           | Description            |
+| ------------------ | ---------------------- |
+| `VITE_API_BASE`    | Worker API URL         |
 | `VITE_IS_TELEGRAM` | Telegram mini app mode |
 
 ## Tech Stack

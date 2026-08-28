@@ -1,8 +1,8 @@
-import { useBreakpoint, useMemo } from 'vooks'
+import { useBreakpoint, useMemo } from 'vooks';
 
 export function useIsMobile() {
-    const breakpointRef = useBreakpoint()
-    return useMemo(() => {
-        return breakpointRef.value === 'xs'
-    })
+  const breakpointRef = useBreakpoint();
+  return useMemo(() => {
+    return breakpointRef.value === 'xs';
+  });
 }
